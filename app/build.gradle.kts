@@ -7,6 +7,10 @@ android {
     namespace = "com.example.qp"
     compileSdk = 34
 
+    viewBinding{
+        enable = true
+    }
+
     defaultConfig {
         applicationId = "com.example.qp"
         minSdk = 24
