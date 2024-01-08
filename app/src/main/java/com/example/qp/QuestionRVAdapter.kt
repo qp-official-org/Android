@@ -8,6 +8,14 @@ import com.example.qp.databinding.ItemQuestionBinding
 class QuestionRVAdapter(private val qList: ArrayList<Question>)
     : RecyclerView.Adapter<QuestionRVAdapter.ViewHolder>() {
 
+    interface MyItemClickListner{
+        fun onItemClick(question: Question)
+    }
+    private lateinit var myItemClickListner: MyItemClickListner
+    fun setMyItemClickListner(itemClickListner: MyItemClickListner){
+        myItemClickListner = itemClickListner
+    }
+
     override fun onCreateViewHolder(
         viewGroup: ViewGroup,
         viewType: Int
@@ -19,6 +27,9 @@ class QuestionRVAdapter(private val qList: ArrayList<Question>)
 
     override fun onBindViewHolder(holder: QuestionRVAdapter.ViewHolder, position: Int) {
         holder.bind(qList[position])
+        holder.itemView.setOnClickListener{
+            myItemClickListner.onItemClick(qList[position])
+        }
     }
 
     override fun getItemCount(): Int = qList.size

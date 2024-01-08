@@ -1,9 +1,11 @@
 package com.example.qp
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.qp.databinding.ActivityMainBinding
+import com.google.gson.Gson
 
 class MainActivity : AppCompatActivity() {
 
@@ -25,5 +27,16 @@ class MainActivity : AppCompatActivity() {
         val questionRVAdapter = QuestionRVAdapter(qDatas)
         binding.mainQuestionRv.adapter = questionRVAdapter
         binding.mainQuestionRv.layoutManager = GridLayoutManager(applicationContext, 2)
+
+        questionRVAdapter.setMyItemClickListner(object : QuestionRVAdapter.MyItemClickListner{
+            override fun onItemClick(question: Question) {
+                val intent = Intent(this@MainActivity, DetailedActivity::class.java)
+                val gson = Gson()
+                val qJson = gson.toJson(question)
+                intent.putExtra("question", qJson)
+                startActivity(intent)
+            }
+        })
+
     }
 }
