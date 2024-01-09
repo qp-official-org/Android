@@ -38,5 +38,9 @@ class MainActivity : AppCompatActivity() {
             }
         })
 
+        binding.mainLoginBt.setOnClickListener{
+            startActivity(Intent(this@MainActivity, LoginActivity::class.java))
+        }
+
     }
 }
