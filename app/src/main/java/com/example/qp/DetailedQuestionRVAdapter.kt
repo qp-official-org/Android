@@ -1,10 +1,13 @@
 package com.example.qp
 
+import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.qp.databinding.ItemAnswerBinding
 import com.example.qp.databinding.ItemWriteAnswerBinding
@@ -25,6 +28,12 @@ class DetailedQuestionRVAdapter(): RecyclerView.Adapter<DetailedQuestionRVAdapte
         private val profileView=itemView.findViewById<ImageView>(R.id.question_user_img)
         fun bind(answer:Answer) {
             answerContentView.text=answer.content
+            if(answer.commentList!=null){
+                Log.d("commentRv",answer.commentList.toString())
+                val commentAdapter=DetailedAnswerCommentRVAdapter(answer.commentList!!)
+                binding.answerCommentRv.adapter=commentAdapter
+            }
+
         }
     }
 

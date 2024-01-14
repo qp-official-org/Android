@@ -65,7 +65,9 @@
             app:layout_constraintTop_toBottomOf="@id/answer_like_btn"
             android:layout_marginTop="5dp"
             android:layout_marginHorizontal="10dp"
-            tools:listitem="@layout/item_answer_comment"/>
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            tools:listitem="@layout/item_answer_comment"
+            android:nestedScrollingEnabled="false"/>
 
 
 

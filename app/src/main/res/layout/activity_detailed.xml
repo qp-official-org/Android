@@ -204,57 +204,65 @@
                     android:id="@+id/answer_rv"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:layout_constraintTop_toBottomOf="@+id/notice_view"
+                    app:layout_constraintTop_toBottomOf="@+id/notice_container"
                     android:layout_marginHorizontal="15dp"
                     android:layout_marginBottom="10dp"
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                    tools:listitem="@layout/item_answer">
+                    tools:listitem="@layout/item_answer"
+                    android:nestedScrollingEnabled="false">
 
                 </androidx.recyclerview.widget.RecyclerView>
-
                 <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/notice_view"
+                    android:id="@+id/notice_container"
                     android:layout_width="match_parent"
-                    android:layout_height="100dp"
+                    android:layout_height="wrap_content"
                     app:layout_constraintTop_toBottomOf="@id/write_answer_container"
-                    android:layout_marginHorizontal="15dp"
                     android:layout_marginTop="50dp"
-                    android:background="@drawable/box_white_lined"
-                    android:paddingBottom="15dp">
+                    />
 
-                    <TextView
-                        android:id="@+id/notify_tv"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="20dp"
-                        android:text="알림신청을 하면 답변이 달리는 즉시 알림을 받으실 수 있어요"
-                        android:textSize="10dp"
-                        android:textStyle="bold"
-                        app:layout_constraintBottom_toTopOf="@id/nofity_btn"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
+<!--                <androidx.constraintlayout.widget.ConstraintLayout-->
+<!--                    android:id="@+id/notice_view"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="100dp"-->
+<!--                    app:layout_constraintTop_toBottomOf="@id/write_answer_container"-->
+<!--                    android:layout_marginHorizontal="15dp"-->
+<!--                    android:layout_marginTop="50dp"-->
+<!--                    android:background="@drawable/box_white_lined"-->
+<!--                    android:paddingBottom="15dp">-->
 
-                    <TextView
-                        android:id="@+id/nofity_btn"
-                        android:layout_width="75dp"
-                        android:layout_height="wrap_content"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/notify_tv"
-                        android:background="@drawable/box_white_lined"
-                        android:gravity="center"
-                        android:minWidth="0dp"
-                        android:minHeight="0dp"
-                        android:paddingVertical="5dp"
-                        android:text="알림 신청하기"
-                        android:textSize="10dp"
+<!--                    <TextView-->
+<!--                        android:id="@+id/notify_tv"-->
+<!--                        android:layout_width="wrap_content"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:layout_marginTop="20dp"-->
+<!--                        android:text="알림신청을 하면 답변이 달리는 즉시 알림을 받으실 수 있어요"-->
+<!--                        android:textSize="10dp"-->
+<!--                        android:textStyle="bold"-->
+<!--                        app:layout_constraintBottom_toTopOf="@id/nofity_btn"-->
+<!--                        app:layout_constraintEnd_toEndOf="parent"-->
+<!--                        app:layout_constraintStart_toStartOf="parent"-->
+<!--                        app:layout_constraintTop_toTopOf="parent" />-->
 
-                        android:textColor="@color/qp" />
+<!--                    <TextView-->
+<!--                        android:id="@+id/nofity_btn"-->
+<!--                        android:layout_width="75dp"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        app:layout_constraintBottom_toBottomOf="parent"-->
+<!--                        app:layout_constraintEnd_toEndOf="parent"-->
+<!--                        app:layout_constraintStart_toStartOf="parent"-->
+<!--                        app:layout_constraintTop_toBottomOf="@id/notify_tv"-->
+<!--                        android:background="@drawable/box_white_lined"-->
+<!--                        android:gravity="center"-->
+<!--                        android:minWidth="0dp"-->
+<!--                        android:minHeight="0dp"-->
+<!--                        android:paddingVertical="5dp"-->
+<!--                        android:text="알림 신청하기"-->
+<!--                        android:textSize="10dp"-->
+
+<!--                        android:textColor="@color/qp" />-->
 
 
-                </androidx.constraintlayout.widget.ConstraintLayout>
+<!--                </androidx.constraintlayout.widget.ConstraintLayout>-->
             </androidx.constraintlayout.widget.ConstraintLayout>
 
 
