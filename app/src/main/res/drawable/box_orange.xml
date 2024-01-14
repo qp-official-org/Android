@@ -4,4 +4,8 @@
         android:color="@color/qp"/>
         <corners
             android:radius="7.35dp"/>
+    <gradient
+        android:startColor="@color/qp"
+        android:endColor="#c96130"
+        android:angle="0"/>
 </shape>

@@ -50,18 +50,15 @@ class DetailedActivity : AppCompatActivity(){
             add(Answer("답변내용3"))
         }
         answerAdapter.addItemList(answerList)
-
     }
     private fun onClickAnswerBtn(){
         val answerBtn=binding.answerBtn
         answerBtn.setOnClickListener {
             answerBtn.visibility=View.GONE
-
             val container=findViewById<ConstraintLayout>(R.id.write_answer_container)
             val inflater:LayoutInflater=getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
             inflater.inflate(R.layout.item_write_answer,container,true)
         }
-
     }
     private fun initNotifyView(isAnswered:Boolean){
         var notifyView=binding.noticeView
