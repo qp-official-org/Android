@@ -6,9 +6,12 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.recyclerview.widget.RecyclerView
 import com.example.qp.databinding.ActivityDetailedBinding
+import com.example.qp.databinding.ItemAnswerBinding
 import com.google.gson.Gson
 
 
@@ -40,7 +43,6 @@ class DetailedActivity : AppCompatActivity(){
         binding.detailedQuestionTitleTv.text=question.title
         binding.detailedQuestionContentTv.text = question.content
         binding.detailedQuestionTimeTv.text = question.time
-
 
     }
     private fun initAnswerData(){

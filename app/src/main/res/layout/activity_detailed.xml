@@ -8,7 +8,7 @@
     android:orientation="vertical"
     tools:context=".DetailedActivity">
 
-    <ScrollView
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="1"
@@ -200,18 +200,22 @@
                     android:textSize="10dp"
                     />
 
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/answer_rv"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:layout_constraintTop_toBottomOf="@+id/notice_container"
-                    android:layout_marginHorizontal="15dp"
-                    android:layout_marginBottom="10dp"
-                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                    tools:listitem="@layout/item_answer"
-                    android:nestedScrollingEnabled="false">
+>
 
-                </androidx.recyclerview.widget.RecyclerView>
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/answer_rv"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="10dp"
+                        app:layout_constraintTop_toBottomOf="@+id/notice_container"
+                        android:layout_marginHorizontal="15dp"
+                        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                        tools:listitem="@layout/item_answer"
+                        android:nestedScrollingEnabled="false">
+
+                    </androidx.recyclerview.widget.RecyclerView>
+
+
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/notice_container"
                     android:layout_width="match_parent"
@@ -269,7 +273,7 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
 
 
-    </ScrollView>
+    </androidx.core.widget.NestedScrollView>
 
 
 
