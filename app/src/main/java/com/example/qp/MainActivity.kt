@@ -3,6 +3,7 @@ package com.example.qp
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.widget.Toast
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.qp.databinding.ActivityMainBinding
 import com.google.gson.Gson
@@ -37,6 +38,10 @@ class MainActivity : AppCompatActivity() {
                 startActivity(intent)
             }
         })
+
+        binding.mainSearchBt.setOnClickListener {
+            Toast.makeText(this, "검색버튼 클릭!", Toast.LENGTH_LONG).show()
+        }
 
         binding.mainLoginBt.setOnClickListener{
             startActivity(Intent(this@MainActivity, LoginActivity::class.java))
