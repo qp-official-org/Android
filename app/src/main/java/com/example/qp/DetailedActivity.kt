@@ -2,12 +2,15 @@ package com.example.qp
 
 import android.content.Context
 import android.os.Bundle
+import android.text.Editable
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.widget.EditText
 import android.widget.PopupMenu
+import android.widget.PopupWindow
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -21,10 +24,10 @@ import com.google.gson.Gson
 
 class DetailedActivity : AppCompatActivity(){
 
-    lateinit var binding: ActivityDetailedBinding
+    private lateinit var binding: ActivityDetailedBinding
     private var gson: Gson = Gson()
     private lateinit var answerAdapter:DetailedQuestionRVAdapter
-    private  var answerList:ArrayList<Answer> =arrayListOf<Answer>()
+    private  var answerList =ArrayList<Answer>()
     private lateinit var question:Question
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -44,8 +47,7 @@ class DetailedActivity : AppCompatActivity(){
 
         initNotifyView()
         onClickAnswerBtn()
-        //onClickQuestionMore()
-        setQuestionPopup()
+        setQuestionMorePopup()
     }
 
 
@@ -66,7 +68,7 @@ class DetailedActivity : AppCompatActivity(){
         answerList.apply {
             add(Answer("답변내용1",commentList))
             add(Answer("답변내용2",commentList))
-            add(Answer("답변내용3",null))
+            add(Answer("답변내용3"))
         }
         answerAdapter=DetailedQuestionRVAdapter(applicationContext)
         binding.answerRv.adapter=answerAdapter
@@ -74,12 +76,8 @@ class DetailedActivity : AppCompatActivity(){
 
     }
     private fun onClickAnswerBtn(){
-        val answerBtn=binding.answerBtn
-        answerBtn.setOnClickListener {
-            answerBtn.visibility=View.GONE
-            val container=findViewById<ConstraintLayout>(R.id.write_answer_container)
-            val inflater:LayoutInflater=getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-            inflater.inflate(R.layout.item_write_answer,container,true)
+        binding.answerBtn.setOnClickListener {
+            showWriteAnswerEdit(true)
         }
     }
     private fun initNotifyView(){
@@ -93,47 +91,51 @@ class DetailedActivity : AppCompatActivity(){
         //noticeBtn.setOnClickListener {  }
     }
 
-//    private fun onClickQuestionMore(){
-//        binding.questionMoreBtn.setOnClickListener {
-//            val popupMenu= PopupMenu(applicationContext,it)
-//
-//            menuInflater.inflate(R.menu.question_menu,popupMenu.menu)
-//            popupMenu.show()
-//            popupMenu.setOnMenuItemClickListener {
-//                when(it.itemId){
-//                    R.id.question_modify->{
-//                        Toast.makeText(applicationContext,"수정하기",Toast.LENGTH_SHORT).show()
-//                        return@setOnMenuItemClickListener true
-//                    }
-//                    R.id.question_delete->{
-//                        Toast.makeText(applicationContext,"삭제하기",Toast.LENGTH_SHORT).show()
-//                        return@setOnMenuItemClickListener true
-//                    }
-//                    R.id.question_report->{
-//                        Toast.makeText(applicationContext,"신고하기",Toast.LENGTH_SHORT).show()
-//                        return@setOnMenuItemClickListener true
-//                    }
-//                    else->return@setOnMenuItemClickListener false
-//                }
-//            }
-//        }
-//    }
+    private fun writeAnswer(){
+        val btn=findViewById<TextView>(R.id.write_answer_btn)
+        val editText=findViewById<EditText>(R.id.write_answer_edit)
+        btn.setOnClickListener {
+            var content=editText.text.toString()
+            answerAdapter.addItem(Answer(content))  //임시로 구현..
+            showWriteAnswerEdit(false)
+            Toast.makeText(applicationContext,"답변이 등록되었습니다.",Toast.LENGTH_SHORT).show()
+        }
+    }
 
-    private fun setQuestionPopup(){
-        if(answerList.isEmpty()){
+    private fun showWriteAnswerEdit(toShow:Boolean){
+        val container=findViewById<ConstraintLayout>(R.id.write_answer_container)
+        if(toShow){
+            binding.answerBtn.visibility=View.GONE
+            val inflater:LayoutInflater=getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+            inflater.inflate(R.layout.item_write_answer,container,true)
+            writeAnswer()
+        }
+        else{
+            binding.answerBtn.visibility=View.VISIBLE
+            container.removeAllViews()
+        }
+
+    }
+
+
+    private fun setQuestionMorePopup(){
+        lateinit var popupWindow: SimplePopup
+        if(answerList.isEmpty()||answerList==null){
             binding.questionMoreBtn.setOnClickListener {
                 val list= mutableListOf<String>().apply {
                     add("수정하기")
                     add("삭제하기")
                     add("신고하기")
                 }
-                SimplePopup(applicationContext,list){_,_,position->
+                popupWindow=SimplePopup(applicationContext,list){_,_,position->
                     when(position){
                         0->Toast.makeText(applicationContext,"수정하기",Toast.LENGTH_SHORT).show()
                         1->Toast.makeText(applicationContext,"삭제하기",Toast.LENGTH_SHORT).show()
                         2->Toast.makeText(applicationContext,"신고하기",Toast.LENGTH_SHORT).show()
                     }
-                }.showAsDropDown(it,40,10)
+                }
+                popupWindow.isOutsideTouchable=true
+                popupWindow.showAsDropDown(it,40,10)
             }
             }
         else{
@@ -142,11 +144,13 @@ class DetailedActivity : AppCompatActivity(){
                 val list= mutableListOf<String>().apply {
                         add("신고하기")
                 }
-                SimplePopup(applicationContext,list){_,_,position->
+                popupWindow=SimplePopup(applicationContext,list){_,_,position->
                     when(position){
                         0->Toast.makeText(applicationContext,"신고하기",Toast.LENGTH_SHORT).show()
                     }
-                }.showAsDropDown(it,40,10)
+                }
+                popupWindow.isOutsideTouchable=true
+                popupWindow.showAsDropDown(it,40,10)
             }
 
         }

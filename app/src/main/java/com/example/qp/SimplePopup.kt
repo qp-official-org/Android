@@ -33,7 +33,7 @@ class SimplePopup(context:Context,popupList:MutableList<String>,menuItemListener
         }
         val layout=contentView
         layout.measure(ViewGroup.LayoutParams.WRAP_CONTENT,ViewGroup.LayoutParams.WRAP_CONTENT)
-        height=layout.measuredHeight+20
+        height=layout.measuredHeight+15
 
     }
 

@@ -41,7 +41,7 @@ class DetailedQuestionRVAdapter(context:Context): RecyclerView.Adapter<DetailedQ
             //댓글
             lateinit var commentAdapter:DetailedAnswerCommentRVAdapter
             if(answer.commentList!=null){
-                commentAdapter=DetailedAnswerCommentRVAdapter(answer.commentList!!)
+                commentAdapter=DetailedAnswerCommentRVAdapter(appContext,answer.commentList!!)
                 binding.answerCommentRv.adapter=commentAdapter
             }
             //댓글수
@@ -57,8 +57,10 @@ class DetailedQuestionRVAdapter(context:Context): RecyclerView.Adapter<DetailedQ
                 writeComment(binding.writeCommentEdit.text.toString(),commentAdapter,answer)
 
             }
+            showAnswerMorePopup(answer)
 
         }
+
 
 
 
@@ -93,12 +95,52 @@ class DetailedQuestionRVAdapter(context:Context): RecyclerView.Adapter<DetailedQ
                 }
         }
 
+
+
+        private fun showAnswerMorePopup(answer:Answer){
+            lateinit var popupWindow:SimplePopup
+            if(answer.commentList.isEmpty()||answer.commentList==null){
+                binding.answerMoreBtn.setOnClickListener {
+                    val list= mutableListOf<String>().apply {
+                        add("수정하기")
+                        add("삭제하기")
+                        add("신고하기")
+                    }
+                    popupWindow=SimplePopup(appContext,list){_,_,position->
+                        when(position){
+                            0->Toast.makeText(appContext,"수정하기",Toast.LENGTH_SHORT).show()
+                            1->Toast.makeText(appContext,"삭제하기",Toast.LENGTH_SHORT).show()
+                            2->Toast.makeText(appContext,"신고하기",Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                    popupWindow.isOutsideTouchable=true
+                    popupWindow.showAsDropDown(it,40,10)
+                }
+            }
+            else{
+                binding.answerMoreBtn.setOnClickListener {
+                    val list= mutableListOf<String>().apply {
+                        add("신고하기")
+                    }
+                    popupWindow=SimplePopup(appContext,list){_,_,position->
+                        when(position){
+                            0->Toast.makeText(appContext,"신고하기",Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                    popupWindow.isOutsideTouchable=true
+                    popupWindow.showAsDropDown(it,40,10)
+                }
+
+            }
+
+        }
+
     }
 
-//    fun addItem(item: Items_Answer) {
-//        this.items.add(item)
-//        this.notifyDataSetChanged()
-//    }
+    fun addItem(item: Answer) {
+        this.items.add(item)
+        this.notifyDataSetChanged()
+    }
     fun addItemList(items:ArrayList<Answer>){
         this.items.addAll(items)
         this.notifyDataSetChanged()
