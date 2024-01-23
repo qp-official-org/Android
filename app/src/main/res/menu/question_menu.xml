@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    >
+
+    <item
+        android:id="@+id/question_modify"
+        android:title="수정하기"/>
+    <item
+        android:id="@+id/question_delete"
+        android:title="삭제하기"/>
+    <item
+        android:id="@+id/question_report"
+        android:title="신고하기"/>
+</menu>

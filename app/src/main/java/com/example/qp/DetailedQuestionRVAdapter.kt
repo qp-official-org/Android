@@ -1,20 +1,24 @@
 package com.example.qp
 
+import android.app.Application
 import android.content.Context
+import android.text.Editable
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.qp.databinding.ItemAnswerBinding
 import com.example.qp.databinding.ItemWriteAnswerBinding
 
-class DetailedQuestionRVAdapter(): RecyclerView.Adapter<DetailedQuestionRVAdapter.ViewHolder>() {
+class DetailedQuestionRVAdapter(context:Context): RecyclerView.Adapter<DetailedQuestionRVAdapter.ViewHolder>() {
     private val items= ArrayList<Answer>()
     private var isCommentShown=false
+    private var appContext=context
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int):DetailedQuestionRVAdapter.ViewHolder {
@@ -23,6 +27,7 @@ class DetailedQuestionRVAdapter(): RecyclerView.Adapter<DetailedQuestionRVAdapte
     }
     override fun onBindViewHolder(holder: DetailedQuestionRVAdapter.ViewHolder, position: Int) {
         holder.bind(items[position])
+
     }
     override fun getItemCount(): Int =items.size
 
@@ -33,25 +38,31 @@ class DetailedQuestionRVAdapter(): RecyclerView.Adapter<DetailedQuestionRVAdapte
         fun bind(answer:Answer) {
             answerContentView.text=answer.content
 
-            answerCommentNumber.text=
-                    when (answer.commentList){
-                        null->"0"
-                        else->answer.commentList!!.size.toString()
-                    }
-
-                    //댓글 보이기
+            //댓글
+            lateinit var commentAdapter:DetailedAnswerCommentRVAdapter
             if(answer.commentList!=null){
-                val commentAdapter=DetailedAnswerCommentRVAdapter(answer.commentList!!)
+                commentAdapter=DetailedAnswerCommentRVAdapter(answer.commentList!!)
                 binding.answerCommentRv.adapter=commentAdapter
             }
+            //댓글수
+            commentNumberUpdate(answer)
 
-            showComment(true,binding)
+            //댓글 펼치기/접기
+            showComment(true)
             binding.answerCommentBtnLayout.setOnClickListener {
-               showComment(isCommentShown,binding)
+               showComment(isCommentShown)
+            }
+            //댓글 쓰기
+            binding.writeCommentBtn.setOnClickListener {
+                writeComment(binding.writeCommentEdit.text.toString(),commentAdapter,answer)
+
             }
 
         }
-        private fun showComment(isShown: Boolean,binding:ItemAnswerBinding){
+
+
+
+        private fun showComment(isShown: Boolean){
             val commentRv=binding.commentLayout
             if(isShown){
                 commentRv.visibility=View.GONE
@@ -62,12 +73,32 @@ class DetailedQuestionRVAdapter(): RecyclerView.Adapter<DetailedQuestionRVAdapte
                 isCommentShown=true
             }
         }
+
+        private fun writeComment(content:String?,adapter:DetailedAnswerCommentRVAdapter,answer:Answer){
+            if(content!=null){
+                adapter.addItem(content)    //임시로 구현..
+                commentNumberUpdate(answer)
+                binding.writeCommentEdit.text=Editable.Factory.getInstance().newEditable("")
+            }
+            else{
+                Toast.makeText(appContext,"댓글을 작성하십시오",Toast.LENGTH_SHORT)
+            }
+        }
+
+        private fun commentNumberUpdate(answer:Answer){
+            answerCommentNumber.text=
+                when (answer.commentList){
+                    null->"0"
+                    else->answer.commentList!!.size.toString()
+                }
+        }
+
     }
 
-/*    fun addItems(item: Items_Answer) {
-        this.items.add(item)
-        this.notifyDataSetChanged()
-    }*/
+//    fun addItem(item: Items_Answer) {
+//        this.items.add(item)
+//        this.notifyDataSetChanged()
+//    }
     fun addItemList(items:ArrayList<Answer>){
         this.items.addAll(items)
         this.notifyDataSetChanged()

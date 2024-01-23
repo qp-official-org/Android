@@ -8,7 +8,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.qp.databinding.ItemAnswerCommentBinding
 
-class DetailedAnswerCommentRVAdapter(val items:ArrayList<Comment>):RecyclerView.Adapter<DetailedAnswerCommentRVAdapter.ViewHolder>() {
+class DetailedAnswerCommentRVAdapter(private val items:ArrayList<Comment>):RecyclerView.Adapter<DetailedAnswerCommentRVAdapter.ViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int):DetailedAnswerCommentRVAdapter.ViewHolder {
         val binding:ItemAnswerCommentBinding=ItemAnswerCommentBinding.inflate(LayoutInflater.from(parent.context),parent,false)
         return ViewHolder(binding)
@@ -31,6 +31,11 @@ class DetailedAnswerCommentRVAdapter(val items:ArrayList<Comment>):RecyclerView.
 
     fun addItems(commentList:ArrayList<Comment>) {
         items.addAll(commentList)
+    }
+
+    fun addItem(content:String){
+        items.add(Comment(content))
+        notifyDataSetChanged()
     }
 
 
