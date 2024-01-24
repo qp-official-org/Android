@@ -105,12 +105,33 @@
                         android:layout_marginVertical="15dp"
                         android:src="@drawable/user" />
                     <LinearLayout
-                        android:id="@+id/question_tag_layout"
+                        android:id="@+id/question_hashtag_layout"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         app:layout_constraintTop_toTopOf="@id/question_user_img"
                         app:layout_constraintStart_toStartOf="@id/detailed_question_title_tv"
                         android:orientation="horizontal">
+                        <TextView
+                            android:id="@+id/hashtag_1"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginHorizontal="5dp"
+                            android:text="#해시태그1"
+                            android:textSize="7dp"/>
+                        <TextView
+                            android:id="@+id/hashtag_2"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginHorizontal="5dp"
+                            android:text="#해시태그1"
+                            android:textSize="7dp"/>
+                        <TextView
+                            android:id="@+id/hashtag_3"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginHorizontal="5dp"
+                            android:text="#해시태그1"
+                            android:textSize="7dp"/>
 
                     </LinearLayout>
                     <TextView
@@ -147,7 +168,18 @@
                         android:layout_height="wrap_content"
                         app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
-                        android:layout_margin="10dp"/>
+                        android:layout_margin="10dp"
+                        android:src="@drawable/baseline_more_vert_24"
+                        android:background="@color/white"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintEnd_toStartOf="@id/question_more_btn"
+                        app:layout_constraintTop_toTopOf="@id/question_more_btn"
+                        app:layout_constraintBottom_toBottomOf="@id/question_more_btn"
+                        android:text="어린이"
+                        android:textSize="10dp"
+                        android:textColor="@color/qp"/>
 
                     <ImageButton
                         android:id="@+id/answer_notice_btn"
@@ -156,7 +188,9 @@
                         app:layout_constraintStart_toStartOf="@id/question_more_btn"
                         app:layout_constraintEnd_toEndOf="@id/question_more_btn"
                         app:layout_constraintTop_toBottomOf="@id/detailed_question_content_tv"
-                        android:layout_marginVertical="10dp"/>
+                        android:layout_marginVertical="10dp"
+                        android:src="@drawable/notification_off"
+                        android:background="@color/white"/>
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -178,7 +212,7 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     android:layout_marginVertical="15dp"
-                    android:text="3명의 전문가가 답변을 했어요"
+                    android:text="0명의 전문가가 답변을 했어요"
                     android:textColor="@color/white"
                     android:textSize="10dp"
                      />
@@ -230,7 +264,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     app:layout_constraintTop_toBottomOf="@id/write_answer_container"
-                    android:layout_marginTop="50dp"
+                    android:layout_marginTop="40dp"
                     />
 
 
