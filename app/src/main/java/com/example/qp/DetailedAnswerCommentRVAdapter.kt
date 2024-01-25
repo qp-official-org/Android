@@ -15,6 +15,7 @@ class DetailedAnswerCommentRVAdapter(context: Context, private val items:ArrayLi
 
     interface CommentClickListener{
         fun onItemRemove(position:Int)
+        fun onCommentModify(position: Int)
     }
     private lateinit var myItemClickListener: CommentClickListener
     fun setMyItemClickListener(itemClickListener: CommentClickListener){
@@ -54,7 +55,10 @@ class DetailedAnswerCommentRVAdapter(context: Context, private val items:ArrayLi
                 }
                 popupWindow=SimplePopup(appContext,list){_,_,menuPos->
                     when(menuPos){
-                        0-> Toast.makeText(appContext,"수정하기", Toast.LENGTH_SHORT).show()
+                        0-> {
+                            Toast.makeText(appContext, "수정하기", Toast.LENGTH_SHORT).show()
+                            myItemClickListener.onCommentModify(position)
+                        }
                         1-> {
                             Toast.makeText(appContext, "삭제하기", Toast.LENGTH_SHORT).show()
                             myItemClickListener.onItemRemove(position)
@@ -71,6 +75,16 @@ class DetailedAnswerCommentRVAdapter(context: Context, private val items:ArrayLi
         }
 
 
+    fun getContent(position: Int):String{
+        return items[position].content
+    }
+    fun modifyComment(position: Int,content:String){
+        items[position].content=content
+        this.notifyDataSetChanged()
+    }
+    fun isCommentListEmpty():Boolean{
+        return items.isEmpty()||items==null
+    }
     fun addItem(content:String){
         items.add(Comment(content))
         notifyDataSetChanged()

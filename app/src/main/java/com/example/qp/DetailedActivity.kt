@@ -2,6 +2,7 @@ package com.example.qp
 
 import android.content.Context
 import android.os.Bundle
+import android.text.Editable
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.EditText
@@ -51,13 +52,33 @@ class DetailedActivity : AppCompatActivity(){
 
         answerAdapter.setMyItemClickListener(object :
             DetailedQuestionRVAdapter.ItemClickListener{
+            //답변 삭제
             override fun onItemRemove(position:Int) {
                 answerAdapter.removeItem(position)
                 updateExpertNum()
-                if(answerAdapter.items.isEmpty()||answerAdapter.items==null){
+                if(answerAdapter.isItemListEmpty()){
                     binding.answerBtn.visibility=View.VISIBLE
                     updateNotifyView()
                 }
+            }
+            //답변 수정
+            override fun onAnswerModify(position: Int) {
+                val container=binding.writeAnswerContainer
+                var content=answerAdapter.getContent(position)
+
+                val inflater:LayoutInflater=getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+                inflater.inflate(R.layout.item_write_answer,container,true)
+
+                val writeBtn=findViewById<TextView>(R.id.write_answer_btn)
+                val writeLayout=findViewById<EditText>(R.id.write_answer_edit)
+                writeLayout.text= Editable.Factory.getInstance().newEditable(content)
+
+                writeBtn.setOnClickListener {
+                    val newContent=writeLayout.text.toString()
+                    answerAdapter.modifyAnswer(position,newContent)
+                    container.removeAllViews()
+                }
+
             }
 
         })
@@ -112,6 +133,8 @@ class DetailedActivity : AppCompatActivity(){
         binding.answerNoticeBtn.setOnClickListener {
             if(!isNotified){
                 notifyQuestion(true)
+                /*val dialog=SimpleDialog()
+                dialog.show(supportFragmentManager,"dialog")*/
             }
             else{
                 notifyQuestion(false)
@@ -122,7 +145,7 @@ class DetailedActivity : AppCompatActivity(){
 
     private fun updateNotifyView(){
         var container=binding.noticeContainer
-        if(answerAdapter.items.isEmpty()){
+        if(answerAdapter.isItemListEmpty()){
             val inflater:LayoutInflater=getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
             inflater.inflate(R.layout.item_notice,container,true)
 
@@ -144,11 +167,12 @@ class DetailedActivity : AppCompatActivity(){
 
     private fun notifyQuestion(toNotify:Boolean){
         if(toNotify){
-            //아이콘 바꾸기
+            binding.answerNoticeBtn.setImageResource(R.drawable.notification_on)
             isNotified=true
             Toast.makeText(applicationContext,"답변 알림 설정",Toast.LENGTH_SHORT).show()
         }
         else{
+            binding.answerNoticeBtn.setImageResource(R.drawable.notification_off)
             isNotified=false
             Toast.makeText(applicationContext,"답변 알림 해제",Toast.LENGTH_SHORT).show()
         }
@@ -190,7 +214,7 @@ class DetailedActivity : AppCompatActivity(){
 
     private fun setQuestionMorePopup(){
         lateinit var popupWindow: SimplePopup
-        if(answerAdapter.items.isEmpty()||answerAdapter.items==null){
+        if(answerAdapter.isItemListEmpty()){
             binding.questionMoreBtn.setOnClickListener {
                 val list= mutableListOf<String>().apply {
                     add("수정하기")

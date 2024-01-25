@@ -7,9 +7,12 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.qp.databinding.ItemAnswerBinding
@@ -23,6 +26,7 @@ class DetailedQuestionRVAdapter(context:Context): RecyclerView.Adapter<DetailedQ
 
     interface ItemClickListener{
         fun onItemRemove(position:Int)
+        fun onAnswerModify(position:Int)
     }
 
     private lateinit var myItemClickListener: ItemClickListener
@@ -56,10 +60,39 @@ class DetailedQuestionRVAdapter(context:Context): RecyclerView.Adapter<DetailedQ
                     commentAdapter.removeItem(pos)
                     commentNumberUpdate(items[position])
                 }
+
+                override fun onCommentModify(position: Int) {
+                    var content=commentAdapter.getContent(position)
+
+                    val writeBtn=itemView.findViewById<TextView>(R.id.write_comment_btn)
+                    val writeLayout=binding.writeCommentEdit
+                    writeLayout.text= Editable.Factory.getInstance().newEditable(content)
+
+                    writeBtn.setOnClickListener {
+                        val newContent=writeLayout.text.toString()
+                        commentAdapter.modifyComment(position,newContent)
+                        writeLayout.text= Editable.Factory.getInstance().newEditable("")
+                    }
+                }
             })
 
+            var isLiked=isLiked()
             setInit(position)
             setOnclick(position, commentAdapter)
+
+            //좋아요
+            binding.answerLikeBtn.setOnClickListener {
+                if(isLiked){
+                    likeAnswer(false)
+                    binding.answerLikeBtn.setImageResource(R.drawable.like_off)
+                    isLiked=false
+                }
+                else{
+                    likeAnswer(true)
+                    binding.answerLikeBtn.setImageResource(R.drawable.like_on)
+                    isLiked=true
+                }
+            }
 
         }
 
@@ -67,11 +100,12 @@ class DetailedQuestionRVAdapter(context:Context): RecyclerView.Adapter<DetailedQ
             answerContentView.text=items[position].content
             //댓글수
             commentNumberUpdate(items[position])
-            //댓글 펼치기/접기
+            //댓글 펼치기
             showComment(true)
-            showAnswerMorePopup(items[position],position)
+
         }
         private fun setOnclick(position: Int,adapter: DetailedAnswerCommentRVAdapter){
+            //댓글 펼치기/접기
             binding.answerCommentBtnLayout.setOnClickListener {
                 showComment(isCommentShown)
             }
@@ -79,10 +113,34 @@ class DetailedQuestionRVAdapter(context:Context): RecyclerView.Adapter<DetailedQ
             binding.writeCommentBtn.setOnClickListener {
                 writeComment(binding.writeCommentEdit.text.toString(),adapter,items[position])
             }
+            //더보기 팝업 메뉴
+            showAnswerMorePopup(position,adapter)
+
         }
 
-        //private fun notifyAnswer
+        //좋아요 업데이트, 자신이 '좋아요'한 상태 반환
+        private fun isLiked():Boolean{
+            var liked=false
+            var likeNum=0
 
+            binding.answerLikeTv.text=likeNum.toString()
+            return liked
+        }
+        //좋아요/해제
+        private fun likeAnswer(toLike:Boolean){
+            if(toLike){
+                //서버에 post
+                val text=binding.answerLikeTv.text.toString()
+                val likeNum=text.toInt()+1
+                binding.answerLikeTv.text=likeNum.toString()
+            }
+            else{
+                //서버에 post
+                val text=binding.answerLikeTv.text.toString()
+                val likeNum=text.toInt()-1
+                binding.answerLikeTv.text=likeNum.toString()
+            }
+        }
 
         //댓글 펼치기
         private fun showComment(isShown: Boolean){
@@ -97,14 +155,14 @@ class DetailedQuestionRVAdapter(context:Context): RecyclerView.Adapter<DetailedQ
             }
         }
         //댓글 등록
-        private fun writeComment(content:String?,adapter:DetailedAnswerCommentRVAdapter,answer:Answer){
-            if(content!=null){
+        private fun writeComment(content:String,adapter:DetailedAnswerCommentRVAdapter,answer:Answer){
+            if(content!=""){
                 adapter.addItem(content)    //임시로 구현..
                 commentNumberUpdate(answer)
                 binding.writeCommentEdit.text=Editable.Factory.getInstance().newEditable("")
             }
             else{
-                Toast.makeText(appContext,"댓글을 작성하십시오",Toast.LENGTH_SHORT)
+                Toast.makeText(appContext,"댓글을 작성하십시오",Toast.LENGTH_SHORT).show()
             }
         }
         //댓글수 표시
@@ -118,9 +176,9 @@ class DetailedQuestionRVAdapter(context:Context): RecyclerView.Adapter<DetailedQ
         }
 
         //더보기 버튼 눌렀을 때 팝업 메뉴
-        private fun showAnswerMorePopup(answer:Answer,position: Int){
+        private fun showAnswerMorePopup(position: Int,adapter: DetailedAnswerCommentRVAdapter){
             lateinit var popupWindow:SimplePopup
-            if(answer.commentList.isEmpty()||answer.commentList==null){
+            if(adapter.isCommentListEmpty()){
                 binding.answerMoreBtn.setOnClickListener {
                     Log.d("binding_content",position.toString())
                     val list= mutableListOf<String>().apply {
@@ -130,7 +188,10 @@ class DetailedQuestionRVAdapter(context:Context): RecyclerView.Adapter<DetailedQ
                     }
                     popupWindow=SimplePopup(appContext,list){_,_,menuPos->
                         when(menuPos){
-                            0->Toast.makeText(appContext,"수정하기",Toast.LENGTH_SHORT).show()
+                            0-> {
+                                Toast.makeText(appContext, "수정하기", Toast.LENGTH_SHORT).show()
+                                myItemClickListener.onAnswerModify(position)
+                            }
                             1-> {
                                 //Toast.makeText(appContext, "삭제하기", Toast.LENGTH_SHORT).show()
                                 myItemClickListener.onItemRemove(position)    //임시로 구현
@@ -164,6 +225,13 @@ class DetailedQuestionRVAdapter(context:Context): RecyclerView.Adapter<DetailedQ
     }
 
 
+    fun isItemListEmpty():Boolean{
+        return items.isEmpty()||items==null
+    }
+
+    fun getContent(position:Int):String{
+        return items[position].content
+    }
 
     fun addItem(item: Answer) {
         this.items.add(item)
@@ -177,6 +245,11 @@ class DetailedQuestionRVAdapter(context:Context): RecyclerView.Adapter<DetailedQ
     fun removeItem(position: Int){
         Log.d("removeItem",position.toString())
         this.items.removeAt(position)
+        this.notifyDataSetChanged()
+    }
+
+    fun modifyAnswer(position: Int,content:String){
+        this.items[position].content=content
         this.notifyDataSetChanged()
     }
 
