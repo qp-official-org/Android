@@ -115,7 +115,7 @@ class DetailedActivity : AppCompatActivity(){
 
         answerList.apply {
             add(Answer("답변내용1",commentList))
-            add(Answer("답변내용2",commentList2))
+            add(Answer("답변내용",commentList2))
             add(Answer("답변내용3"))
         }
         answerAdapter.addItemList(answerList)

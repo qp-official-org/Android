@@ -2,6 +2,7 @@ package com.example.qp
 
 import android.app.Application
 import android.content.Context
+import android.graphics.BlurMaskFilter
 import android.text.Editable
 import android.util.Log
 import android.view.LayoutInflater
@@ -96,12 +97,16 @@ class DetailedQuestionRVAdapter(context:Context): RecyclerView.Adapter<DetailedQ
 
         }
 
+        //답변 내용 블러 처리
+
+
         private fun setInit(position: Int){
             answerContentView.text=items[position].content
             //댓글수
             commentNumberUpdate(items[position])
             //댓글 펼치기
             showComment(true)
+            setBlurText(true)
 
         }
         private fun setOnclick(position: Int,adapter: DetailedAnswerCommentRVAdapter){
@@ -142,6 +147,11 @@ class DetailedQuestionRVAdapter(context:Context): RecyclerView.Adapter<DetailedQ
             }
         }
 
+        private fun getLikeCount():Int{
+            var likeCount=0
+            return likeCount
+        }
+
         //댓글 펼치기
         private fun showComment(isShown: Boolean){
             val commentRv=binding.commentLayout
@@ -172,6 +182,24 @@ class DetailedQuestionRVAdapter(context:Context): RecyclerView.Adapter<DetailedQ
                     null->"0"
                     else->answer.commentList!!.size.toString()
                 }
+
+        }
+
+        private fun setBlurText(isBlur:Boolean){
+            binding.answerContentTv.setLayerType(View.LAYER_TYPE_SOFTWARE,null).apply{
+                if(isBlur) binding.answerContentTv.paint.maskFilter=BlurMaskFilter(16f,BlurMaskFilter.Blur.NORMAL)
+                else binding.answerContentTv.paint.maskFilter=null
+            }
+            val container=binding.previewContainer
+            val inflater:LayoutInflater=appContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+            inflater.inflate(R.layout.item_answer_preview,container,true)
+
+            var charCount=binding.answerContentTv.text.count()
+            var likeCount=getLikeCount()
+            val textView=itemView.findViewById<TextView>(R.id.priview_tv)
+            var text=charCount.toString()+"자, "+likeCount.toString()+"명이 도움이 됐대요!"
+            textView.text=text
+
 
         }
 

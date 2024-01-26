@@ -117,21 +117,21 @@
                             android:layout_height="wrap_content"
                             android:layout_marginHorizontal="5dp"
                             android:text="#해시태그1"
-                            android:textSize="7dp"/>
+                            android:textSize="8dp"/>
                         <TextView
                             android:id="@+id/hashtag_2"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginHorizontal="5dp"
                             android:text="#해시태그1"
-                            android:textSize="7dp"/>
+                            android:textSize="8dp"/>
                         <TextView
                             android:id="@+id/hashtag_3"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginHorizontal="5dp"
                             android:text="#해시태그1"
-                            android:textSize="7dp"/>
+                            android:textSize="8dp"/>
 
                     </LinearLayout>
                     <TextView
@@ -155,11 +155,12 @@
 
                     <TextView
                         android:id="@+id/detailed_question_content_tv"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         app:layout_constraintTop_toBottomOf="@id/question_user_img"
                         app:layout_constraintStart_toStartOf="@id/question_user_img"
                         android:layout_marginTop="15dp"
+                        android:layout_marginHorizontal="15dp"
                         android:text="질문 내용"
                         android:textSize="10dp"/>
                     <ImageButton
