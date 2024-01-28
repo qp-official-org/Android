@@ -4,20 +4,55 @@ package com.example.qp.databinding;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.viewbinding.ViewBinding;
+import androidx.viewbinding.ViewBindings;
 import com.example.qp.R;
 import java.lang.NullPointerException;
 import java.lang.Override;
+import java.lang.String;
 
 public final class ActivityLoginBinding implements ViewBinding {
   @NonNull
   private final ConstraintLayout rootView;
 
-  private ActivityLoginBinding(@NonNull ConstraintLayout rootView) {
+  @NonNull
+  public final ImageView loginCloseIv;
+
+  @NonNull
+  public final TextView loginExpert1Tv;
+
+  @NonNull
+  public final TextView loginExpert2Tv;
+
+  @NonNull
+  public final ImageView loginGoogleIv;
+
+  @NonNull
+  public final ImageView loginKakaoIv;
+
+  @NonNull
+  public final ImageView loginNaverIv;
+
+  @NonNull
+  public final TextView loginQpLogoTv;
+
+  private ActivityLoginBinding(@NonNull ConstraintLayout rootView, @NonNull ImageView loginCloseIv,
+      @NonNull TextView loginExpert1Tv, @NonNull TextView loginExpert2Tv,
+      @NonNull ImageView loginGoogleIv, @NonNull ImageView loginKakaoIv,
+      @NonNull ImageView loginNaverIv, @NonNull TextView loginQpLogoTv) {
     this.rootView = rootView;
+    this.loginCloseIv = loginCloseIv;
+    this.loginExpert1Tv = loginExpert1Tv;
+    this.loginExpert2Tv = loginExpert2Tv;
+    this.loginGoogleIv = loginGoogleIv;
+    this.loginKakaoIv = loginKakaoIv;
+    this.loginNaverIv = loginNaverIv;
+    this.loginQpLogoTv = loginQpLogoTv;
   }
 
   @Override
@@ -43,10 +78,56 @@ public final class ActivityLoginBinding implements ViewBinding {
 
   @NonNull
   public static ActivityLoginBinding bind(@NonNull View rootView) {
-    if (rootView == null) {
-      throw new NullPointerException("rootView");
-    }
+    // The body of this method is generated in a way you would not otherwise write.
+    // This is done to optimize the compiled bytecode for size and performance.
+    int id;
+    missingId: {
+      id = R.id.login_close_iv;
+      ImageView loginCloseIv = ViewBindings.findChildViewById(rootView, id);
+      if (loginCloseIv == null) {
+        break missingId;
+      }
 
-    return new ActivityLoginBinding((ConstraintLayout) rootView);
+      id = R.id.login_expert1_tv;
+      TextView loginExpert1Tv = ViewBindings.findChildViewById(rootView, id);
+      if (loginExpert1Tv == null) {
+        break missingId;
+      }
+
+      id = R.id.login_expert2_tv;
+      TextView loginExpert2Tv = ViewBindings.findChildViewById(rootView, id);
+      if (loginExpert2Tv == null) {
+        break missingId;
+      }
+
+      id = R.id.login_google_iv;
+      ImageView loginGoogleIv = ViewBindings.findChildViewById(rootView, id);
+      if (loginGoogleIv == null) {
+        break missingId;
+      }
+
+      id = R.id.login_kakao_iv;
+      ImageView loginKakaoIv = ViewBindings.findChildViewById(rootView, id);
+      if (loginKakaoIv == null) {
+        break missingId;
+      }
+
+      id = R.id.login_naver_iv;
+      ImageView loginNaverIv = ViewBindings.findChildViewById(rootView, id);
+      if (loginNaverIv == null) {
+        break missingId;
+      }
+
+      id = R.id.login_qp_logo_tv;
+      TextView loginQpLogoTv = ViewBindings.findChildViewById(rootView, id);
+      if (loginQpLogoTv == null) {
+        break missingId;
+      }
+
+      return new ActivityLoginBinding((ConstraintLayout) rootView, loginCloseIv, loginExpert1Tv,
+          loginExpert2Tv, loginGoogleIv, loginKakaoIv, loginNaverIv, loginQpLogoTv);
+    }
+    String missingId = rootView.getResources().getResourceName(id);
+    throw new NullPointerException("Missing required view with ID: ".concat(missingId));
   }
 }

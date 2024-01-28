@@ -2978,6 +2978,7 @@ drawable avd_show_password
 drawable bar_search
 drawable baseline_arrow_left_24
 drawable baseline_chat_bubble_24
+drawable baseline_close_24
 drawable baseline_search_24
 drawable bg_search
 drawable box_orange
@@ -2988,6 +2989,9 @@ drawable btn_checkbox_checked_mtrl
 drawable btn_checkbox_checked_to_unchecked_mtrl_animation
 drawable btn_checkbox_unchecked_mtrl
 drawable btn_checkbox_unchecked_to_checked_mtrl_animation
+drawable btn_google
+drawable btn_kakao
+drawable btn_naver
 drawable btn_radio_off_mtrl
 drawable btn_radio_off_to_on_mtrl_animation
 drawable btn_radio_on_mtrl
@@ -3354,6 +3358,13 @@ id line3
 id linear
 id listMode
 id list_item
+id login_close_iv
+id login_expert1_tv
+id login_expert2_tv
+id login_google_iv
+id login_kakao_iv
+id login_naver_iv
+id login_qp_logo_tv
 id m3_side_sheet
 id main_login_bt
 id main_qp_logo_tv

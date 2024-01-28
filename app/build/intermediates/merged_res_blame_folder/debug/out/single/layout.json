@@ -1,34 +1,38 @@
 [
     {
-        "merged": "com.example.qp.app-mergeDebugResources-30:/layout/activity_detailed.xml",
-        "source": "com.example.qp.app-main-33:/layout/activity_detailed.xml"
+        "merged": "C:\\Users\\a0334\\.gradle\\daemon\\8.0\\com.example.qp.app-mergeDebugResources-30:\\layout\\item_write_answer.xml",
+        "source": "C:\\Users\\a0334\\.gradle\\daemon\\8.0\\com.example.qp.app-main-33:\\layout\\item_write_answer.xml"
     },
     {
-        "merged": "com.example.qp.app-mergeDebugResources-30:/layout/item_notice.xml",
-        "source": "com.example.qp.app-main-33:/layout/item_notice.xml"
+        "merged": "C:\\Users\\a0334\\.gradle\\daemon\\8.0\\com.example.qp.app-mergeDebugResources-30:\\layout\\item_notice.xml",
+        "source": "C:\\Users\\a0334\\.gradle\\daemon\\8.0\\com.example.qp.app-main-33:\\layout\\item_notice.xml"
+    },
+    {
+        "merged": "C:\\Users\\a0334\\.gradle\\daemon\\8.0\\com.example.qp.app-mergeDebugResources-30:\\layout\\activity_main.xml",
+        "source": "C:\\Users\\a0334\\.gradle\\daemon\\8.0\\com.example.qp.app-main-33:\\layout\\activity_main.xml"
+    },
+    {
+        "merged": "C:\\Users\\a0334\\.gradle\\daemon\\8.0\\com.example.qp.app-mergeDebugResources-30:\\layout\\item_question.xml",
+        "source": "C:\\Users\\a0334\\.gradle\\daemon\\8.0\\com.example.qp.app-main-33:\\layout\\item_question.xml"
+    },
+    {
+        "merged": "C:\\Users\\a0334\\.gradle\\daemon\\8.0\\com.example.qp.app-mergeDebugResources-30:\\layout\\activity_detailed.xml",
+        "source": "C:\\Users\\a0334\\.gradle\\daemon\\8.0\\com.example.qp.app-main-33:\\layout\\activity_detailed.xml"
+    },
+    {
+        "merged": "C:\\Users\\a0334\\.gradle\\daemon\\8.0\\com.example.qp.app-mergeDebugResources-30:\\layout\\activity_login.xml",
+        "source": "C:\\Users\\a0334\\.gradle\\daemon\\8.0\\com.example.qp.app-main-33:\\layout\\activity_login.xml"
     },
     {
         "merged": "com.example.qp.app-mergeDebugResources-30:/layout/activity_login.xml",
         "source": "com.example.qp.app-main-33:/layout/activity_login.xml"
     },
     {
-        "merged": "com.example.qp.app-mergeDebugResources-30:/layout/item_question.xml",
-        "source": "com.example.qp.app-main-33:/layout/item_question.xml"
+        "merged": "C:\\Users\\a0334\\.gradle\\daemon\\8.0\\com.example.qp.app-mergeDebugResources-30:\\layout\\item_answer.xml",
+        "source": "C:\\Users\\a0334\\.gradle\\daemon\\8.0\\com.example.qp.app-main-33:\\layout\\item_answer.xml"
     },
     {
-        "merged": "com.example.qp.app-mergeDebugResources-30:/layout/item_answer_comment.xml",
-        "source": "com.example.qp.app-main-33:/layout/item_answer_comment.xml"
-    },
-    {
-        "merged": "com.example.qp.app-mergeDebugResources-30:/layout/item_write_answer.xml",
-        "source": "com.example.qp.app-main-33:/layout/item_write_answer.xml"
-    },
-    {
-        "merged": "com.example.qp.app-mergeDebugResources-30:/layout/activity_main.xml",
-        "source": "com.example.qp.app-main-33:/layout/activity_main.xml"
-    },
-    {
-        "merged": "com.example.qp.app-mergeDebugResources-30:/layout/item_answer.xml",
-        "source": "com.example.qp.app-main-33:/layout/item_answer.xml"
+        "merged": "C:\\Users\\a0334\\.gradle\\daemon\\8.0\\com.example.qp.app-mergeDebugResources-30:\\layout\\item_answer_comment.xml",
+        "source": "C:\\Users\\a0334\\.gradle\\daemon\\8.0\\com.example.qp.app-main-33:\\layout\\item_answer_comment.xml"
     }
 ]

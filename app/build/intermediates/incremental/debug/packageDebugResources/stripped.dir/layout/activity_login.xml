@@ -5,12 +5,123 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <TextView
+        android:id="@+id/login_qp_logo_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="로그인 화면입니다"
+        android:text="큐피 로고"
+        android:textSize="20dp"
+        android:textStyle="bold"
+        android:textColor="@color/qp"
+        android:layout_marginTop="20dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/login_close_iv"
+        android:layout_width="20sp"
+        android:layout_height="20sp"
+        android:src="@drawable/baseline_close_24"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="@id/login_qp_logo_tv"
+        android:layout_marginEnd="20dp" />
+
+    <ImageView
+        android:id="@+id/login_kakao_iv"
+        android:layout_width="380dp"
+        android:layout_height="60dp"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintEnd_toEndOf="parent"
+        android:src="@drawable/btn_kakao" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="  카카오로 간편 가입하기"
+        android:textColor="@color/black"
+        android:textSize="18sp"
+        app:layout_constraintTop_toTopOf="@id/login_kakao_iv"
+        app:layout_constraintBottom_toBottomOf="@id/login_kakao_iv"
+        app:layout_constraintStart_toStartOf="@id/login_kakao_iv"
+        app:layout_constraintEnd_toEndOf="@id/login_kakao_iv"/>
+
+
+    <ImageView
+        android:id="@+id/login_naver_iv"
+        android:layout_width="380dp"
+        android:layout_height="60dp"
+        android:layout_marginBottom="20dp"
+        app:layout_constraintBottom_toTopOf="@id/login_kakao_iv"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:src="@drawable/btn_naver" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="  네이버로 간편 가입하기"
+        android:textColor="@color/white"
+        android:textSize="18sp"
+        app:layout_constraintTop_toTopOf="@id/login_naver_iv"
+        app:layout_constraintBottom_toBottomOf="@id/login_naver_iv"
+        app:layout_constraintStart_toStartOf="@id/login_naver_iv"
+        app:layout_constraintEnd_toEndOf="@id/login_naver_iv"/>
+
+
+    <ImageView
+        android:id="@+id/login_google_iv"
+        android:layout_width="380dp"
+        android:layout_height="60dp"
+        android:layout_marginTop="20dp"
+        app:layout_constraintTop_toBottomOf="@id/login_kakao_iv"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:src="@drawable/btn_google" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="  구글로 가입하기"
+        android:textColor="@color/black"
+        android:textSize="18sp"
+        app:layout_constraintTop_toTopOf="@id/login_google_iv"
+        app:layout_constraintBottom_toBottomOf="@id/login_google_iv"
+        app:layout_constraintStart_toStartOf="@id/login_google_iv"
+        app:layout_constraintEnd_toEndOf="@id/login_google_iv"/>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/login_google_iv"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <TextView
+            android:id="@+id/login_expert1_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="전문가이신가요?"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            android:layout_marginTop="30dp"
+            app:layout_constraintTop_toBottomOf="@id/login_google_iv"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/login_expert2_tv"/>
+        <TextView
+            android:id="@+id/login_expert2_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="전문가 계정으로 로그인하기"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:textColor="@color/qp"
+            android:layout_marginTop="30dp"
+            android:layout_marginStart="5dp"
+            app:layout_constraintTop_toBottomOf="@id/login_google_iv"
+            app:layout_constraintStart_toEndOf="@id/login_expert1_tv" />
+    </LinearLayout>
+
+
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

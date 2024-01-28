@@ -1,154 +1,174 @@
 [
     {
-        "merged": "com.example.qp.app-merged_res-31:/drawable_baseline_arrow_left_24.xml.flat",
-        "source": "com.example.qp.app-main-33:/drawable/baseline_arrow_left_24.xml"
+        "merged": "C:\\Users\\a0334\\.gradle\\daemon\\8.0\\com.example.qp.app-merged_res-31:\\drawable_box_white_lined.xml.flat",
+        "source": "C:\\Users\\a0334\\.gradle\\daemon\\8.0\\com.example.qp.app-main-33:\\drawable\\box_white_lined.xml"
     },
     {
-        "merged": "com.example.qp.app-merged_res-31:/drawable_user.png.flat",
-        "source": "com.example.qp.app-main-33:/drawable/user.png"
+        "merged": "C:\\Users\\a0334\\.gradle\\daemon\\8.0\\com.example.qp.app-merged_res-31:\\drawable_arrow24.png.flat",
+        "source": "C:\\Users\\a0334\\.gradle\\daemon\\8.0\\com.example.qp.app-main-33:\\drawable\\arrow24.png"
     },
     {
-        "merged": "com.example.qp.app-merged_res-31:/drawable_bg_search.xml.flat",
-        "source": "com.example.qp.app-main-33:/drawable/bg_search.xml"
+        "merged": "C:\\Users\\a0334\\.gradle\\daemon\\8.0\\com.example.qp.app-merged_res-31:\\drawable_bg_search.xml.flat",
+        "source": "C:\\Users\\a0334\\.gradle\\daemon\\8.0\\com.example.qp.app-main-33:\\drawable\\bg_search.xml"
     },
     {
-        "merged": "com.example.qp.app-merged_res-31:/drawable_login_button_design.xml.flat",
-        "source": "com.example.qp.app-main-33:/drawable/login_button_design.xml"
+        "merged": "C:\\Users\\a0334\\.gradle\\daemon\\8.0\\com.example.qp.app-merged_res-31:\\mipmap-xxhdpi_ic_launcher_round.webp.flat",
+        "source": "C:\\Users\\a0334\\.gradle\\daemon\\8.0\\com.example.qp.app-main-33:\\mipmap-xxhdpi\\ic_launcher_round.webp"
     },
     {
-        "merged": "com.example.qp.app-merged_res-31:/layout_item_answer.xml.flat",
-        "source": "com.example.qp.app-main-33:/layout/item_answer.xml"
+        "merged": "C:\\Users\\a0334\\.gradle\\daemon\\8.0\\com.example.qp.app-merged_res-31:\\layout_item_answer.xml.flat",
+        "source": "C:\\Users\\a0334\\.gradle\\daemon\\8.0\\com.example.qp.app-main-33:\\layout\\item_answer.xml"
     },
     {
-        "merged": "com.example.qp.app-merged_res-31:/mipmap-mdpi_ic_launcher.webp.flat",
-        "source": "com.example.qp.app-main-33:/mipmap-mdpi/ic_launcher.webp"
+        "merged": "C:\\Users\\a0334\\.gradle\\daemon\\8.0\\com.example.qp.app-merged_res-31:\\drawable_user.png.flat",
+        "source": "C:\\Users\\a0334\\.gradle\\daemon\\8.0\\com.example.qp.app-main-33:\\drawable\\user.png"
     },
     {
-        "merged": "com.example.qp.app-merged_res-31:/layout_activity_main.xml.flat",
-        "source": "com.example.qp.app-main-33:/layout/activity_main.xml"
+        "merged": "C:\\Users\\a0334\\.gradle\\daemon\\8.0\\com.example.qp.app-merged_res-31:\\layout_activity_main.xml.flat",
+        "source": "C:\\Users\\a0334\\.gradle\\daemon\\8.0\\com.example.qp.app-main-33:\\layout\\activity_main.xml"
     },
     {
-        "merged": "com.example.qp.app-merged_res-31:/mipmap-xhdpi_ic_launcher.webp.flat",
-        "source": "com.example.qp.app-main-33:/mipmap-xhdpi/ic_launcher.webp"
+        "merged": "C:\\Users\\a0334\\.gradle\\daemon\\8.0\\com.example.qp.app-merged_res-31:\\drawable_btn_google.png.flat",
+        "source": "C:\\Users\\a0334\\.gradle\\daemon\\8.0\\com.example.qp.app-main-33:\\drawable\\btn_google.png"
     },
     {
-        "merged": "com.example.qp.app-merged_res-31:/layout_activity_detailed.xml.flat",
-        "source": "com.example.qp.app-main-33:/layout/activity_detailed.xml"
+        "merged": "C:\\Users\\a0334\\.gradle\\daemon\\8.0\\com.example.qp.app-merged_res-31:\\drawable_user_profile_img.xml.flat",
+        "source": "C:\\Users\\a0334\\.gradle\\daemon\\8.0\\com.example.qp.app-main-33:\\drawable\\user_profile_img.xml"
     },
     {
-        "merged": "com.example.qp.app-merged_res-31:/mipmap-hdpi_ic_launcher.webp.flat",
-        "source": "com.example.qp.app-main-33:/mipmap-hdpi/ic_launcher.webp"
+        "merged": "C:\\Users\\a0334\\.gradle\\daemon\\8.0\\com.example.qp.app-merged_res-31:\\mipmap-mdpi_ic_launcher_round.webp.flat",
+        "source": "C:\\Users\\a0334\\.gradle\\daemon\\8.0\\com.example.qp.app-main-33:\\mipmap-mdpi\\ic_launcher_round.webp"
     },
     {
-        "merged": "com.example.qp.app-merged_res-31:/drawable_box_orange.xml.flat",
-        "source": "com.example.qp.app-main-33:/drawable/box_orange.xml"
+        "merged": "C:\\Users\\a0334\\.gradle\\daemon\\8.0\\com.example.qp.app-merged_res-31:\\xml_backup_rules.xml.flat",
+        "source": "C:\\Users\\a0334\\.gradle\\daemon\\8.0\\com.example.qp.app-main-33:\\xml\\backup_rules.xml"
     },
     {
-        "merged": "com.example.qp.app-merged_res-31:/mipmap-anydpi-v26_ic_launcher.xml.flat",
-        "source": "com.example.qp.app-main-33:/mipmap-anydpi-v26/ic_launcher.xml"
+        "merged": "C:\\Users\\a0334\\.gradle\\daemon\\8.0\\com.example.qp.app-merged_res-31:\\drawable_baseline_arrow_left_24.xml.flat",
+        "source": "C:\\Users\\a0334\\.gradle\\daemon\\8.0\\com.example.qp.app-main-33:\\drawable\\baseline_arrow_left_24.xml"
     },
     {
-        "merged": "com.example.qp.app-merged_res-31:/mipmap-xhdpi_ic_launcher_round.webp.flat",
-        "source": "com.example.qp.app-main-33:/mipmap-xhdpi/ic_launcher_round.webp"
+        "merged": "C:\\Users\\a0334\\.gradle\\daemon\\8.0\\com.example.qp.app-merged_res-31:\\drawable_btn_kakao.png.flat",
+        "source": "C:\\Users\\a0334\\.gradle\\daemon\\8.0\\com.example.qp.app-main-33:\\drawable\\btn_kakao.png"
     },
     {
-        "merged": "com.example.qp.app-merged_res-31:/drawable_bt_search.xml.flat",
-        "source": "com.example.qp.app-main-33:/drawable/bt_search.xml"
+        "merged": "C:\\Users\\a0334\\.gradle\\daemon\\8.0\\com.example.qp.app-merged_res-31:\\mipmap-anydpi-v26_ic_launcher.xml.flat",
+        "source": "C:\\Users\\a0334\\.gradle\\daemon\\8.0\\com.example.qp.app-main-33:\\mipmap-anydpi-v26\\ic_launcher.xml"
     },
     {
-        "merged": "com.example.qp.app-merged_res-31:/mipmap-hdpi_ic_launcher_round.webp.flat",
-        "source": "com.example.qp.app-main-33:/mipmap-hdpi/ic_launcher_round.webp"
+        "merged": "C:\\Users\\a0334\\.gradle\\daemon\\8.0\\com.example.qp.app-merged_res-31:\\drawable_login_button_design.xml.flat",
+        "source": "C:\\Users\\a0334\\.gradle\\daemon\\8.0\\com.example.qp.app-main-33:\\drawable\\login_button_design.xml"
     },
     {
-        "merged": "com.example.qp.app-merged_res-31:/drawable_ic_launcher_foreground.xml.flat",
-        "source": "com.example.qp.app-main-33:/drawable/ic_launcher_foreground.xml"
+        "merged": "C:\\Users\\a0334\\.gradle\\daemon\\8.0\\com.example.qp.app-merged_res-31:\\drawable_baseline_chat_bubble_24.xml.flat",
+        "source": "C:\\Users\\a0334\\.gradle\\daemon\\8.0\\com.example.qp.app-main-33:\\drawable\\baseline_chat_bubble_24.xml"
     },
     {
-        "merged": "com.example.qp.app-merged_res-31:/drawable_user_profile_img.xml.flat",
-        "source": "com.example.qp.app-main-33:/drawable/user_profile_img.xml"
+        "merged": "C:\\Users\\a0334\\.gradle\\daemon\\8.0\\com.example.qp.app-merged_res-31:\\layout_activity_login.xml.flat",
+        "source": "C:\\Users\\a0334\\.gradle\\daemon\\8.0\\com.example.qp.app-main-33:\\layout\\activity_login.xml"
     },
     {
-        "merged": "com.example.qp.app-merged_res-31:/xml_data_extraction_rules.xml.flat",
-        "source": "com.example.qp.app-main-33:/xml/data_extraction_rules.xml"
+        "merged": "C:\\Users\\a0334\\.gradle\\daemon\\8.0\\com.example.qp.app-merged_res-31:\\mipmap-anydpi-v26_ic_launcher_round.xml.flat",
+        "source": "C:\\Users\\a0334\\.gradle\\daemon\\8.0\\com.example.qp.app-main-33:\\mipmap-anydpi-v26\\ic_launcher_round.xml"
     },
     {
-        "merged": "com.example.qp.app-merged_res-31:/drawable_item_question_border.xml.flat",
-        "source": "com.example.qp.app-main-33:/drawable/item_question_border.xml"
+        "merged": "C:\\Users\\a0334\\.gradle\\daemon\\8.0\\com.example.qp.app-merged_res-31:\\drawable_baseline_search_24.xml.flat",
+        "source": "C:\\Users\\a0334\\.gradle\\daemon\\8.0\\com.example.qp.app-main-33:\\drawable\\baseline_search_24.xml"
     },
     {
-        "merged": "com.example.qp.app-merged_res-31:/mipmap-mdpi_ic_launcher_round.webp.flat",
-        "source": "com.example.qp.app-main-33:/mipmap-mdpi/ic_launcher_round.webp"
+        "merged": "C:\\Users\\a0334\\.gradle\\daemon\\8.0\\com.example.qp.app-merged_res-31:\\drawable_btn_naver.png.flat",
+        "source": "C:\\Users\\a0334\\.gradle\\daemon\\8.0\\com.example.qp.app-main-33:\\drawable\\btn_naver.png"
     },
     {
-        "merged": "com.example.qp.app-merged_res-31:/layout_item_answer_comment.xml.flat",
-        "source": "com.example.qp.app-main-33:/layout/item_answer_comment.xml"
+        "merged": "C:\\Users\\a0334\\.gradle\\daemon\\8.0\\com.example.qp.app-merged_res-31:\\layout_item_notice.xml.flat",
+        "source": "C:\\Users\\a0334\\.gradle\\daemon\\8.0\\com.example.qp.app-main-33:\\layout\\item_notice.xml"
     },
     {
-        "merged": "com.example.qp.app-merged_res-31:/drawable_bar_search.xml.flat",
-        "source": "com.example.qp.app-main-33:/drawable/bar_search.xml"
+        "merged": "C:\\Users\\a0334\\.gradle\\daemon\\8.0\\com.example.qp.app-merged_res-31:\\drawable_baseline_close_24.xml.flat",
+        "source": "C:\\Users\\a0334\\.gradle\\daemon\\8.0\\com.example.qp.app-main-33:\\drawable\\baseline_close_24.xml"
     },
     {
-        "merged": "com.example.qp.app-merged_res-31:/drawable_ic_launcher_background.xml.flat",
-        "source": "com.example.qp.app-main-33:/drawable/ic_launcher_background.xml"
+        "merged": "C:\\Users\\a0334\\.gradle\\daemon\\8.0\\com.example.qp.app-merged_res-31:\\layout_item_write_answer.xml.flat",
+        "source": "C:\\Users\\a0334\\.gradle\\daemon\\8.0\\com.example.qp.app-main-33:\\layout\\item_write_answer.xml"
+    },
+    {
+        "merged": "C:\\Users\\a0334\\.gradle\\daemon\\8.0\\com.example.qp.app-merged_res-31:\\mipmap-xhdpi_ic_launcher_round.webp.flat",
+        "source": "C:\\Users\\a0334\\.gradle\\daemon\\8.0\\com.example.qp.app-main-33:\\mipmap-xhdpi\\ic_launcher_round.webp"
+    },
+    {
+        "merged": "C:\\Users\\a0334\\.gradle\\daemon\\8.0\\com.example.qp.app-merged_res-31:\\mipmap-xxxhdpi_ic_launcher_round.webp.flat",
+        "source": "C:\\Users\\a0334\\.gradle\\daemon\\8.0\\com.example.qp.app-main-33:\\mipmap-xxxhdpi\\ic_launcher_round.webp"
+    },
+    {
+        "merged": "C:\\Users\\a0334\\.gradle\\daemon\\8.0\\com.example.qp.app-merged_res-31:\\drawable_item_question_border.xml.flat",
+        "source": "C:\\Users\\a0334\\.gradle\\daemon\\8.0\\com.example.qp.app-main-33:\\drawable\\item_question_border.xml"
     },
     {
         "merged": "com.example.qp.app-merged_res-31:/layout_activity_login.xml.flat",
         "source": "com.example.qp.app-main-33:/layout/activity_login.xml"
     },
     {
-        "merged": "com.example.qp.app-merged_res-31:/layout_item_notice.xml.flat",
-        "source": "com.example.qp.app-main-33:/layout/item_notice.xml"
+        "merged": "C:\\Users\\a0334\\.gradle\\daemon\\8.0\\com.example.qp.app-merged_res-31:\\mipmap-hdpi_ic_launcher_round.webp.flat",
+        "source": "C:\\Users\\a0334\\.gradle\\daemon\\8.0\\com.example.qp.app-main-33:\\mipmap-hdpi\\ic_launcher_round.webp"
     },
     {
-        "merged": "com.example.qp.app-merged_res-31:/drawable_baseline_search_24.xml.flat",
-        "source": "com.example.qp.app-main-33:/drawable/baseline_search_24.xml"
+        "merged": "C:\\Users\\a0334\\.gradle\\daemon\\8.0\\com.example.qp.app-merged_res-31:\\layout_activity_detailed.xml.flat",
+        "source": "C:\\Users\\a0334\\.gradle\\daemon\\8.0\\com.example.qp.app-main-33:\\layout\\activity_detailed.xml"
     },
     {
-        "merged": "com.example.qp.app-merged_res-31:/drawable_baseline_chat_bubble_24.xml.flat",
-        "source": "com.example.qp.app-main-33:/drawable/baseline_chat_bubble_24.xml"
+        "merged": "C:\\Users\\a0334\\.gradle\\daemon\\8.0\\com.example.qp.app-merged_res-31:\\layout_item_answer_comment.xml.flat",
+        "source": "C:\\Users\\a0334\\.gradle\\daemon\\8.0\\com.example.qp.app-main-33:\\layout\\item_answer_comment.xml"
     },
     {
-        "merged": "com.example.qp.app-merged_res-31:/layout_item_question.xml.flat",
-        "source": "com.example.qp.app-main-33:/layout/item_question.xml"
+        "merged": "C:\\Users\\a0334\\.gradle\\daemon\\8.0\\com.example.qp.app-merged_res-31:\\mipmap-xxhdpi_ic_launcher.webp.flat",
+        "source": "C:\\Users\\a0334\\.gradle\\daemon\\8.0\\com.example.qp.app-main-33:\\mipmap-xxhdpi\\ic_launcher.webp"
     },
     {
-        "merged": "com.example.qp.app-merged_res-31:/drawable_box_white.xml.flat",
-        "source": "com.example.qp.app-main-33:/drawable/box_white.xml"
+        "merged": "C:\\Users\\a0334\\.gradle\\daemon\\8.0\\com.example.qp.app-merged_res-31:\\mipmap-mdpi_ic_launcher.webp.flat",
+        "source": "C:\\Users\\a0334\\.gradle\\daemon\\8.0\\com.example.qp.app-main-33:\\mipmap-mdpi\\ic_launcher.webp"
     },
     {
-        "merged": "com.example.qp.app-merged_res-31:/mipmap-xxxhdpi_ic_launcher.webp.flat",
-        "source": "com.example.qp.app-main-33:/mipmap-xxxhdpi/ic_launcher.webp"
+        "merged": "C:\\Users\\a0334\\.gradle\\daemon\\8.0\\com.example.qp.app-merged_res-31:\\layout_item_question.xml.flat",
+        "source": "C:\\Users\\a0334\\.gradle\\daemon\\8.0\\com.example.qp.app-main-33:\\layout\\item_question.xml"
     },
     {
-        "merged": "com.example.qp.app-merged_res-31:/mipmap-xxhdpi_ic_launcher.webp.flat",
-        "source": "com.example.qp.app-main-33:/mipmap-xxhdpi/ic_launcher.webp"
+        "merged": "C:\\Users\\a0334\\.gradle\\daemon\\8.0\\com.example.qp.app-merged_res-31:\\drawable_box_white.xml.flat",
+        "source": "C:\\Users\\a0334\\.gradle\\daemon\\8.0\\com.example.qp.app-main-33:\\drawable\\box_white.xml"
     },
     {
-        "merged": "com.example.qp.app-merged_res-31:/mipmap-xxhdpi_ic_launcher_round.webp.flat",
-        "source": "com.example.qp.app-main-33:/mipmap-xxhdpi/ic_launcher_round.webp"
+        "merged": "C:\\Users\\a0334\\.gradle\\daemon\\8.0\\com.example.qp.app-merged_res-31:\\mipmap-hdpi_ic_launcher.webp.flat",
+        "source": "C:\\Users\\a0334\\.gradle\\daemon\\8.0\\com.example.qp.app-main-33:\\mipmap-hdpi\\ic_launcher.webp"
     },
     {
-        "merged": "com.example.qp.app-merged_res-31:/mipmap-anydpi-v26_ic_launcher_round.xml.flat",
-        "source": "com.example.qp.app-main-33:/mipmap-anydpi-v26/ic_launcher_round.xml"
+        "merged": "C:\\Users\\a0334\\.gradle\\daemon\\8.0\\com.example.qp.app-merged_res-31:\\xml_data_extraction_rules.xml.flat",
+        "source": "C:\\Users\\a0334\\.gradle\\daemon\\8.0\\com.example.qp.app-main-33:\\xml\\data_extraction_rules.xml"
     },
     {
-        "merged": "com.example.qp.app-merged_res-31:/mipmap-xxxhdpi_ic_launcher_round.webp.flat",
-        "source": "com.example.qp.app-main-33:/mipmap-xxxhdpi/ic_launcher_round.webp"
+        "merged": "C:\\Users\\a0334\\.gradle\\daemon\\8.0\\com.example.qp.app-merged_res-31:\\drawable_bt_search.xml.flat",
+        "source": "C:\\Users\\a0334\\.gradle\\daemon\\8.0\\com.example.qp.app-main-33:\\drawable\\bt_search.xml"
     },
     {
-        "merged": "com.example.qp.app-merged_res-31:/drawable_arrow24.png.flat",
-        "source": "com.example.qp.app-main-33:/drawable/arrow24.png"
+        "merged": "C:\\Users\\a0334\\.gradle\\daemon\\8.0\\com.example.qp.app-merged_res-31:\\drawable_bar_search.xml.flat",
+        "source": "C:\\Users\\a0334\\.gradle\\daemon\\8.0\\com.example.qp.app-main-33:\\drawable\\bar_search.xml"
     },
     {
-        "merged": "com.example.qp.app-merged_res-31:/xml_backup_rules.xml.flat",
-        "source": "com.example.qp.app-main-33:/xml/backup_rules.xml"
+        "merged": "C:\\Users\\a0334\\.gradle\\daemon\\8.0\\com.example.qp.app-merged_res-31:\\drawable_ic_launcher_background.xml.flat",
+        "source": "C:\\Users\\a0334\\.gradle\\daemon\\8.0\\com.example.qp.app-main-33:\\drawable\\ic_launcher_background.xml"
     },
     {
-        "merged": "com.example.qp.app-merged_res-31:/drawable_box_white_lined.xml.flat",
-        "source": "com.example.qp.app-main-33:/drawable/box_white_lined.xml"
+        "merged": "C:\\Users\\a0334\\.gradle\\daemon\\8.0\\com.example.qp.app-merged_res-31:\\drawable_ic_launcher_foreground.xml.flat",
+        "source": "C:\\Users\\a0334\\.gradle\\daemon\\8.0\\com.example.qp.app-main-33:\\drawable\\ic_launcher_foreground.xml"
     },
     {
-        "merged": "com.example.qp.app-merged_res-31:/layout_item_write_answer.xml.flat",
-        "source": "com.example.qp.app-main-33:/layout/item_write_answer.xml"
+        "merged": "C:\\Users\\a0334\\.gradle\\daemon\\8.0\\com.example.qp.app-merged_res-31:\\mipmap-xxxhdpi_ic_launcher.webp.flat",
+        "source": "C:\\Users\\a0334\\.gradle\\daemon\\8.0\\com.example.qp.app-main-33:\\mipmap-xxxhdpi\\ic_launcher.webp"
+    },
+    {
+        "merged": "C:\\Users\\a0334\\.gradle\\daemon\\8.0\\com.example.qp.app-merged_res-31:\\mipmap-xhdpi_ic_launcher.webp.flat",
+        "source": "C:\\Users\\a0334\\.gradle\\daemon\\8.0\\com.example.qp.app-main-33:\\mipmap-xhdpi\\ic_launcher.webp"
+    },
+    {
+        "merged": "C:\\Users\\a0334\\.gradle\\daemon\\8.0\\com.example.qp.app-merged_res-31:\\drawable_box_orange.xml.flat",
+        "source": "C:\\Users\\a0334\\.gradle\\daemon\\8.0\\com.example.qp.app-main-33:\\drawable\\box_orange.xml"
     }
 ]
