@@ -1,4 +1,4 @@
-#Sun Jan 28 22:15:35 KST 2024
+#Mon Jan 29 00:25:52 KST 2024
 base.0=C\:\\Woojin\\programming\\QP\\app\\build\\intermediates\\dex\\debug\\mergeExtDexDebug\\classes.dex
 base.1=C\:\\Woojin\\programming\\QP\\app\\build\\intermediates\\dex\\debug\\mergeProjectDexDebug\\0\\classes.dex
 base.2=C\:\\Woojin\\programming\\QP\\app\\build\\intermediates\\dex\\debug\\mergeProjectDexDebug\\12\\classes.dex

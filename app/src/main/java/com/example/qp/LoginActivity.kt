@@ -25,5 +25,9 @@ class LoginActivity : AppCompatActivity() {
             binding.loginBtnIv.visibility = View.VISIBLE
             binding.loginBtnTv.visibility = View.VISIBLE
         }
+
+        binding.loginBtnIv.setOnClickListener {
+            startActivity(Intent(this,NicknameActivity::class.java))
+        }
     }
 }

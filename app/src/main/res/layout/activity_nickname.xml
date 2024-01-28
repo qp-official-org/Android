@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <TextView
+        android:id="@+id/nickname_qp_logo_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="큐피 로고"
+        android:textSize="20dp"
+        android:textStyle="bold"
+        android:textColor="@color/qp"
+        android:layout_marginTop="20dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/nickname_back_iv"
+        android:layout_width="25sp"
+        android:layout_height="25sp"
+        android:src="@drawable/baseline_keyboard_backspace_24"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="@id/nickname_qp_logo_tv"
+        android:layout_marginStart="20dp" />
+
+    <TextView
+        android:id="@+id/nickname_main_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="닉네임 설정"
+        app:layout_constraintTop_toBottomOf="@id/nickname_qp_logo_tv"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="70dp"
+        android:textSize="25sp"
+        android:textStyle="bold"
+        android:textColor="@color/black"/>
+
+    <TextView
+        android:id="@+id/nickname_rule_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="6글자 이내, 띄어쓰기 X"
+        app:layout_constraintTop_toBottomOf="@id/nickname_main_tv"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="12dp"
+        android:textSize="12sp"
+        android:textColor="@color/black"/>
+
+    <EditText
+        android:id="@+id/nickname_input_et"
+        android:layout_width="380dp"
+        android:layout_height="50dp"
+        android:hint="큐피에서 사용할 닉네임을 입력해주세요."
+        android:textSize="15sp"
+        android:textStyle="bold"
+        app:layout_constraintTop_toBottomOf="@id/nickname_rule_tv"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/login_border"/>
+
+    <TextView
+        android:id="@+id/nickname_invalid_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="사용할 수 없는 닉네임입니다."
+        android:textColor="@color/red"
+        android:textSize="13sp"
+        app:layout_constraintTop_toBottomOf="@id/nickname_input_et"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginStart="25dp"
+        android:layout_marginTop="5dp"
+        android:textStyle="bold"/>
+    <TextView
+        android:id="@+id/nickname_valid_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="사용할 수 있는 닉네임입니다."
+        android:textColor="@color/green"
+        android:textSize="13sp"
+        app:layout_constraintTop_toBottomOf="@id/nickname_input_et"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginEnd="25dp"
+        android:layout_marginTop="5dp"
+        android:textStyle="bold"/>
+
+
+    <ImageView
+        android:id="@+id/nickname_next_btn_iv"
+        android:layout_width="130dp"
+        android:layout_height="35dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/nickname_input_et"
+        android:background="@drawable/btn_login"
+        android:layout_marginTop="60dp"
+        android:visibility="gone"/>
+    <TextView
+        android:id="@+id/login_btn_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="다음"
+        android:textColor="@color/white"
+        android:textSize="17sp"
+        app:layout_constraintTop_toTopOf="@id/nickname_next_btn_iv"
+        app:layout_constraintBottom_toBottomOf="@id/nickname_next_btn_iv"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:visibility="gone"/>
+
+    <ImageView
+        android:id="@+id/nickname_invalid_next_btn_iv"
+        android:layout_width="130dp"
+        android:layout_height="35dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/nickname_input_et"
+        android:background="@drawable/btn_login_invalid"
+        android:layout_marginTop="60dp" />
+    <TextView
+        android:id="@+id/login_invalid_btn_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="다음"
+        android:textColor="@color/black"
+        android:textSize="17sp"
+        app:layout_constraintTop_toTopOf="@id/nickname_invalid_next_btn_iv"
+        app:layout_constraintBottom_toBottomOf="@id/nickname_invalid_next_btn_iv"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

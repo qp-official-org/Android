@@ -40,6 +40,8 @@
             android:name="com.example.qp.DetailedActivity"
             android:windowSoftInputMode="adjustPan" />
         <activity android:name="com.example.qp.LoginActivity" />
+        <activity android:name="com.example.qp.NicknameActivity" />
+        <activity android:name="com.example.qp.ProfileActivity" />
 
         <provider
             android:name="androidx.startup.InitializationProvider"

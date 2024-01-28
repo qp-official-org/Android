@@ -1414,6 +1414,7 @@ int color error_color_material_dark 0x7f05005a
 int color error_color_material_light 0x7f05005b
 int color foreground_material_dark 0x7f05005c
 int color foreground_material_light 0x7f05005d
+int color green 0x7f050308
 int color highlighted_text_material_dark 0x7f05005e
 int color highlighted_text_material_light 0x7f05005f
 int color light_gray 0x7f050060
@@ -2080,6 +2081,7 @@ int color primary_text_disabled_material_dark 0x7f0502f4
 int color primary_text_disabled_material_light 0x7f0502f5
 int color qp 0x7f0502f6
 int color qp_dark 0x7f0502f7
+int color red 0x7f050309
 int color ripple_material_dark 0x7f0502f8
 int color ripple_material_light 0x7f0502f9
 int color secondary_text_default_material_dark 0x7f0502fa
@@ -2978,6 +2980,7 @@ int drawable bar_search 0x7f07007b
 int drawable baseline_arrow_left_24 0x7f07007c
 int drawable baseline_chat_bubble_24 0x7f07007d
 int drawable baseline_close_24 0x7f07007e
+int drawable baseline_keyboard_backspace_24 0x7f0700f3
 int drawable baseline_search_24 0x7f07007f
 int drawable bg_search 0x7f070080
 int drawable box_orange 0x7f070081
@@ -2991,6 +2994,7 @@ int drawable btn_checkbox_unchecked_to_checked_mtrl_animation 0x7f070088
 int drawable btn_google 0x7f070089
 int drawable btn_kakao 0x7f07008a
 int drawable btn_login 0x7f0700f1
+int drawable btn_login_invalid 0x7f0700f4
 int drawable btn_naver 0x7f07008b
 int drawable btn_radio_off_mtrl 0x7f07008c
 int drawable btn_radio_off_to_on_mtrl_animation 0x7f07008d
@@ -3368,6 +3372,7 @@ int id login_expert1_tv 0x7f08010a
 int id login_expert2_tv 0x7f08010b
 int id login_expert_ln 0x7f080227
 int id login_google_iv 0x7f08010c
+int id login_invalid_btn_tv 0x7f08022a
 int id login_kakao_iv 0x7f08010d
 int id login_naver_iv 0x7f08010e
 int id login_qp_logo_tv 0x7f08010f
@@ -3446,6 +3451,15 @@ int id never 0x7f080157
 int id neverCompleteToEnd 0x7f080158
 int id neverCompleteToStart 0x7f080159
 int id next_question_view 0x7f08015a
+int id nickname_back_iv 0x7f08022b
+int id nickname_input_et 0x7f08022c
+int id nickname_invalid_next_btn_iv 0x7f08022d
+int id nickname_invalid_tv 0x7f08022e
+int id nickname_main_tv 0x7f08022f
+int id nickname_next_btn_iv 0x7f080230
+int id nickname_qp_logo_tv 0x7f080231
+int id nickname_rule_tv 0x7f080232
+int id nickname_valid_tv 0x7f080233
 int id noScroll 0x7f08015b
 int id noState 0x7f08015c
 int id none 0x7f08015d
@@ -3765,6 +3779,8 @@ int layout abc_tooltip 0x7f0b001b
 int layout activity_detailed 0x7f0b001c
 int layout activity_login 0x7f0b001d
 int layout activity_main 0x7f0b001e
+int layout activity_nickname 0x7f0b0071
+int layout activity_profile 0x7f0b0072
 int layout custom_dialog 0x7f0b001f
 int layout design_bottom_navigation_item 0x7f0b0020
 int layout design_bottom_sheet_dialog 0x7f0b0021
