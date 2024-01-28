@@ -4,7 +4,9 @@ package com.example.qp.databinding;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -21,6 +23,18 @@ public final class ActivityLoginBinding implements ViewBinding {
   private final ConstraintLayout rootView;
 
   @NonNull
+  public final EditText loginAuthenticationEmailEt;
+
+  @NonNull
+  public final TextView loginAuthenticationFailTv;
+
+  @NonNull
+  public final ImageView loginBtnIv;
+
+  @NonNull
+  public final TextView loginBtnTv;
+
+  @NonNull
   public final ImageView loginCloseIv;
 
   @NonNull
@@ -28,6 +42,9 @@ public final class ActivityLoginBinding implements ViewBinding {
 
   @NonNull
   public final TextView loginExpert2Tv;
+
+  @NonNull
+  public final LinearLayout loginExpertLn;
 
   @NonNull
   public final ImageView loginGoogleIv;
@@ -41,14 +58,22 @@ public final class ActivityLoginBinding implements ViewBinding {
   @NonNull
   public final TextView loginQpLogoTv;
 
-  private ActivityLoginBinding(@NonNull ConstraintLayout rootView, @NonNull ImageView loginCloseIv,
+  private ActivityLoginBinding(@NonNull ConstraintLayout rootView,
+      @NonNull EditText loginAuthenticationEmailEt, @NonNull TextView loginAuthenticationFailTv,
+      @NonNull ImageView loginBtnIv, @NonNull TextView loginBtnTv, @NonNull ImageView loginCloseIv,
       @NonNull TextView loginExpert1Tv, @NonNull TextView loginExpert2Tv,
-      @NonNull ImageView loginGoogleIv, @NonNull ImageView loginKakaoIv,
-      @NonNull ImageView loginNaverIv, @NonNull TextView loginQpLogoTv) {
+      @NonNull LinearLayout loginExpertLn, @NonNull ImageView loginGoogleIv,
+      @NonNull ImageView loginKakaoIv, @NonNull ImageView loginNaverIv,
+      @NonNull TextView loginQpLogoTv) {
     this.rootView = rootView;
+    this.loginAuthenticationEmailEt = loginAuthenticationEmailEt;
+    this.loginAuthenticationFailTv = loginAuthenticationFailTv;
+    this.loginBtnIv = loginBtnIv;
+    this.loginBtnTv = loginBtnTv;
     this.loginCloseIv = loginCloseIv;
     this.loginExpert1Tv = loginExpert1Tv;
     this.loginExpert2Tv = loginExpert2Tv;
+    this.loginExpertLn = loginExpertLn;
     this.loginGoogleIv = loginGoogleIv;
     this.loginKakaoIv = loginKakaoIv;
     this.loginNaverIv = loginNaverIv;
@@ -82,6 +107,30 @@ public final class ActivityLoginBinding implements ViewBinding {
     // This is done to optimize the compiled bytecode for size and performance.
     int id;
     missingId: {
+      id = R.id.login_authentication_email_et;
+      EditText loginAuthenticationEmailEt = ViewBindings.findChildViewById(rootView, id);
+      if (loginAuthenticationEmailEt == null) {
+        break missingId;
+      }
+
+      id = R.id.login_authentication_fail_tv;
+      TextView loginAuthenticationFailTv = ViewBindings.findChildViewById(rootView, id);
+      if (loginAuthenticationFailTv == null) {
+        break missingId;
+      }
+
+      id = R.id.login_btn_iv;
+      ImageView loginBtnIv = ViewBindings.findChildViewById(rootView, id);
+      if (loginBtnIv == null) {
+        break missingId;
+      }
+
+      id = R.id.login_btn_tv;
+      TextView loginBtnTv = ViewBindings.findChildViewById(rootView, id);
+      if (loginBtnTv == null) {
+        break missingId;
+      }
+
       id = R.id.login_close_iv;
       ImageView loginCloseIv = ViewBindings.findChildViewById(rootView, id);
       if (loginCloseIv == null) {
@@ -97,6 +146,12 @@ public final class ActivityLoginBinding implements ViewBinding {
       id = R.id.login_expert2_tv;
       TextView loginExpert2Tv = ViewBindings.findChildViewById(rootView, id);
       if (loginExpert2Tv == null) {
+        break missingId;
+      }
+
+      id = R.id.login_expert_ln;
+      LinearLayout loginExpertLn = ViewBindings.findChildViewById(rootView, id);
+      if (loginExpertLn == null) {
         break missingId;
       }
 
@@ -124,8 +179,9 @@ public final class ActivityLoginBinding implements ViewBinding {
         break missingId;
       }
 
-      return new ActivityLoginBinding((ConstraintLayout) rootView, loginCloseIv, loginExpert1Tv,
-          loginExpert2Tv, loginGoogleIv, loginKakaoIv, loginNaverIv, loginQpLogoTv);
+      return new ActivityLoginBinding((ConstraintLayout) rootView, loginAuthenticationEmailEt,
+          loginAuthenticationFailTv, loginBtnIv, loginBtnTv, loginCloseIv, loginExpert1Tv,
+          loginExpert2Tv, loginExpertLn, loginGoogleIv, loginKakaoIv, loginNaverIv, loginQpLogoTv);
     }
     String missingId = rootView.getResources().getResourceName(id);
     throw new NullPointerException("Missing required view with ID: ".concat(missingId));

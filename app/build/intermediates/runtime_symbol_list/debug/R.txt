@@ -2990,6 +2990,7 @@ int drawable btn_checkbox_unchecked_mtrl 0x7f070087
 int drawable btn_checkbox_unchecked_to_checked_mtrl_animation 0x7f070088
 int drawable btn_google 0x7f070089
 int drawable btn_kakao 0x7f07008a
+int drawable btn_login 0x7f0700f1
 int drawable btn_naver 0x7f07008b
 int drawable btn_radio_off_mtrl 0x7f07008c
 int drawable btn_radio_off_to_on_mtrl_animation 0x7f07008d
@@ -3015,6 +3016,7 @@ int drawable ic_mtrl_chip_checked_circle 0x7f0700a0
 int drawable ic_mtrl_chip_close_circle 0x7f0700a1
 int drawable ic_search_black_24 0x7f0700a2
 int drawable item_question_border 0x7f0700a3
+int drawable login_border 0x7f0700f2
 int drawable login_button_design 0x7f0700a4
 int drawable m3_avd_hide_password 0x7f0700a5
 int drawable m3_avd_show_password 0x7f0700a6
@@ -3357,9 +3359,14 @@ int id line3 0x7f080105
 int id linear 0x7f080106
 int id listMode 0x7f080107
 int id list_item 0x7f080108
+int id login_authentication_email_et 0x7f080225
+int id login_authentication_fail_tv 0x7f080229
+int id login_btn_iv 0x7f080226
+int id login_btn_tv 0x7f080228
 int id login_close_iv 0x7f080109
 int id login_expert1_tv 0x7f08010a
 int id login_expert2_tv 0x7f08010b
+int id login_expert_ln 0x7f080227
 int id login_google_iv 0x7f08010c
 int id login_kakao_iv 0x7f08010d
 int id login_naver_iv 0x7f08010e

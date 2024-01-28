@@ -21,10 +21,12 @@ drawable box_white_lined
 drawable bt_search
 drawable btn_google
 drawable btn_kakao
+drawable btn_login
 drawable btn_naver
 drawable ic_launcher_background
 drawable ic_launcher_foreground
 drawable item_question_border
+drawable login_border
 drawable login_button_design
 drawable user
 drawable user_profile_img
@@ -55,9 +57,14 @@ id item_category3_tv
 id item_question_tv
 id item_time_tv
 id item_user_iv
+id login_authentication_email_et
+id login_authentication_fail_tv
+id login_btn_iv
+id login_btn_tv
 id login_close_iv
 id login_expert1_tv
 id login_expert2_tv
+id login_expert_ln
 id login_google_iv
 id login_kakao_iv
 id login_naver_iv

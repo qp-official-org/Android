@@ -2991,6 +2991,7 @@ drawable btn_checkbox_unchecked_mtrl
 drawable btn_checkbox_unchecked_to_checked_mtrl_animation
 drawable btn_google
 drawable btn_kakao
+drawable btn_login
 drawable btn_naver
 drawable btn_radio_off_mtrl
 drawable btn_radio_off_to_on_mtrl_animation
@@ -3016,6 +3017,7 @@ drawable ic_mtrl_chip_checked_circle
 drawable ic_mtrl_chip_close_circle
 drawable ic_search_black_24
 drawable item_question_border
+drawable login_border
 drawable login_button_design
 drawable m3_avd_hide_password
 drawable m3_avd_show_password
@@ -3358,9 +3360,14 @@ id line3
 id linear
 id listMode
 id list_item
+id login_authentication_email_et
+id login_authentication_fail_tv
+id login_btn_iv
+id login_btn_tv
 id login_close_iv
 id login_expert1_tv
 id login_expert2_tv
+id login_expert_ln
 id login_google_iv
 id login_kakao_iv
 id login_naver_iv

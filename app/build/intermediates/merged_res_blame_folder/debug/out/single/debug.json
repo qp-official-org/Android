@@ -72,6 +72,10 @@
         "source": "C:\\Users\\a0334\\.gradle\\daemon\\8.0\\com.example.qp.app-main-33:\\mipmap-anydpi-v26\\ic_launcher_round.xml"
     },
     {
+        "merged": "C:\\Users\\a0334\\.gradle\\daemon\\8.0\\com.example.qp.app-merged_res-31:\\drawable_btn_login.xml.flat",
+        "source": "C:\\Users\\a0334\\.gradle\\daemon\\8.0\\com.example.qp.app-main-33:\\drawable\\btn_login.xml"
+    },
+    {
         "merged": "C:\\Users\\a0334\\.gradle\\daemon\\8.0\\com.example.qp.app-merged_res-31:\\drawable_baseline_search_24.xml.flat",
         "source": "C:\\Users\\a0334\\.gradle\\daemon\\8.0\\com.example.qp.app-main-33:\\drawable\\baseline_search_24.xml"
     },
@@ -110,6 +114,10 @@
     {
         "merged": "C:\\Users\\a0334\\.gradle\\daemon\\8.0\\com.example.qp.app-merged_res-31:\\mipmap-hdpi_ic_launcher_round.webp.flat",
         "source": "C:\\Users\\a0334\\.gradle\\daemon\\8.0\\com.example.qp.app-main-33:\\mipmap-hdpi\\ic_launcher_round.webp"
+    },
+    {
+        "merged": "C:\\Users\\a0334\\.gradle\\daemon\\8.0\\com.example.qp.app-merged_res-31:\\drawable_login_border.xml.flat",
+        "source": "C:\\Users\\a0334\\.gradle\\daemon\\8.0\\com.example.qp.app-main-33:\\drawable\\login_border.xml"
     },
     {
         "merged": "C:\\Users\\a0334\\.gradle\\daemon\\8.0\\com.example.qp.app-merged_res-31:\\layout_activity_detailed.xml.flat",
