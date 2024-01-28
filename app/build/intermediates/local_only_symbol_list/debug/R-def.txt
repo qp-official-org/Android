@@ -23,6 +23,7 @@ drawable box_white
 drawable box_white_lined
 drawable bt_search
 drawable btn_google
+drawable btn_image_edit
 drawable btn_kakao
 drawable btn_login
 drawable btn_login_invalid
@@ -32,6 +33,8 @@ drawable ic_launcher_foreground
 drawable item_question_border
 drawable login_border
 drawable login_button_design
+drawable outline_account_circle_24
+drawable outline_edit_24
 drawable user
 drawable user_profile_img
 id answer_border_line
@@ -93,7 +96,17 @@ id notice_view
 id notify_btn
 id notify_tv
 id prev_question_view
+id profile_back_iv
 id profile_bar
+id profile_btn_tv
+id profile_exit_btn_iv
+id profile_exit_btn_tv
+id profile_image_edit_iv
+id profile_image_iv
+id profile_main_tv
+id profile_next_btn_iv
+id profile_qp_logo_tv
+id profile_welcome_tv
 id question_box
 id question_layout
 id question_user_img

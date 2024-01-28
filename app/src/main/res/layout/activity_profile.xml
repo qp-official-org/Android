@@ -70,7 +70,7 @@
         android:background="@drawable/btn_login"
         android:layout_marginTop="60dp" />
     <TextView
-        android:id="@+id/login_btn_tv"
+        android:id="@+id/profile_btn_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="설정 완료"
@@ -80,5 +80,46 @@
         app:layout_constraintBottom_toBottomOf="@id/profile_next_btn_iv"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
+
+    <TextView
+        android:id="@+id/profile_welcome_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="큐피에 오신 것을\n진심으로 환영합니다!"
+        android:textStyle="bold"
+        android:textAlignment="center"
+        android:gravity="center"
+        android:textColor="@color/black"
+        android:textSize="20sp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginBottom="120dp"
+        android:visibility="gone"/>
+
+    <ImageView
+        android:id="@+id/profile_exit_btn_iv"
+        android:layout_width="140dp"
+        android:layout_height="40dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/profile_welcome_tv"
+        android:background="@drawable/btn_login_invalid"
+        android:layout_marginTop="80dp"
+        android:visibility="gone"/>
+    <TextView
+        android:id="@+id/profile_exit_btn_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="질문보러 가기"
+        android:textColor="@color/black"
+        android:textSize="17sp"
+        app:layout_constraintTop_toTopOf="@id/profile_exit_btn_iv"
+        app:layout_constraintBottom_toBottomOf="@id/profile_exit_btn_iv"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:visibility="gone"/>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

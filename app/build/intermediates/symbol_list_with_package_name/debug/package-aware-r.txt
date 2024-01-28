@@ -2993,6 +2993,7 @@ drawable btn_checkbox_checked_to_unchecked_mtrl_animation
 drawable btn_checkbox_unchecked_mtrl
 drawable btn_checkbox_unchecked_to_checked_mtrl_animation
 drawable btn_google
+drawable btn_image_edit
 drawable btn_kakao
 drawable btn_login
 drawable btn_login_invalid
@@ -3094,6 +3095,8 @@ drawable notification_template_icon_bg
 drawable notification_template_icon_low_bg
 drawable notification_tile_bg
 drawable notify_panel_notification_icon_bg
+drawable outline_account_circle_24
+drawable outline_edit_24
 drawable test_level_drawable
 drawable tooltip_frame_dark
 drawable tooltip_frame_light
@@ -3509,7 +3512,17 @@ id position
 id postLayout
 id pressed
 id prev_question_view
+id profile_back_iv
 id profile_bar
+id profile_btn_tv
+id profile_exit_btn_iv
+id profile_exit_btn_tv
+id profile_image_edit_iv
+id profile_image_iv
+id profile_main_tv
+id profile_next_btn_iv
+id profile_qp_logo_tv
+id profile_welcome_tv
 id progress_circular
 id progress_horizontal
 id question_box

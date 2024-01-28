@@ -2992,6 +2992,7 @@ int drawable btn_checkbox_checked_to_unchecked_mtrl_animation 0x7f070086
 int drawable btn_checkbox_unchecked_mtrl 0x7f070087
 int drawable btn_checkbox_unchecked_to_checked_mtrl_animation 0x7f070088
 int drawable btn_google 0x7f070089
+int drawable btn_image_edit 0x7f0700f5
 int drawable btn_kakao 0x7f07008a
 int drawable btn_login 0x7f0700f1
 int drawable btn_login_invalid 0x7f0700f4
@@ -3093,6 +3094,8 @@ int drawable notification_template_icon_bg 0x7f0700e8
 int drawable notification_template_icon_low_bg 0x7f0700e9
 int drawable notification_tile_bg 0x7f0700ea
 int drawable notify_panel_notification_icon_bg 0x7f0700eb
+int drawable outline_account_circle_24 0x7f0700f6
+int drawable outline_edit_24 0x7f0700f7
 int drawable test_level_drawable 0x7f0700ec
 int drawable tooltip_frame_dark 0x7f0700ed
 int drawable tooltip_frame_light 0x7f0700ee
@@ -3508,7 +3511,17 @@ int id position 0x7f080187
 int id postLayout 0x7f080188
 int id pressed 0x7f080189
 int id prev_question_view 0x7f08018a
+int id profile_back_iv 0x7f080234
 int id profile_bar 0x7f08018b
+int id profile_btn_tv 0x7f080235
+int id profile_exit_btn_iv 0x7f080236
+int id profile_exit_btn_tv 0x7f080237
+int id profile_image_edit_iv 0x7f080238
+int id profile_image_iv 0x7f080239
+int id profile_main_tv 0x7f08023a
+int id profile_next_btn_iv 0x7f08023b
+int id profile_qp_logo_tv 0x7f08023c
+int id profile_welcome_tv 0x7f08023d
 int id progress_circular 0x7f08018c
 int id progress_horizontal 0x7f08018d
 int id question_box 0x7f08018e
