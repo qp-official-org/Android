@@ -2,26 +2,25 @@ package com.example.qp
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
+import android.text.Editable
 import android.view.LayoutInflater
 import android.view.View
+import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.recyclerview.widget.RecyclerView
 import com.example.qp.databinding.ActivityDetailedBinding
-import com.example.qp.databinding.ItemAnswerBinding
 import com.google.gson.Gson
 
 
 class DetailedActivity : AppCompatActivity(){
 
-    lateinit var binding: ActivityDetailedBinding
+    private lateinit var binding: ActivityDetailedBinding
     private var gson: Gson = Gson()
     private lateinit var answerAdapter:DetailedQuestionRVAdapter
-    private  var answerList:ArrayList<Answer> =arrayListOf<Answer>()
     private lateinit var question:Question
+    private var isNotified:Boolean=false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,52 +32,225 @@ class DetailedActivity : AppCompatActivity(){
             question = gson.fromJson(qJson, Question::class.java)
         }
 
-        initView(binding)
-        initAnswerData()
-        initNotifyView()
-        onClickAnswerBtn()
+        setInit()
+        setOnClickListeners()
+
+        setQuestionMorePopup()
+
 
     }
-    private fun initView(binding: ActivityDetailedBinding){
+
+
+    private fun setInit(){
+        isNotified=isNotified()
+        initView()
+
+        answerAdapter=DetailedQuestionRVAdapter(applicationContext)
+        binding.answerRv.adapter=answerAdapter
+
+        initAnswerData()
+
+        answerAdapter.setMyItemClickListener(object :
+            DetailedQuestionRVAdapter.ItemClickListener{
+            //답변 삭제
+            override fun onItemRemove(position:Int) {
+                answerAdapter.removeItem(position)
+                updateExpertNum()
+                if(answerAdapter.isItemListEmpty()){
+                    binding.answerBtn.visibility=View.VISIBLE
+                    updateNotifyView()
+                }
+            }
+            //답변 수정
+            override fun onAnswerModify(position: Int) {
+                val container=binding.writeAnswerContainer
+                var content=answerAdapter.getContent(position)
+
+                val inflater:LayoutInflater=getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+                inflater.inflate(R.layout.item_write_answer,container,true)
+
+                val writeBtn=findViewById<TextView>(R.id.write_answer_btn)
+                val writeLayout=findViewById<EditText>(R.id.write_answer_edit)
+                writeLayout.text= Editable.Factory.getInstance().newEditable(content)
+
+                writeBtn.setOnClickListener {
+                    val newContent=writeLayout.text.toString()
+                    answerAdapter.modifyAnswer(position,newContent)
+                    container.removeAllViews()
+                }
+
+            }
+
+        })
+
+        updateNotifyView()
+
+    }
+
+    private fun initView(){
         binding.detailedQuestionTitleTv.text=question.title
         binding.detailedQuestionContentTv.text = question.content
         binding.detailedQuestionTimeTv.text = question.time
 
+        binding.hashtag1.text=question.tag1
+        binding.hashtag2.text=question.tag2
+        binding.hashtag3.text=question.tag3
+
+
     }
     private fun initAnswerData(){
+        val answerList =ArrayList<Answer>()
+
         val commentList=ArrayList<Comment>()
+        val commentList2=ArrayList<Comment>()
+
         commentList.apply {
             add(Comment("댓글1"))
             add(Comment("댓글2"))
         }
+        commentList2.apply {
+            add(Comment("댓글2-1"))
+            add(Comment("댓글2-2"))
+        }
+
         answerList.apply {
             add(Answer("답변내용1",commentList))
-            add(Answer("답변내용2",commentList))
-            add(Answer("답변내용3",null))
+            add(Answer("답변내용",commentList2))
+            add(Answer("답변내용3"))
         }
-        answerAdapter=DetailedQuestionRVAdapter()
-        binding.answerRv.adapter=answerAdapter
         answerAdapter.addItemList(answerList)
+        updateExpertNum()
 
     }
-    private fun onClickAnswerBtn(){
-        val answerBtn=binding.answerBtn
-        answerBtn.setOnClickListener {
-            answerBtn.visibility=View.GONE
-            val container=findViewById<ConstraintLayout>(R.id.write_answer_container)
-            val inflater:LayoutInflater=getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-            inflater.inflate(R.layout.item_write_answer,container,true)
+    private fun isNotified(): Boolean {
+        return false     //서버에서 정보 받아와 설정
+    }
+
+    private fun setOnClickListeners(){
+        binding.answerBtn.setOnClickListener {
+            showWriteAnswerEdit(true)
+        }
+        binding.answerNoticeBtn.setOnClickListener {
+            if(!isNotified){
+                notifyQuestion(true)
+                /*val dialog=SimpleDialog()
+                dialog.show(supportFragmentManager,"dialog")*/
+            }
+            else{
+                notifyQuestion(false)
+            }
         }
     }
-    private fun initNotifyView(){
-        if(answerList.isEmpty()){
-            val container=findViewById<ConstraintLayout>(R.id.notice_container)
+
+
+    private fun updateNotifyView(){
+        var container=binding.noticeContainer
+        if(answerAdapter.isItemListEmpty()){
             val inflater:LayoutInflater=getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
             inflater.inflate(R.layout.item_notice,container,true)
+
+            val notifyBtn=findViewById<TextView>(R.id.notify_btn)
+            notifyBtn.setOnClickListener {
+                notifyQuestion(true)
+                container.removeAllViews()
+            }
+        }
+        else{
+            container.removeAllViews()
         }
 
-        val noticeBtn=findViewById<TextView>(R.id.notify_btn)
-        //noticeBtn.setOnClickListener {  }
+
     }
+    private fun updateExpertNum(){
+        binding.answerCountTv.text=answerAdapter.itemCount.toString()+"명의 전문가가 답변을 했어요"
+    }
+
+    private fun notifyQuestion(toNotify:Boolean){
+        if(toNotify){
+            binding.answerNoticeBtn.setImageResource(R.drawable.notification_on)
+            isNotified=true
+            Toast.makeText(applicationContext,"답변 알림 설정",Toast.LENGTH_SHORT).show()
+        }
+        else{
+            binding.answerNoticeBtn.setImageResource(R.drawable.notification_off)
+            isNotified=false
+            Toast.makeText(applicationContext,"답변 알림 해제",Toast.LENGTH_SHORT).show()
+        }
+    }
+
+
+
+
+
+    private fun writeAnswer(){
+        val btn=findViewById<TextView>(R.id.write_answer_btn)
+        val editText=findViewById<EditText>(R.id.write_answer_edit)
+
+        btn.setOnClickListener {
+            var content=editText.text.toString()
+            answerAdapter.addItem(Answer(content))  //임시로 구현..
+            showWriteAnswerEdit(false)
+            updateNotifyView()
+            updateExpertNum()
+            Toast.makeText(applicationContext,"답변이 등록되었습니다.",Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun showWriteAnswerEdit(toShow:Boolean){
+        val container=binding.writeAnswerContainer
+        if(toShow){
+            binding.answerBtn.visibility=View.GONE
+            val inflater:LayoutInflater=getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+            inflater.inflate(R.layout.item_write_answer,container,true)
+            writeAnswer()
+        }
+        else{
+            container.removeAllViews()
+        }
+
+    }
+
+
+
+    private fun setQuestionMorePopup(){
+        lateinit var popupWindow: SimplePopup
+        if(answerAdapter.isItemListEmpty()){
+            binding.questionMoreBtn.setOnClickListener {
+                val list= mutableListOf<String>().apply {
+                    add("수정하기")
+                    add("삭제하기")
+                    add("신고하기")
+                }
+                popupWindow=SimplePopup(applicationContext,list){_,_,position->
+                    when(position){
+                        0->Toast.makeText(applicationContext,"수정하기",Toast.LENGTH_SHORT).show()
+                        1->Toast.makeText(applicationContext,"삭제하기",Toast.LENGTH_SHORT).show()
+                        2->Toast.makeText(applicationContext,"신고하기",Toast.LENGTH_SHORT).show()
+                    }
+                }
+                popupWindow.isOutsideTouchable=true
+                popupWindow.showAsDropDown(it,40,10)
+            }
+            }
+        else{
+            binding.questionMoreBtn.setOnClickListener {
+
+                val list= mutableListOf<String>().apply {
+                        add("신고하기")
+                }
+                popupWindow=SimplePopup(applicationContext,list){_,_,position->
+                    when(position){
+                        0->Toast.makeText(applicationContext,"신고하기",Toast.LENGTH_SHORT).show()
+                    }
+                }
+                popupWindow.isOutsideTouchable=true
+                popupWindow.showAsDropDown(it,40,10)
+            }
+
+        }
+
+    }
+
+
 
 }
