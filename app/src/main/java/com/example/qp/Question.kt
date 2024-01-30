@@ -8,5 +8,6 @@ data class Question(
     var content: String? = "",
     var tag1: String? = "",
     var tag2: String? = "",
-    var tag3: String? = ""
+    var tag3: String? = "",
+    var answerList:ArrayList<Answer>? = null
 ) : Serializable
