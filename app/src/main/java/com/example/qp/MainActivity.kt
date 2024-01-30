@@ -34,6 +34,7 @@ class MainActivity : AppCompatActivity() {
                 val gson = Gson()
                 val qJson = gson.toJson(question)
                 intent.putExtra("question", qJson)
+                intent.putExtra("qDatas", qDatas)
                 startActivity(intent)
             }
         })
