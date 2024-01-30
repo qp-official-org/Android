@@ -39,7 +39,9 @@ class MainActivity : AppCompatActivity() {
         })
 
         binding.mainSearchBt.setOnClickListener {
-            startActivity(Intent(this@MainActivity, SearchActivity::class.java))
+            val intent = Intent(this@MainActivity, SearchActivity::class.java)
+            intent.putExtra("qDatas", qDatas)
+            startActivity(intent)
         }
 
         binding.mainLoginBt.setOnClickListener{
