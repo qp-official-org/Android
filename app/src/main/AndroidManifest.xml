@@ -24,6 +24,7 @@
         <activity android:name=".DetailedActivity"
             android:windowSoftInputMode="adjustPan"/>
         <activity android:name=".LoginActivity"/>
+        <activity android:name=".SearchActivity"/>
     </application>
 
 </manifest>
