@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.AppCompatButton;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.viewbinding.ViewBinding;
 import androidx.viewbinding.ViewBindings;
@@ -22,19 +23,10 @@ public final class ActivityNicknameBinding implements ViewBinding {
   private final ConstraintLayout rootView;
 
   @NonNull
-  public final TextView loginBtnTv;
-
-  @NonNull
-  public final TextView loginInvalidBtnTv;
-
-  @NonNull
   public final ImageView nicknameBackIv;
 
   @NonNull
   public final EditText nicknameInputEt;
-
-  @NonNull
-  public final ImageView nicknameInvalidNextBtnIv;
 
   @NonNull
   public final TextView nicknameInvalidTv;
@@ -43,7 +35,10 @@ public final class ActivityNicknameBinding implements ViewBinding {
   public final TextView nicknameMainTv;
 
   @NonNull
-  public final ImageView nicknameNextBtnIv;
+  public final AppCompatButton nicknameNextBtn;
+
+  @NonNull
+  public final AppCompatButton nicknameNextInvalidBtn;
 
   @NonNull
   public final TextView nicknameQpLogoTv;
@@ -54,21 +49,19 @@ public final class ActivityNicknameBinding implements ViewBinding {
   @NonNull
   public final TextView nicknameValidTv;
 
-  private ActivityNicknameBinding(@NonNull ConstraintLayout rootView, @NonNull TextView loginBtnTv,
-      @NonNull TextView loginInvalidBtnTv, @NonNull ImageView nicknameBackIv,
-      @NonNull EditText nicknameInputEt, @NonNull ImageView nicknameInvalidNextBtnIv,
+  private ActivityNicknameBinding(@NonNull ConstraintLayout rootView,
+      @NonNull ImageView nicknameBackIv, @NonNull EditText nicknameInputEt,
       @NonNull TextView nicknameInvalidTv, @NonNull TextView nicknameMainTv,
-      @NonNull ImageView nicknameNextBtnIv, @NonNull TextView nicknameQpLogoTv,
-      @NonNull TextView nicknameRuleTv, @NonNull TextView nicknameValidTv) {
+      @NonNull AppCompatButton nicknameNextBtn, @NonNull AppCompatButton nicknameNextInvalidBtn,
+      @NonNull TextView nicknameQpLogoTv, @NonNull TextView nicknameRuleTv,
+      @NonNull TextView nicknameValidTv) {
     this.rootView = rootView;
-    this.loginBtnTv = loginBtnTv;
-    this.loginInvalidBtnTv = loginInvalidBtnTv;
     this.nicknameBackIv = nicknameBackIv;
     this.nicknameInputEt = nicknameInputEt;
-    this.nicknameInvalidNextBtnIv = nicknameInvalidNextBtnIv;
     this.nicknameInvalidTv = nicknameInvalidTv;
     this.nicknameMainTv = nicknameMainTv;
-    this.nicknameNextBtnIv = nicknameNextBtnIv;
+    this.nicknameNextBtn = nicknameNextBtn;
+    this.nicknameNextInvalidBtn = nicknameNextInvalidBtn;
     this.nicknameQpLogoTv = nicknameQpLogoTv;
     this.nicknameRuleTv = nicknameRuleTv;
     this.nicknameValidTv = nicknameValidTv;
@@ -101,18 +94,6 @@ public final class ActivityNicknameBinding implements ViewBinding {
     // This is done to optimize the compiled bytecode for size and performance.
     int id;
     missingId: {
-      id = R.id.login_btn_tv;
-      TextView loginBtnTv = ViewBindings.findChildViewById(rootView, id);
-      if (loginBtnTv == null) {
-        break missingId;
-      }
-
-      id = R.id.login_invalid_btn_tv;
-      TextView loginInvalidBtnTv = ViewBindings.findChildViewById(rootView, id);
-      if (loginInvalidBtnTv == null) {
-        break missingId;
-      }
-
       id = R.id.nickname_back_iv;
       ImageView nicknameBackIv = ViewBindings.findChildViewById(rootView, id);
       if (nicknameBackIv == null) {
@@ -122,12 +103,6 @@ public final class ActivityNicknameBinding implements ViewBinding {
       id = R.id.nickname_input_et;
       EditText nicknameInputEt = ViewBindings.findChildViewById(rootView, id);
       if (nicknameInputEt == null) {
-        break missingId;
-      }
-
-      id = R.id.nickname_invalid_next_btn_iv;
-      ImageView nicknameInvalidNextBtnIv = ViewBindings.findChildViewById(rootView, id);
-      if (nicknameInvalidNextBtnIv == null) {
         break missingId;
       }
 
@@ -143,9 +118,15 @@ public final class ActivityNicknameBinding implements ViewBinding {
         break missingId;
       }
 
-      id = R.id.nickname_next_btn_iv;
-      ImageView nicknameNextBtnIv = ViewBindings.findChildViewById(rootView, id);
-      if (nicknameNextBtnIv == null) {
+      id = R.id.nickname_next_btn;
+      AppCompatButton nicknameNextBtn = ViewBindings.findChildViewById(rootView, id);
+      if (nicknameNextBtn == null) {
+        break missingId;
+      }
+
+      id = R.id.nickname_next_invalid_btn;
+      AppCompatButton nicknameNextInvalidBtn = ViewBindings.findChildViewById(rootView, id);
+      if (nicknameNextInvalidBtn == null) {
         break missingId;
       }
 
@@ -167,9 +148,9 @@ public final class ActivityNicknameBinding implements ViewBinding {
         break missingId;
       }
 
-      return new ActivityNicknameBinding((ConstraintLayout) rootView, loginBtnTv, loginInvalidBtnTv,
-          nicknameBackIv, nicknameInputEt, nicknameInvalidNextBtnIv, nicknameInvalidTv,
-          nicknameMainTv, nicknameNextBtnIv, nicknameQpLogoTv, nicknameRuleTv, nicknameValidTv);
+      return new ActivityNicknameBinding((ConstraintLayout) rootView, nicknameBackIv,
+          nicknameInputEt, nicknameInvalidTv, nicknameMainTv, nicknameNextBtn,
+          nicknameNextInvalidBtn, nicknameQpLogoTv, nicknameRuleTv, nicknameValidTv);
     }
     String missingId = rootView.getResources().getResourceName(id);
     throw new NullPointerException("Missing required view with ID: ".concat(missingId));

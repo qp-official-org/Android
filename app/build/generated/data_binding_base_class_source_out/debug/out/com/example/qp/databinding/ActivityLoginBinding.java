@@ -10,6 +10,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.AppCompatButton;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.viewbinding.ViewBinding;
 import androidx.viewbinding.ViewBindings;
@@ -29,12 +30,6 @@ public final class ActivityLoginBinding implements ViewBinding {
   public final TextView loginAuthenticationFailTv;
 
   @NonNull
-  public final ImageView loginBtnIv;
-
-  @NonNull
-  public final TextView loginBtnTv;
-
-  @NonNull
   public final ImageView loginCloseIv;
 
   @NonNull
@@ -47,36 +42,42 @@ public final class ActivityLoginBinding implements ViewBinding {
   public final LinearLayout loginExpertLn;
 
   @NonNull
-  public final ImageView loginGoogleIv;
+  public final AppCompatButton loginGoogleBtn;
 
   @NonNull
-  public final ImageView loginKakaoIv;
+  public final AppCompatButton loginKakaoBtn;
 
   @NonNull
-  public final ImageView loginNaverIv;
+  public final AppCompatButton loginNaverBtn;
+
+  @NonNull
+  public final AppCompatButton loginNextBtn;
+
+  @NonNull
+  public final AppCompatButton loginNextInvalidBtn;
 
   @NonNull
   public final TextView loginQpLogoTv;
 
   private ActivityLoginBinding(@NonNull ConstraintLayout rootView,
       @NonNull EditText loginAuthenticationEmailEt, @NonNull TextView loginAuthenticationFailTv,
-      @NonNull ImageView loginBtnIv, @NonNull TextView loginBtnTv, @NonNull ImageView loginCloseIv,
-      @NonNull TextView loginExpert1Tv, @NonNull TextView loginExpert2Tv,
-      @NonNull LinearLayout loginExpertLn, @NonNull ImageView loginGoogleIv,
-      @NonNull ImageView loginKakaoIv, @NonNull ImageView loginNaverIv,
-      @NonNull TextView loginQpLogoTv) {
+      @NonNull ImageView loginCloseIv, @NonNull TextView loginExpert1Tv,
+      @NonNull TextView loginExpert2Tv, @NonNull LinearLayout loginExpertLn,
+      @NonNull AppCompatButton loginGoogleBtn, @NonNull AppCompatButton loginKakaoBtn,
+      @NonNull AppCompatButton loginNaverBtn, @NonNull AppCompatButton loginNextBtn,
+      @NonNull AppCompatButton loginNextInvalidBtn, @NonNull TextView loginQpLogoTv) {
     this.rootView = rootView;
     this.loginAuthenticationEmailEt = loginAuthenticationEmailEt;
     this.loginAuthenticationFailTv = loginAuthenticationFailTv;
-    this.loginBtnIv = loginBtnIv;
-    this.loginBtnTv = loginBtnTv;
     this.loginCloseIv = loginCloseIv;
     this.loginExpert1Tv = loginExpert1Tv;
     this.loginExpert2Tv = loginExpert2Tv;
     this.loginExpertLn = loginExpertLn;
-    this.loginGoogleIv = loginGoogleIv;
-    this.loginKakaoIv = loginKakaoIv;
-    this.loginNaverIv = loginNaverIv;
+    this.loginGoogleBtn = loginGoogleBtn;
+    this.loginKakaoBtn = loginKakaoBtn;
+    this.loginNaverBtn = loginNaverBtn;
+    this.loginNextBtn = loginNextBtn;
+    this.loginNextInvalidBtn = loginNextInvalidBtn;
     this.loginQpLogoTv = loginQpLogoTv;
   }
 
@@ -119,18 +120,6 @@ public final class ActivityLoginBinding implements ViewBinding {
         break missingId;
       }
 
-      id = R.id.login_btn_iv;
-      ImageView loginBtnIv = ViewBindings.findChildViewById(rootView, id);
-      if (loginBtnIv == null) {
-        break missingId;
-      }
-
-      id = R.id.login_btn_tv;
-      TextView loginBtnTv = ViewBindings.findChildViewById(rootView, id);
-      if (loginBtnTv == null) {
-        break missingId;
-      }
-
       id = R.id.login_close_iv;
       ImageView loginCloseIv = ViewBindings.findChildViewById(rootView, id);
       if (loginCloseIv == null) {
@@ -155,21 +144,33 @@ public final class ActivityLoginBinding implements ViewBinding {
         break missingId;
       }
 
-      id = R.id.login_google_iv;
-      ImageView loginGoogleIv = ViewBindings.findChildViewById(rootView, id);
-      if (loginGoogleIv == null) {
+      id = R.id.login_google_btn;
+      AppCompatButton loginGoogleBtn = ViewBindings.findChildViewById(rootView, id);
+      if (loginGoogleBtn == null) {
         break missingId;
       }
 
-      id = R.id.login_kakao_iv;
-      ImageView loginKakaoIv = ViewBindings.findChildViewById(rootView, id);
-      if (loginKakaoIv == null) {
+      id = R.id.login_kakao_btn;
+      AppCompatButton loginKakaoBtn = ViewBindings.findChildViewById(rootView, id);
+      if (loginKakaoBtn == null) {
         break missingId;
       }
 
-      id = R.id.login_naver_iv;
-      ImageView loginNaverIv = ViewBindings.findChildViewById(rootView, id);
-      if (loginNaverIv == null) {
+      id = R.id.login_naver_btn;
+      AppCompatButton loginNaverBtn = ViewBindings.findChildViewById(rootView, id);
+      if (loginNaverBtn == null) {
+        break missingId;
+      }
+
+      id = R.id.login_next_btn;
+      AppCompatButton loginNextBtn = ViewBindings.findChildViewById(rootView, id);
+      if (loginNextBtn == null) {
+        break missingId;
+      }
+
+      id = R.id.login_next_invalid_btn;
+      AppCompatButton loginNextInvalidBtn = ViewBindings.findChildViewById(rootView, id);
+      if (loginNextInvalidBtn == null) {
         break missingId;
       }
 
@@ -180,8 +181,9 @@ public final class ActivityLoginBinding implements ViewBinding {
       }
 
       return new ActivityLoginBinding((ConstraintLayout) rootView, loginAuthenticationEmailEt,
-          loginAuthenticationFailTv, loginBtnIv, loginBtnTv, loginCloseIv, loginExpert1Tv,
-          loginExpert2Tv, loginExpertLn, loginGoogleIv, loginKakaoIv, loginNaverIv, loginQpLogoTv);
+          loginAuthenticationFailTv, loginCloseIv, loginExpert1Tv, loginExpert2Tv, loginExpertLn,
+          loginGoogleBtn, loginKakaoBtn, loginNaverBtn, loginNextBtn, loginNextInvalidBtn,
+          loginQpLogoTv);
     }
     String missingId = rootView.getResources().getResourceName(id);
     throw new NullPointerException("Missing required view with ID: ".concat(missingId));

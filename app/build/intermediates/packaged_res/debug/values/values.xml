@@ -9,6 +9,7 @@
     <color name="qp_dark">#C96130</color>
     <color name="red">#FF0000</color>
     <color name="time">#424242</color>
+    <color name="transparent">#00ff0000</color>
     <color name="white">#FFFFFF</color>
     <string name="app_name">QP</string>
     <style name="Base.Theme.QP" parent="Theme.Material3.DayNight.NoActionBar">

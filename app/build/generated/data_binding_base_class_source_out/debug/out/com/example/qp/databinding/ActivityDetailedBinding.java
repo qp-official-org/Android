@@ -33,9 +33,6 @@ public final class ActivityDetailedBinding implements ViewBinding {
   public final TextView answerCountTv;
 
   @NonNull
-  public final ImageButton answerMoreBtn;
-
-  @NonNull
   public final ImageButton answerNoticeBtn;
 
   @NonNull
@@ -54,6 +51,15 @@ public final class ActivityDetailedBinding implements ViewBinding {
   public final TextView detailedQuestionTitleTv;
 
   @NonNull
+  public final TextView hashtag1;
+
+  @NonNull
+  public final TextView hashtag2;
+
+  @NonNull
+  public final TextView hashtag3;
+
+  @NonNull
   public final LinearLayout nextQuestionView;
 
   @NonNull
@@ -69,7 +75,13 @@ public final class ActivityDetailedBinding implements ViewBinding {
   public final ConstraintLayout questionBox;
 
   @NonNull
+  public final LinearLayout questionHashtagLayout;
+
+  @NonNull
   public final ConstraintLayout questionLayout;
+
+  @NonNull
+  public final ImageButton questionMoreBtn;
 
   @NonNull
   public final ImageView questionUserImg;
@@ -79,31 +91,36 @@ public final class ActivityDetailedBinding implements ViewBinding {
 
   private ActivityDetailedBinding(@NonNull LinearLayout rootView, @NonNull View answerBorderLine,
       @NonNull TextView answerBtn, @NonNull TextView answerCountTv,
-      @NonNull ImageButton answerMoreBtn, @NonNull ImageButton answerNoticeBtn,
-      @NonNull RecyclerView answerRv, @NonNull TextView detailedQpLogoTv,
-      @NonNull TextView detailedQuestionContentTv, @NonNull TextView detailedQuestionTimeTv,
-      @NonNull TextView detailedQuestionTitleTv, @NonNull LinearLayout nextQuestionView,
-      @NonNull ConstraintLayout noticeContainer, @NonNull LinearLayout prevQuestionView,
-      @NonNull ConstraintLayout profileBar, @NonNull ConstraintLayout questionBox,
-      @NonNull ConstraintLayout questionLayout, @NonNull ImageView questionUserImg,
-      @NonNull ConstraintLayout writeAnswerContainer) {
+      @NonNull ImageButton answerNoticeBtn, @NonNull RecyclerView answerRv,
+      @NonNull TextView detailedQpLogoTv, @NonNull TextView detailedQuestionContentTv,
+      @NonNull TextView detailedQuestionTimeTv, @NonNull TextView detailedQuestionTitleTv,
+      @NonNull TextView hashtag1, @NonNull TextView hashtag2, @NonNull TextView hashtag3,
+      @NonNull LinearLayout nextQuestionView, @NonNull ConstraintLayout noticeContainer,
+      @NonNull LinearLayout prevQuestionView, @NonNull ConstraintLayout profileBar,
+      @NonNull ConstraintLayout questionBox, @NonNull LinearLayout questionHashtagLayout,
+      @NonNull ConstraintLayout questionLayout, @NonNull ImageButton questionMoreBtn,
+      @NonNull ImageView questionUserImg, @NonNull ConstraintLayout writeAnswerContainer) {
     this.rootView = rootView;
     this.answerBorderLine = answerBorderLine;
     this.answerBtn = answerBtn;
     this.answerCountTv = answerCountTv;
-    this.answerMoreBtn = answerMoreBtn;
     this.answerNoticeBtn = answerNoticeBtn;
     this.answerRv = answerRv;
     this.detailedQpLogoTv = detailedQpLogoTv;
     this.detailedQuestionContentTv = detailedQuestionContentTv;
     this.detailedQuestionTimeTv = detailedQuestionTimeTv;
     this.detailedQuestionTitleTv = detailedQuestionTitleTv;
+    this.hashtag1 = hashtag1;
+    this.hashtag2 = hashtag2;
+    this.hashtag3 = hashtag3;
     this.nextQuestionView = nextQuestionView;
     this.noticeContainer = noticeContainer;
     this.prevQuestionView = prevQuestionView;
     this.profileBar = profileBar;
     this.questionBox = questionBox;
+    this.questionHashtagLayout = questionHashtagLayout;
     this.questionLayout = questionLayout;
+    this.questionMoreBtn = questionMoreBtn;
     this.questionUserImg = questionUserImg;
     this.writeAnswerContainer = writeAnswerContainer;
   }
@@ -153,12 +170,6 @@ public final class ActivityDetailedBinding implements ViewBinding {
         break missingId;
       }
 
-      id = R.id.answer_more_btn;
-      ImageButton answerMoreBtn = ViewBindings.findChildViewById(rootView, id);
-      if (answerMoreBtn == null) {
-        break missingId;
-      }
-
       id = R.id.answer_notice_btn;
       ImageButton answerNoticeBtn = ViewBindings.findChildViewById(rootView, id);
       if (answerNoticeBtn == null) {
@@ -195,6 +206,24 @@ public final class ActivityDetailedBinding implements ViewBinding {
         break missingId;
       }
 
+      id = R.id.hashtag_1;
+      TextView hashtag1 = ViewBindings.findChildViewById(rootView, id);
+      if (hashtag1 == null) {
+        break missingId;
+      }
+
+      id = R.id.hashtag_2;
+      TextView hashtag2 = ViewBindings.findChildViewById(rootView, id);
+      if (hashtag2 == null) {
+        break missingId;
+      }
+
+      id = R.id.hashtag_3;
+      TextView hashtag3 = ViewBindings.findChildViewById(rootView, id);
+      if (hashtag3 == null) {
+        break missingId;
+      }
+
       id = R.id.next_question_view;
       LinearLayout nextQuestionView = ViewBindings.findChildViewById(rootView, id);
       if (nextQuestionView == null) {
@@ -225,9 +254,21 @@ public final class ActivityDetailedBinding implements ViewBinding {
         break missingId;
       }
 
+      id = R.id.question_hashtag_layout;
+      LinearLayout questionHashtagLayout = ViewBindings.findChildViewById(rootView, id);
+      if (questionHashtagLayout == null) {
+        break missingId;
+      }
+
       id = R.id.question_layout;
       ConstraintLayout questionLayout = ViewBindings.findChildViewById(rootView, id);
       if (questionLayout == null) {
+        break missingId;
+      }
+
+      id = R.id.question_more_btn;
+      ImageButton questionMoreBtn = ViewBindings.findChildViewById(rootView, id);
+      if (questionMoreBtn == null) {
         break missingId;
       }
 
@@ -244,10 +285,11 @@ public final class ActivityDetailedBinding implements ViewBinding {
       }
 
       return new ActivityDetailedBinding((LinearLayout) rootView, answerBorderLine, answerBtn,
-          answerCountTv, answerMoreBtn, answerNoticeBtn, answerRv, detailedQpLogoTv,
-          detailedQuestionContentTv, detailedQuestionTimeTv, detailedQuestionTitleTv,
+          answerCountTv, answerNoticeBtn, answerRv, detailedQpLogoTv, detailedQuestionContentTv,
+          detailedQuestionTimeTv, detailedQuestionTitleTv, hashtag1, hashtag2, hashtag3,
           nextQuestionView, noticeContainer, prevQuestionView, profileBar, questionBox,
-          questionLayout, questionUserImg, writeAnswerContainer);
+          questionHashtagLayout, questionLayout, questionMoreBtn, questionUserImg,
+          writeAnswerContainer);
     }
     String missingId = rootView.getResources().getResourceName(id);
     throw new NullPointerException("Missing required view with ID: ".concat(missingId));

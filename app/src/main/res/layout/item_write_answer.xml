@@ -47,16 +47,10 @@
             android:hint="답변을 입력해주세요"
             android:textSize="10dp"
             android:gravity="top"
-            android:maxLength="100"
+            android:maxLength="1000"
             />
 
-        <ImageButton
-            android:id="@+id/write_answer_more_btn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:layout_margin="10dp"/>
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
     <TextView

@@ -22,10 +22,10 @@ public final class ItemAnswerCommentBinding implements ViewBinding {
   private final ConstraintLayout rootView;
 
   @NonNull
-  public final ImageButton answerMoreBtn;
+  public final TextView commentContentTv;
 
   @NonNull
-  public final TextView commentContentTv;
+  public final ImageButton commentMoreBtn;
 
   @NonNull
   public final ImageView commentUserIv;
@@ -34,11 +34,11 @@ public final class ItemAnswerCommentBinding implements ViewBinding {
   public final TextView commentUserNameTv;
 
   private ItemAnswerCommentBinding(@NonNull ConstraintLayout rootView,
-      @NonNull ImageButton answerMoreBtn, @NonNull TextView commentContentTv,
+      @NonNull TextView commentContentTv, @NonNull ImageButton commentMoreBtn,
       @NonNull ImageView commentUserIv, @NonNull TextView commentUserNameTv) {
     this.rootView = rootView;
-    this.answerMoreBtn = answerMoreBtn;
     this.commentContentTv = commentContentTv;
+    this.commentMoreBtn = commentMoreBtn;
     this.commentUserIv = commentUserIv;
     this.commentUserNameTv = commentUserNameTv;
   }
@@ -70,15 +70,15 @@ public final class ItemAnswerCommentBinding implements ViewBinding {
     // This is done to optimize the compiled bytecode for size and performance.
     int id;
     missingId: {
-      id = R.id.answer_more_btn;
-      ImageButton answerMoreBtn = ViewBindings.findChildViewById(rootView, id);
-      if (answerMoreBtn == null) {
-        break missingId;
-      }
-
       id = R.id.comment_content_tv;
       TextView commentContentTv = ViewBindings.findChildViewById(rootView, id);
       if (commentContentTv == null) {
+        break missingId;
+      }
+
+      id = R.id.comment_more_btn;
+      ImageButton commentMoreBtn = ViewBindings.findChildViewById(rootView, id);
+      if (commentMoreBtn == null) {
         break missingId;
       }
 
@@ -94,8 +94,8 @@ public final class ItemAnswerCommentBinding implements ViewBinding {
         break missingId;
       }
 
-      return new ItemAnswerCommentBinding((ConstraintLayout) rootView, answerMoreBtn,
-          commentContentTv, commentUserIv, commentUserNameTv);
+      return new ItemAnswerCommentBinding((ConstraintLayout) rootView, commentContentTv,
+          commentMoreBtn, commentUserIv, commentUserNameTv);
     }
     String missingId = rootView.getResources().getResourceName(id);
     throw new NullPointerException("Missing required view with ID: ".concat(missingId));

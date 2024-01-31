@@ -5,7 +5,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
@@ -32,9 +31,6 @@ public final class ItemWriteAnswerBinding implements ViewBinding {
   public final ConstraintLayout writeAnswerLayout;
 
   @NonNull
-  public final ImageButton writeAnswerMoreBtn;
-
-  @NonNull
   public final ImageView writeAnswerUserImg;
 
   @NonNull
@@ -42,13 +38,12 @@ public final class ItemWriteAnswerBinding implements ViewBinding {
 
   private ItemWriteAnswerBinding(@NonNull ConstraintLayout rootView,
       @NonNull TextView writeAnswerBtn, @NonNull EditText writeAnswerEdit,
-      @NonNull ConstraintLayout writeAnswerLayout, @NonNull ImageButton writeAnswerMoreBtn,
-      @NonNull ImageView writeAnswerUserImg, @NonNull TextView writeAnswerUserNameTv) {
+      @NonNull ConstraintLayout writeAnswerLayout, @NonNull ImageView writeAnswerUserImg,
+      @NonNull TextView writeAnswerUserNameTv) {
     this.rootView = rootView;
     this.writeAnswerBtn = writeAnswerBtn;
     this.writeAnswerEdit = writeAnswerEdit;
     this.writeAnswerLayout = writeAnswerLayout;
-    this.writeAnswerMoreBtn = writeAnswerMoreBtn;
     this.writeAnswerUserImg = writeAnswerUserImg;
     this.writeAnswerUserNameTv = writeAnswerUserNameTv;
   }
@@ -98,12 +93,6 @@ public final class ItemWriteAnswerBinding implements ViewBinding {
         break missingId;
       }
 
-      id = R.id.write_answer_more_btn;
-      ImageButton writeAnswerMoreBtn = ViewBindings.findChildViewById(rootView, id);
-      if (writeAnswerMoreBtn == null) {
-        break missingId;
-      }
-
       id = R.id.write_answer_user_img;
       ImageView writeAnswerUserImg = ViewBindings.findChildViewById(rootView, id);
       if (writeAnswerUserImg == null) {
@@ -117,8 +106,7 @@ public final class ItemWriteAnswerBinding implements ViewBinding {
       }
 
       return new ItemWriteAnswerBinding((ConstraintLayout) rootView, writeAnswerBtn,
-          writeAnswerEdit, writeAnswerLayout, writeAnswerMoreBtn, writeAnswerUserImg,
-          writeAnswerUserNameTv);
+          writeAnswerEdit, writeAnswerLayout, writeAnswerUserImg, writeAnswerUserNameTv);
     }
     String missingId = rootView.getResources().getResourceName(id);
     throw new NullPointerException("Missing required view with ID: ".concat(missingId));

@@ -8,8 +8,20 @@
         "source": "C:\\Users\\a0334\\.gradle\\daemon\\8.0\\com.example.qp.app-main-33:\\drawable\\box_white_lined.xml"
     },
     {
+        "merged": "C:\\Users\\a0334\\.gradle\\daemon\\8.0\\com.example.qp.app-merged_res-31:\\layout_item_answer_preview.xml.flat",
+        "source": "C:\\Users\\a0334\\.gradle\\daemon\\8.0\\com.example.qp.app-main-33:\\layout\\item_answer_preview.xml"
+    },
+    {
+        "merged": "C:\\Users\\a0334\\.gradle\\daemon\\8.0\\com.example.qp.app-merged_res-31:\\layout_layout_popup.xml.flat",
+        "source": "C:\\Users\\a0334\\.gradle\\daemon\\8.0\\com.example.qp.app-main-33:\\layout\\layout_popup.xml"
+    },
+    {
         "merged": "C:\\Users\\a0334\\.gradle\\daemon\\8.0\\com.example.qp.app-merged_res-31:\\mipmap-xxhdpi_ic_launcher_round.webp.flat",
         "source": "C:\\Users\\a0334\\.gradle\\daemon\\8.0\\com.example.qp.app-main-33:\\mipmap-xxhdpi\\ic_launcher_round.webp"
+    },
+    {
+        "merged": "C:\\Users\\a0334\\.gradle\\daemon\\8.0\\com.example.qp.app-merged_res-31:\\drawable_baseline_more_vert_24.xml.flat",
+        "source": "C:\\Users\\a0334\\.gradle\\daemon\\8.0\\com.example.qp.app-main-33:\\drawable\\baseline_more_vert_24.xml"
     },
     {
         "merged": "C:\\Users\\a0334\\.gradle\\daemon\\8.0\\com.example.qp.app-merged_res-31:\\layout_activity_main.xml.flat",
@@ -24,12 +36,12 @@
         "source": "C:\\Users\\a0334\\.gradle\\daemon\\8.0\\com.example.qp.app-main-33:\\mipmap-mdpi\\ic_launcher_round.webp"
     },
     {
-        "merged": "C:\\Users\\a0334\\.gradle\\daemon\\8.0\\com.example.qp.app-merged_res-31:\\xml_backup_rules.xml.flat",
-        "source": "C:\\Users\\a0334\\.gradle\\daemon\\8.0\\com.example.qp.app-main-33:\\xml\\backup_rules.xml"
+        "merged": "C:\\Users\\a0334\\.gradle\\daemon\\8.0\\com.example.qp.app-merged_res-31:\\drawable_notification_on.xml.flat",
+        "source": "C:\\Users\\a0334\\.gradle\\daemon\\8.0\\com.example.qp.app-main-33:\\drawable\\notification_on.xml"
     },
     {
-        "merged": "com.example.qp.app-merged_res-31:/drawable_outline_edit_24.xml.flat",
-        "source": "com.example.qp.app-main-33:/drawable/outline_edit_24.xml"
+        "merged": "C:\\Users\\a0334\\.gradle\\daemon\\8.0\\com.example.qp.app-merged_res-31:\\xml_backup_rules.xml.flat",
+        "source": "C:\\Users\\a0334\\.gradle\\daemon\\8.0\\com.example.qp.app-main-33:\\xml\\backup_rules.xml"
     },
     {
         "merged": "C:\\Users\\a0334\\.gradle\\daemon\\8.0\\com.example.qp.app-merged_res-31:\\drawable_btn_kakao.png.flat",
@@ -42,6 +54,14 @@
     {
         "merged": "C:\\Users\\a0334\\.gradle\\daemon\\8.0\\com.example.qp.app-merged_res-31:\\mipmap-anydpi-v26_ic_launcher_round.xml.flat",
         "source": "C:\\Users\\a0334\\.gradle\\daemon\\8.0\\com.example.qp.app-main-33:\\mipmap-anydpi-v26\\ic_launcher_round.xml"
+    },
+    {
+        "merged": "C:\\Users\\a0334\\.gradle\\daemon\\8.0\\com.example.qp.app-merged_res-31:\\drawable_outline_account_circle_24.xml.flat",
+        "source": "C:\\Users\\a0334\\.gradle\\daemon\\8.0\\com.example.qp.app-main-33:\\drawable\\outline_account_circle_24.xml"
+    },
+    {
+        "merged": "C:\\Users\\a0334\\.gradle\\daemon\\8.0\\com.example.qp.app-merged_res-31:\\drawable_outline_edit_24.xml.flat",
+        "source": "C:\\Users\\a0334\\.gradle\\daemon\\8.0\\com.example.qp.app-main-33:\\drawable\\outline_edit_24.xml"
     },
     {
         "merged": "C:\\Users\\a0334\\.gradle\\daemon\\8.0\\com.example.qp.app-merged_res-31:\\drawable_baseline_close_24.xml.flat",
@@ -58,6 +78,10 @@
     {
         "merged": "C:\\Users\\a0334\\.gradle\\daemon\\8.0\\com.example.qp.app-merged_res-31:\\layout_activity_profile.xml.flat",
         "source": "C:\\Users\\a0334\\.gradle\\daemon\\8.0\\com.example.qp.app-main-33:\\layout\\activity_profile.xml"
+    },
+    {
+        "merged": "com.example.qp.app-merged_res-31:/layout_activity_login.xml.flat",
+        "source": "com.example.qp.app-main-33:/layout/activity_login.xml"
     },
     {
         "merged": "C:\\Users\\a0334\\.gradle\\daemon\\8.0\\com.example.qp.app-merged_res-31:\\mipmap-hdpi_ic_launcher_round.webp.flat",
@@ -84,10 +108,6 @@
         "source": "C:\\Users\\a0334\\.gradle\\daemon\\8.0\\com.example.qp.app-main-33:\\mipmap-hdpi\\ic_launcher.webp"
     },
     {
-        "merged": "com.example.qp.app-merged_res-31:/drawable_btn_image_edit.xml.flat",
-        "source": "com.example.qp.app-main-33:/drawable/btn_image_edit.xml"
-    },
-    {
         "merged": "C:\\Users\\a0334\\.gradle\\daemon\\8.0\\com.example.qp.app-merged_res-31:\\xml_data_extraction_rules.xml.flat",
         "source": "C:\\Users\\a0334\\.gradle\\daemon\\8.0\\com.example.qp.app-main-33:\\xml\\data_extraction_rules.xml"
     },
@@ -100,12 +120,20 @@
         "source": "C:\\Users\\a0334\\.gradle\\daemon\\8.0\\com.example.qp.app-main-33:\\drawable\\ic_launcher_background.xml"
     },
     {
-        "merged": "com.example.qp.app-merged_res-31:/drawable_outline_account_circle_24.xml.flat",
-        "source": "com.example.qp.app-main-33:/drawable/outline_account_circle_24.xml"
+        "merged": "C:\\Users\\a0334\\.gradle\\daemon\\8.0\\com.example.qp.app-merged_res-31:\\layout_item_popup.xml.flat",
+        "source": "C:\\Users\\a0334\\.gradle\\daemon\\8.0\\com.example.qp.app-main-33:\\layout\\item_popup.xml"
     },
     {
         "merged": "C:\\Users\\a0334\\.gradle\\daemon\\8.0\\com.example.qp.app-merged_res-31:\\mipmap-xhdpi_ic_launcher.webp.flat",
         "source": "C:\\Users\\a0334\\.gradle\\daemon\\8.0\\com.example.qp.app-main-33:\\mipmap-xhdpi\\ic_launcher.webp"
+    },
+    {
+        "merged": "C:\\Users\\a0334\\.gradle\\daemon\\8.0\\com.example.qp.app-merged_res-31:\\layout_popup_dialog.xml.flat",
+        "source": "C:\\Users\\a0334\\.gradle\\daemon\\8.0\\com.example.qp.app-main-33:\\layout\\popup_dialog.xml"
+    },
+    {
+        "merged": "C:\\Users\\a0334\\.gradle\\daemon\\8.0\\com.example.qp.app-merged_res-31:\\drawable_notification_off.xml.flat",
+        "source": "C:\\Users\\a0334\\.gradle\\daemon\\8.0\\com.example.qp.app-main-33:\\drawable\\notification_off.xml"
     },
     {
         "merged": "C:\\Users\\a0334\\.gradle\\daemon\\8.0\\com.example.qp.app-merged_res-31:\\drawable_bg_search.xml.flat",
@@ -128,12 +156,12 @@
         "source": "C:\\Users\\a0334\\.gradle\\daemon\\8.0\\com.example.qp.app-main-33:\\drawable\\baseline_arrow_left_24.xml"
     },
     {
-        "merged": "C:\\Users\\a0334\\.gradle\\daemon\\8.0\\com.example.qp.app-merged_res-31:\\mipmap-anydpi-v26_ic_launcher.xml.flat",
-        "source": "C:\\Users\\a0334\\.gradle\\daemon\\8.0\\com.example.qp.app-main-33:\\mipmap-anydpi-v26\\ic_launcher.xml"
-    },
-    {
         "merged": "C:\\Users\\a0334\\.gradle\\daemon\\8.0\\com.example.qp.app-merged_res-31:\\drawable_baseline_chat_bubble_24.xml.flat",
         "source": "C:\\Users\\a0334\\.gradle\\daemon\\8.0\\com.example.qp.app-main-33:\\drawable\\baseline_chat_bubble_24.xml"
+    },
+    {
+        "merged": "C:\\Users\\a0334\\.gradle\\daemon\\8.0\\com.example.qp.app-merged_res-31:\\mipmap-anydpi-v26_ic_launcher.xml.flat",
+        "source": "C:\\Users\\a0334\\.gradle\\daemon\\8.0\\com.example.qp.app-main-33:\\mipmap-anydpi-v26\\ic_launcher.xml"
     },
     {
         "merged": "C:\\Users\\a0334\\.gradle\\daemon\\8.0\\com.example.qp.app-merged_res-31:\\layout_activity_nickname.xml.flat",
@@ -160,8 +188,8 @@
         "source": "C:\\Users\\a0334\\.gradle\\daemon\\8.0\\com.example.qp.app-main-33:\\layout\\item_notice.xml"
     },
     {
-        "merged": "com.example.qp.app-merged_res-31:/layout_activity_profile.xml.flat",
-        "source": "com.example.qp.app-main-33:/layout/activity_profile.xml"
+        "merged": "C:\\Users\\a0334\\.gradle\\daemon\\8.0\\com.example.qp.app-merged_res-31:\\drawable_like_off.xml.flat",
+        "source": "C:\\Users\\a0334\\.gradle\\daemon\\8.0\\com.example.qp.app-main-33:\\drawable\\like_off.xml"
     },
     {
         "merged": "C:\\Users\\a0334\\.gradle\\daemon\\8.0\\com.example.qp.app-merged_res-31:\\layout_item_write_answer.xml.flat",
@@ -176,20 +204,32 @@
         "source": "C:\\Users\\a0334\\.gradle\\daemon\\8.0\\com.example.qp.app-main-33:\\mipmap-xxhdpi\\ic_launcher.webp"
     },
     {
-        "merged": "C:\\Users\\a0334\\.gradle\\daemon\\8.0\\com.example.qp.app-merged_res-31:\\drawable_btn_login_invalid.xml.flat",
-        "source": "C:\\Users\\a0334\\.gradle\\daemon\\8.0\\com.example.qp.app-main-33:\\drawable\\btn_login_invalid.xml"
+        "merged": "C:\\Users\\a0334\\.gradle\\daemon\\8.0\\com.example.qp.app-merged_res-31:\\drawable_btn_image_edit.xml.flat",
+        "source": "C:\\Users\\a0334\\.gradle\\daemon\\8.0\\com.example.qp.app-main-33:\\drawable\\btn_image_edit.xml"
     },
     {
         "merged": "C:\\Users\\a0334\\.gradle\\daemon\\8.0\\com.example.qp.app-merged_res-31:\\layout_item_question.xml.flat",
         "source": "C:\\Users\\a0334\\.gradle\\daemon\\8.0\\com.example.qp.app-main-33:\\layout\\item_question.xml"
     },
     {
+        "merged": "C:\\Users\\a0334\\.gradle\\daemon\\8.0\\com.example.qp.app-merged_res-31:\\drawable_btn_login_invalid.xml.flat",
+        "source": "C:\\Users\\a0334\\.gradle\\daemon\\8.0\\com.example.qp.app-main-33:\\drawable\\btn_login_invalid.xml"
+    },
+    {
         "merged": "C:\\Users\\a0334\\.gradle\\daemon\\8.0\\com.example.qp.app-merged_res-31:\\drawable_box_white.xml.flat",
         "source": "C:\\Users\\a0334\\.gradle\\daemon\\8.0\\com.example.qp.app-main-33:\\drawable\\box_white.xml"
     },
     {
+        "merged": "C:\\Users\\a0334\\.gradle\\daemon\\8.0\\com.example.qp.app-merged_res-31:\\menu_question_menu.xml.flat",
+        "source": "C:\\Users\\a0334\\.gradle\\daemon\\8.0\\com.example.qp.app-main-33:\\menu\\question_menu.xml"
+    },
+    {
         "merged": "C:\\Users\\a0334\\.gradle\\daemon\\8.0\\com.example.qp.app-merged_res-31:\\drawable_bar_search.xml.flat",
         "source": "C:\\Users\\a0334\\.gradle\\daemon\\8.0\\com.example.qp.app-main-33:\\drawable\\bar_search.xml"
+    },
+    {
+        "merged": "C:\\Users\\a0334\\.gradle\\daemon\\8.0\\com.example.qp.app-merged_res-31:\\drawable_like_on.xml.flat",
+        "source": "C:\\Users\\a0334\\.gradle\\daemon\\8.0\\com.example.qp.app-main-33:\\drawable\\like_on.xml"
     },
     {
         "merged": "C:\\Users\\a0334\\.gradle\\daemon\\8.0\\com.example.qp.app-merged_res-31:\\drawable_baseline_keyboard_backspace_24.xml.flat",
