@@ -3,6 +3,7 @@ package com.example.qp
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.core.view.isVisible
@@ -25,6 +26,7 @@ class SearchActivity : AppCompatActivity() {
         }
 
         searchResult()
+        register()
     }
 
     private fun searchResult(){
@@ -45,24 +47,40 @@ class SearchActivity : AppCompatActivity() {
                         selected.add(i)
                     }
                 }
-                filtered = selected
-                questionRVAdapter.setData(filtered)
-                questionRVAdapter.notifyDataSetChanged()
                 binding.searchRecentWord.isVisible = false
-                binding.searchMatchQuestionRv.isVisible = true
+                if(selected.size == 0){
+                    //이전 결과
+                    binding.searchMatchQuestionRv.isVisible = false
+                    //검색 결과 X
+                    binding.searchRegisterInfo.isVisible = true
+                    binding.searhNoResultTv.isVisible = true
+                }
+                else{
+                    //이전 결과
+                    binding.searchRegisterInfo.isVisible = false
+                    binding.searhNoResultTv.isVisible = false
+                    //검색 결과 O
+                    filtered = selected
+                    questionRVAdapter.setData(filtered)
+                    questionRVAdapter.notifyDataSetChanged()
+                    binding.searchMatchQuestionRv.isVisible = true
+                }
+                // 키보드 숨기기
+                binding.searchInputSv.clearFocus();
                 return true
             }
             override fun onQueryTextChange(newText: String?): Boolean {
-                /*if(newText.isNullOrEmpty()){
-                    *//*questionRVAdapter.setData(qDatas)
-                    questionRVAdapter.notifyDataSetChanged()*//*
-                    binding.searchRecentWord.isVisible = true
-                    binding.searchMatchQuestionRv.isVisible = false
-                }*/
+                //검색어 변경 시는 별다른 액션 X
                 return false
             }
 
         })
+    }
+
+    private fun register(){
+        binding.searchRegisterBt.setOnClickListener {
+           Toast.makeText(this, "질문등록 화면으로 전환됩니다!", Toast.LENGTH_LONG).show()
+        }
     }
 
 }
