@@ -1,6 +1,7 @@
 package com.example.qp
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.view.LayoutInflater
@@ -30,6 +31,13 @@ class DetailedActivity : AppCompatActivity(){
         if(intent.hasExtra("question")){
             val qJson = intent.getStringExtra("question")
             question = gson.fromJson(qJson, Question::class.java)
+        }
+
+        binding.detailedSearchBt.setOnClickListener {
+            val qDatas = intent.getSerializableExtra("qDatas") as ArrayList<Question>
+            val intent = Intent(this@DetailedActivity, SearchActivity::class.java)
+            intent.putExtra("qDatas", qDatas)
+            startActivity(intent)
         }
 
         setInit()

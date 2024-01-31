@@ -2,8 +2,13 @@
     <!-- Base application theme. -->
     <style name="Base.Theme.QP" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+        <item name="android:searchViewStyle">@style/SearchViewStyle</item>
     </style>
 
     <style name="Theme.QP" parent="Base.Theme.QP" />
+    <style name="SearchViewStyle">
+        <item name="android:textSize">15dp</item>
+        <item name="android:textColorHint">@color/white</item>
+        <item name="android:editTextColor">@color/white</item>
+    </style>
 </resources>
