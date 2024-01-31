@@ -1,0 +1,262 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:background="@color/white"
+        android:focusableInTouchMode="true"
+        android:focusable="true">
+
+        <TextView
+            android:id="@+id/title_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="60dp"
+            android:text="제목"
+            android:textSize="20dp"
+            android:textStyle="bold"/>
+        <EditText
+            android:id="@+id/title_edit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/title_tv"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginTop="5dp"
+            android:layout_marginHorizontal="20dp"
+            android:background="@drawable/box_white_lined"
+            android:maxLength="60"
+            android:textSize="20sp"
+            android:padding="5dp"
+            android:focusableInTouchMode="true"
+            android:focusable="true"            />
+        <TextView
+            android:id="@+id/title_info_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/title_edit"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginTop="5dp"
+            android:text="최소 5자 / 최대 60자 / ?(물음표)로 끝내기"
+            android:textSize="10dp"
+            android:maxLength="300"/>
+
+
+
+        <TextView
+            android:id="@+id/content_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/title_edit"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="30dp"
+            android:text="본문"
+            android:textSize="20dp"
+            android:textStyle="bold"/>
+        <EditText
+            android:id="@+id/content_edit"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/content_tv"
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginTop="5dp"
+            android:background="@drawable/box_white_lined"
+            android:gravity="top"
+            android:padding="5dp"
+            android:textSize="15sp"
+            android:maxLength="300"
+            android:focusableInTouchMode="true"
+            android:focusable="true"/>
+        <TextView
+            android:id="@+id/content_edit_info_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/content_edit"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="5dp"
+            android:text="최소 10자 / 최대 300자"
+            android:textSize="10dp"/>
+
+        <TextView
+            android:id="@+id/hashtag_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/content_edit_info_tv"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="30dp"
+            android:text="해시태그(최대 3개)"
+            android:textSize="20dp"
+            android:textStyle="bold"/>
+        <EditText
+            android:id="@+id/hashtag_edit"
+            android:layout_width="170dp"
+            android:layout_height="40dp"
+            app:layout_constraintTop_toBottomOf="@id/hashtag_tv"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginStart="20dp"
+            android:textSize="15dp"
+            />
+        <ImageView
+            android:id="@+id/hashtag_cancel_btn"
+            android:layout_width="8dp"
+            android:layout_height="8dp"
+            app:layout_constraintBottom_toBottomOf="@id/hashtag_edit"
+            app:layout_constraintEnd_toEndOf="@id/hashtag_edit"
+            android:layout_marginBottom="12dp"
+            android:layout_marginEnd="5dp"
+            android:src="@drawable/cancel_btn"/>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/hashtag_rv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/hashtag_edit"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginHorizontal="20dp"
+            android:orientation="horizontal"
+            app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+            tools:listitem="@layout/item_hashtag"/>
+
+        <TextView
+            android:id="@+id/level_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/hashtag_rv"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="20dp"
+            android:text="난이도"
+            android:textSize="20dp"
+            android:textStyle="bold"/>
+        <TextView
+            android:id="@+id/level_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/level_tv"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginStart="25dp"
+            android:layout_marginTop="5dp"
+            android:text="어린이"
+            android:textSize="12dp"
+            android:textStyle="bold"
+            android:background="@drawable/box_white_lined"
+            android:paddingHorizontal="20dp"
+            android:paddingVertical="5dp"/>
+        <TextView
+            android:id="@+id/level_btn_orange"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/level_tv"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginStart="25dp"
+            android:layout_marginTop="5dp"
+            android:text="어린이"
+            android:textSize="12dp"
+            android:textStyle="bold"
+            android:textColor="@color/white"
+            android:background="@drawable/box_orange"
+            android:paddingHorizontal="20dp"
+            android:paddingVertical="5dp"
+            />
+        <TextView
+            android:id="@+id/level_info_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/level_tv"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginStart="25dp"
+            android:layout_marginTop="40dp"
+            android:background="@drawable/box_orange"
+            android:text="'어린이'를 활성화 시키면\n어린이 수준에 맞는 답변을 해줍니다."
+            android:textSize="8dp"
+            android:textColor="@color/white"
+            android:gravity="center_vertical"
+            android:minHeight="0dp"
+            android:paddingHorizontal="10dp"
+            android:paddingVertical="7dp"/>
+
+        <TextView
+            android:id="@+id/write_question_note"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/level_info_tv"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="20dp"
+            android:text="질문 등록 시 유의사항(필수)"
+            android:textSize="20dp"
+            android:textStyle="bold"/>
+        <TextView
+            android:id="@+id/note_content_tv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/write_question_note"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginTop="5dp"
+            android:background="@drawable/box_white_lined"
+            android:text="@string/write_question_note"
+            android:textSize="12dp"
+            android:paddingHorizontal="10dp"
+            android:paddingVertical="15dp"/>
+        <CheckBox
+            android:id="@+id/note_checkbox"
+            android:layout_width="15dp"
+            android:layout_height="15dp"
+            app:layout_constraintTop_toBottomOf="@id/note_content_tv"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="3dp"
+            android:paddingVertical="0dp"
+            android:minHeight="0dp"
+            android:textSize="10dp"
+            android:button="@color/transparent"
+            android:background="@drawable/check_box_orange"
+            />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="@id/note_checkbox"
+            app:layout_constraintBottom_toBottomOf="@id/note_checkbox"
+            app:layout_constraintStart_toEndOf="@id/note_checkbox"
+            android:layout_marginStart="5dp"
+            android:text="유의사항을 모두 읽고 동의합니다."
+            android:textSize="10dp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/note_checkbox"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="30dp"
+            android:text="등록"
+            android:textSize="15dp"
+            android:textStyle="bold"
+            android:background="@drawable/box_white_lined"
+            android:paddingHorizontal="40dp"
+            android:paddingVertical="5dp"/>
+
+
+
+
+
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>
