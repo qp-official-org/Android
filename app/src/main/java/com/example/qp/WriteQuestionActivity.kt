@@ -190,13 +190,13 @@ class WriteQuestionActivity: AppCompatActivity() {
                             question.tag3=tagList[2]
                         }
                     }
-
-                    Toast.makeText(applicationContext,"등록 완료",Toast.LENGTH_SHORT).show()
                     val intent= Intent(this@WriteQuestionActivity,DetailedActivity::class.java)
                     val gson= Gson()
                     val qJson=gson.toJson(question)
                     intent.putExtra("question",qJson)
                     startActivity(intent)
+                    Toast.makeText(applicationContext,"등록 완료",Toast.LENGTH_SHORT).show()
+
                 }
                 else Toast.makeText(applicationContext,"동의가 체크되지 않음",Toast.LENGTH_SHORT).show()
 
