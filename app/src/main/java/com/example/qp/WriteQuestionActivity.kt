@@ -1,11 +1,13 @@
 package com.example.qp
 
 import android.content.Context
+import android.content.Intent
 import android.graphics.Rect
 import android.os.Bundle
 import android.os.PersistableBundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import android.view.inputmethod.EditorInfo
@@ -16,6 +18,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.widget.addTextChangedListener
 import com.example.qp.databinding.ActivityWriteQuestionBinding
+import com.google.gson.Gson
 
 class WriteQuestionActivity: AppCompatActivity() {
     private lateinit var binding:ActivityWriteQuestionBinding
@@ -163,13 +166,14 @@ class WriteQuestionActivity: AppCompatActivity() {
     }
 
     private fun registerQuestion(){
-        val titleText=binding.titleEdit.text.toString()
-        val contentText=binding.contentEdit.text.toString()
-        val checkBox=binding.noteCheckbox
-        tagList=adapter.getItems()
-        var question=Question()
 
         binding.registerBtn.setOnClickListener {
+            val titleText=findViewById<EditText>(R.id.title_edit).text.toString()
+            val contentText=binding.contentEdit.text.toString()
+            val checkBox=binding.noteCheckbox
+            tagList=adapter.getItems()
+            var question=Question()
+
             if(isTitleValid &&isContentValid){
                 if(checkBox.isChecked){
                     question.title=titleText
@@ -186,7 +190,13 @@ class WriteQuestionActivity: AppCompatActivity() {
                             question.tag3=tagList[2]
                         }
                     }
+
                     Toast.makeText(applicationContext,"등록 완료",Toast.LENGTH_SHORT).show()
+                    val intent= Intent(this@WriteQuestionActivity,DetailedActivity::class.java)
+                    val gson= Gson()
+                    val qJson=gson.toJson(question)
+                    intent.putExtra("question",qJson)
+                    startActivity(intent)
                 }
                 else Toast.makeText(applicationContext,"동의가 체크되지 않음",Toast.LENGTH_SHORT).show()
 

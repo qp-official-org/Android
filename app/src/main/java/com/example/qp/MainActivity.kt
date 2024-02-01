@@ -31,7 +31,8 @@ class MainActivity : AppCompatActivity() {
 
         questionRVAdapter.setMyItemClickListner(object : QuestionRVAdapter.MyItemClickListner{
             override fun onItemClick(question: Question) {
-                val intent = Intent(this@MainActivity, DetailedActivity::class.java)
+                //val intent = Intent(this@MainActivity, DetailedActivity::class.java)
+                val intent = Intent(this@MainActivity, WriteQuestionActivity::class.java)
                 val gson = Gson()
                 val qJson = gson.toJson(question)
                 intent.putExtra("question", qJson)
