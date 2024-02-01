@@ -21,6 +21,10 @@ class WriteQuestionActivity: AppCompatActivity() {
     private lateinit var binding:ActivityWriteQuestionBinding
     private lateinit var adapter:WriteQuestionTagRVAdapter
     private var isChild=false
+    private var isTitleValid=false
+    private var isContentValid=false
+    private  var tagList=ArrayList<String>()
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,7 +40,7 @@ class WriteQuestionActivity: AppCompatActivity() {
         setChild()
         checkTitleEdit()
         checkContentEdit()
-
+        registerQuestion()
 
     }
 
@@ -65,9 +69,11 @@ class WriteQuestionActivity: AppCompatActivity() {
                 if(s!=null){
                     if(s.length<5 || s[s.length-1]!='?'){
                         binding.titleInfoTv.setTextColor(ContextCompat.getColor(applicationContext,R.color.red))
+                        isTitleValid=false
                     }
                     else{
                         binding.titleInfoTv.setTextColor(ContextCompat.getColor(applicationContext,R.color.green))
+                        isTitleValid=true
                     }
                 }
             }
@@ -86,10 +92,11 @@ class WriteQuestionActivity: AppCompatActivity() {
                 if(s!=null){
                     if(s.length<10){
                         binding.contentEditInfoTv.setTextColor(ContextCompat.getColor(applicationContext,R.color.red))
+                        isContentValid=false
                     }
                     else{
                         binding.contentEditInfoTv.setTextColor(ContextCompat.getColor(applicationContext,R.color.green))
-
+                        isContentValid=true
                     }
                 }
             }
@@ -153,6 +160,41 @@ class WriteQuestionActivity: AppCompatActivity() {
         }
 
 
+    }
+
+    private fun registerQuestion(){
+        val titleText=binding.titleEdit.text.toString()
+        val contentText=binding.contentEdit.text.toString()
+        val checkBox=binding.noteCheckbox
+        tagList=adapter.getItems()
+        var question=Question()
+
+        binding.registerBtn.setOnClickListener {
+            if(isTitleValid &&isContentValid){
+                if(checkBox.isChecked){
+                    question.title=titleText
+                    question.content=contentText
+                    when(tagList.size){
+                        1->question.tag1=tagList[0]
+                        2-> {
+                            question.tag1=tagList[0]
+                            question.tag2 = tagList[1]
+                        }
+                        3->{
+                            question.tag1=tagList[0]
+                            question.tag2 = tagList[1]
+                            question.tag3=tagList[2]
+                        }
+                    }
+                    Toast.makeText(applicationContext,"등록 완료",Toast.LENGTH_SHORT).show()
+                }
+                else Toast.makeText(applicationContext,"동의가 체크되지 않음",Toast.LENGTH_SHORT).show()
+
+            }
+            else{
+                Toast.makeText(applicationContext,"제목 또는 본문 형식이 유효하지 않습니다.",Toast.LENGTH_SHORT).show()
+            }
+        }
     }
 
     override fun dispatchTouchEvent(event: MotionEvent?): Boolean {

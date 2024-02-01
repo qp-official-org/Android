@@ -45,6 +45,10 @@ class WriteQuestionTagRVAdapter(context: Context):RecyclerView.Adapter<WriteQues
         return !items.contains(s)
     }
 
+    fun getItems():ArrayList<String>{
+        return items
+    }
+
 
 
 }
