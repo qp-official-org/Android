@@ -28,6 +28,7 @@
         <activity android:name=".NicknameActivity"/>
         <activity android:name=".ProfileActivity"/>
         <activity android:name=".SearchActivity"/>
+        <activity android:name=".ModifyQuestionActivity"/>
     </application>
 
 </manifest>

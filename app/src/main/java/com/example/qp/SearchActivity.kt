@@ -79,7 +79,8 @@ class SearchActivity : AppCompatActivity() {
 
     private fun register(){
         binding.searchRegisterBt.setOnClickListener {
-           Toast.makeText(this, "질문등록 화면으로 전환됩니다!", Toast.LENGTH_LONG).show()
+//           Toast.makeText(this, "질문등록 화면으로 전환됩니다!", Toast.LENGTH_LONG).show()
+            startActivity(Intent(this@SearchActivity,WriteQuestionActivity::class.java))
         }
     }
 

@@ -5,6 +5,7 @@ import android.graphics.Rect
 import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
@@ -124,11 +125,11 @@ class DetailedActivity : AppCompatActivity(){
             add(Comment("댓글2-2"))
         }
 
-        answerList.apply {
+        /*answerList.apply {
             add(Answer("답변내용1",commentList))
             add(Answer("답변내용",commentList2))
             add(Answer("답변내용3"))
-        }
+        }*/
         answerAdapter.addItemList(answerList)
         updateExpertNum()
 
@@ -234,7 +235,15 @@ class DetailedActivity : AppCompatActivity(){
                 }
                 popupWindow=SimplePopup(applicationContext,list){_,_,position->
                     when(position){
-                        0->Toast.makeText(applicationContext,"수정하기",Toast.LENGTH_SHORT).show()
+                        0-> {
+                            val gson= Gson()
+                            val qJson=gson.toJson(question)
+                            val intent=Intent(this@DetailedActivity,ModifyQuestionActivity::class.java)
+                            intent.putExtra("modifyQuestion",qJson)
+                            startActivity(intent)
+                            Log.d("modifyLog",question.toString())
+                            Toast.makeText(applicationContext, "수정하기", Toast.LENGTH_SHORT).show()
+                        }
                         1->Toast.makeText(applicationContext,"삭제하기",Toast.LENGTH_SHORT).show()
                         2->Toast.makeText(applicationContext,"신고하기",Toast.LENGTH_SHORT).show()
                     }
