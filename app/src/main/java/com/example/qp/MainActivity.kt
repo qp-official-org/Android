@@ -3,7 +3,6 @@ package com.example.qp
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.widget.Toast
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.qp.databinding.ActivityMainBinding
 import com.google.gson.Gson
@@ -35,12 +34,15 @@ class MainActivity : AppCompatActivity() {
                 val gson = Gson()
                 val qJson = gson.toJson(question)
                 intent.putExtra("question", qJson)
+                intent.putExtra("qDatas", qDatas)
                 startActivity(intent)
             }
         })
 
         binding.mainSearchBt.setOnClickListener {
-            Toast.makeText(this, "검색버튼 클릭!", Toast.LENGTH_LONG).show()
+            val intent = Intent(this@MainActivity, SearchActivity::class.java)
+            intent.putExtra("qDatas", qDatas)
+            startActivity(intent)
         }
 
         binding.mainLoginBt.setOnClickListener{

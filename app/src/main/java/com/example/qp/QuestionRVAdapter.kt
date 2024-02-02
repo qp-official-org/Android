@@ -1,5 +1,6 @@
 package com.example.qp
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -43,4 +44,11 @@ class QuestionRVAdapter(private val qList: ArrayList<Question>)
             binding.itemCategory3Tv.text = question.tag3
         }
     }
+
+    fun setData(filtered: ArrayList<Question>){
+        qList.clear()
+        qList.addAll(filtered)
+        Log.d("filtered 개수", qList.size.toString())
+    }
+
 }
