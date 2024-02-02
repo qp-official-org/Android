@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/white">
+
+    <TextView
+        android:id="@+id/profile_qp_logo_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="큐피 로고"
+        android:textSize="20dp"
+        android:textStyle="bold"
+        android:textColor="@color/qp"
+        android:layout_marginTop="20dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <ImageView
+        android:id="@+id/profile_back_iv"
+        android:layout_width="25sp"
+        android:layout_height="25sp"
+        android:src="@drawable/baseline_keyboard_backspace_grey_24"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="@id/profile_qp_logo_tv"
+        android:layout_marginStart="20dp" />
+
+    <TextView
+        android:id="@+id/profile_main_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="프로필 설정"
+        app:layout_constraintTop_toBottomOf="@id/profile_qp_logo_tv"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="70dp"
+        android:textSize="25sp"
+        android:textStyle="bold"
+        android:textColor="@color/black"/>
+
+    <ImageView
+        android:id="@+id/profile_image_iv"
+        android:layout_width="130dp"
+        android:layout_height="130dp"
+        android:src="@drawable/outline_account_circle_24"
+        app:layout_constraintTop_toBottomOf="@id/profile_main_tv"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="10dp"/>
+
+    <ImageView
+        android:id="@+id/profile_image_edit_iv"
+        android:layout_width="45dp"
+        android:layout_height="45dp"
+        android:src="@drawable/outline_edit_24"
+        app:layout_constraintBottom_toBottomOf="@id/profile_image_iv"
+        app:layout_constraintEnd_toEndOf="@id/profile_image_iv"
+        android:padding="8dp"
+        android:background="@drawable/btn_image_edit"/>
+
+    <ImageView
+        android:id="@+id/profile_next_btn_iv"
+        android:layout_width="130dp"
+        android:layout_height="35dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/profile_image_iv"
+        android:background="@drawable/btn_login"
+        android:layout_marginTop="60dp" />
+    <TextView
+        android:id="@+id/profile_btn_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="설정 완료"
+        android:textColor="@color/white"
+        android:textSize="17sp"
+        app:layout_constraintTop_toTopOf="@id/profile_next_btn_iv"
+        app:layout_constraintBottom_toBottomOf="@id/profile_next_btn_iv"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <TextView
+        android:id="@+id/profile_welcome_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="큐피에 오신 것을\n진심으로 환영합니다!"
+        android:textStyle="bold"
+        android:textAlignment="center"
+        android:gravity="center"
+        android:textColor="@color/black"
+        android:textSize="20sp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginBottom="120dp"
+        android:visibility="gone"/>
+
+    <ImageView
+        android:id="@+id/profile_exit_btn_iv"
+        android:layout_width="140dp"
+        android:layout_height="40dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/profile_welcome_tv"
+        android:background="@drawable/btn_login_invalid"
+        android:layout_marginTop="80dp"
+        android:visibility="gone"/>
+    <TextView
+        android:id="@+id/profile_exit_btn_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="질문보러 가기"
+        android:textColor="@color/black"
+        android:textSize="17sp"
+        app:layout_constraintTop_toTopOf="@id/profile_exit_btn_iv"
+        app:layout_constraintBottom_toBottomOf="@id/profile_exit_btn_iv"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:visibility="gone"/>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
