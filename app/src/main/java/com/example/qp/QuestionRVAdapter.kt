@@ -6,11 +6,11 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.qp.databinding.ItemQuestionBinding
 
-class QuestionRVAdapter(private val qList: ArrayList<Question>)
+class QuestionRVAdapter(private val qList: ArrayList<QuestionInfo>)
     : RecyclerView.Adapter<QuestionRVAdapter.ViewHolder>() {
 
     interface MyItemClickListner{
-        fun onItemClick(question: Question)
+        fun onItemClick(questionInfo: QuestionInfo)
     }
     private lateinit var myItemClickListner: MyItemClickListner
     fun setMyItemClickListner(itemClickListner: MyItemClickListner){
@@ -36,16 +36,22 @@ class QuestionRVAdapter(private val qList: ArrayList<Question>)
     override fun getItemCount(): Int = qList.size
 
     inner class ViewHolder(val binding: ItemQuestionBinding) : RecyclerView.ViewHolder(binding.root){
-        fun bind(question: Question){
-            binding.itemTimeTv.text = question.time
-            binding.itemQuestionTv.text = question.title
-            binding.itemCategory1Tv.text = question.tag1
-            binding.itemCategory2Tv.text = question.tag2
-            binding.itemCategory3Tv.text = question.tag3
+        fun bind(questionInfo: QuestionInfo){
+            binding.itemTimeTv.text = questionInfo.createAt.toString()
+            binding.itemQuestionTv.text = questionInfo.title
+            for (tagInfo in questionInfo.hashtags) {
+                if(tagInfo.hashtagId == 1)
+                    binding.itemCategory1Tv.text = tagInfo.hashtag
+                else if(tagInfo.hashtagId == 2)
+                    binding.itemCategory2Tv.text = tagInfo.hashtag
+                else if(tagInfo.hashtagId == 3)
+                    binding.itemCategory3Tv.text = tagInfo.hashtag
+            }
+
         }
     }
 
-    fun setData(filtered: ArrayList<Question>){
+    fun setData(filtered: ArrayList<QuestionInfo>){
         qList.clear()
         qList.addAll(filtered)
         Log.d("filtered 개수", qList.size.toString())

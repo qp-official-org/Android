@@ -13,8 +13,8 @@ import com.example.qp.databinding.ActivitySearchBinding
 class SearchActivity : AppCompatActivity() {
 
     lateinit var binding: ActivitySearchBinding
-    private var original = ArrayList<Question>()
-    private var filtered = ArrayList<Question>()
+    private var original = ArrayList<QuestionInfo>()
+    private var filtered = ArrayList<QuestionInfo>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,7 +30,9 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun searchResult(){
-        original = intent.getSerializableExtra("qDatas") as ArrayList<Question>
+        if(intent.hasExtra("qDatas")){
+            original = intent.getSerializableExtra("qDatas") as ArrayList<QuestionInfo>
+        }
         filtered.addAll(original)
 
         val questionRVAdapter = QuestionRVAdapter(filtered)
@@ -40,7 +42,7 @@ class SearchActivity : AppCompatActivity() {
         binding.searchInputSv.setOnQueryTextListener(object : SearchView.OnQueryTextListener{
             override fun onQueryTextSubmit(query: String?): Boolean {
                 Log.d("qDatas 개수", original.size.toString())
-                val selected = ArrayList<Question>()
+                val selected = ArrayList<QuestionInfo>()
                 for(i in original){
                     val temp = i.title
                     if( temp?.contains(query.toString()) == true){
