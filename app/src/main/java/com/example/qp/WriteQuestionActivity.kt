@@ -20,7 +20,7 @@ import androidx.core.widget.addTextChangedListener
 import com.example.qp.databinding.ActivityWriteQuestionBinding
 import com.google.gson.Gson
 
-class WriteQuestionActivity: AppCompatActivity() {
+class WriteQuestionActivity: AppCompatActivity(),WriteQView {
     private lateinit var binding:ActivityWriteQuestionBinding
     private lateinit var adapter:WriteQuestionTagRVAdapter
     private var isChild=false
@@ -34,6 +34,9 @@ class WriteQuestionActivity: AppCompatActivity() {
         binding = ActivityWriteQuestionBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+
+        binding.titleEdit.text.clear()
+        binding.contentEdit.text.clear()
         adapter=WriteQuestionTagRVAdapter(applicationContext)
         binding.hashtagRv.adapter=adapter
 
@@ -166,6 +169,8 @@ class WriteQuestionActivity: AppCompatActivity() {
     }
 
     private fun registerQuestion(){
+        val questionService=QuestionService()
+        questionService.setWriteQView(this)
 
         binding.registerBtn.setOnClickListener {
             val titleText=findViewById<EditText>(R.id.title_edit).text.toString()
@@ -178,8 +183,11 @@ class WriteQuestionActivity: AppCompatActivity() {
                 if(checkBox.isChecked){
                     question.title=titleText
                     question.content=contentText
-                    when(tagList.size){
-                        1->question.tag1=tagList[0]
+                    /*when(tagList.size){
+                        1-> {
+                            question.tag1=tagList[0]
+                            question.hashtags.add(Hashtag(hashtagId,tagList[0]))
+                        }
                         2-> {
                             question.tag1=tagList[0]
                             question.tag2 = tagList[1]
@@ -189,7 +197,14 @@ class WriteQuestionActivity: AppCompatActivity() {
                             question.tag2 = tagList[1]
                             question.tag3=tagList[2]
                         }
+                    }*/
+                    for(i in 0 until tagList.size){
+                        question.hashtags.add(Hashtag(TagCount.hashtagId,tagList[i]))
+                        TagCount.incId()
                     }
+
+                    questionService.writeQ(question)
+
                     val intent= Intent(this@WriteQuestionActivity,DetailedActivity::class.java)
                     val gson= Gson()
                     val qJson=gson.toJson(question)
@@ -225,5 +240,21 @@ class WriteQuestionActivity: AppCompatActivity() {
     }
 
 
+    override fun onWriteSuccess() {
+        TODO("Not yet implemented")
+    }
 
+    override fun onWriteFailure() {
+        TODO("Not yet implemented")
+    }
+
+
+}
+object TagCount{
+    @JvmField
+    var hashtagId:Int = 0
+    fun incId(){
+        Log.d("compId",hashtagId.toString())
+        hashtagId+=1
+    }
 }

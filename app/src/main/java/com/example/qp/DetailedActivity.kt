@@ -38,9 +38,9 @@ class DetailedActivity : AppCompatActivity(){
         }
 
         binding.detailedSearchBt.setOnClickListener {
-            val qDatas = intent.getSerializableExtra("qDatas") as ArrayList<Question>
+            //val qDatas = intent.getSerializableExtra("qDatas") as ArrayList<Question>
             val intent = Intent(this@DetailedActivity, SearchActivity::class.java)
-            intent.putExtra("qDatas", qDatas)
+            //intent.putExtra("qDatas", qDatas)
             startActivity(intent)
         }
 
@@ -104,9 +104,22 @@ class DetailedActivity : AppCompatActivity(){
         binding.detailedQuestionContentTv.text = question.content
         binding.detailedQuestionTimeTv.text = question.time
 
-        binding.hashtag1.text=question.tag1
-        binding.hashtag2.text=question.tag2
-        binding.hashtag3.text=question.tag3
+//        binding.hashtag1.text=question.tag1
+//        binding.hashtag2.text=question.tag2
+//        binding.hashtag3.text=question.tag3
+        val tagListSize=question.hashtags.size
+        when(tagListSize){
+            1->binding.hashtag1.text=question.hashtags[0].hashtag
+            2->{
+                binding.hashtag1.text=question.hashtags[0].hashtag
+                binding.hashtag2.text=question.hashtags[1].hashtag
+            }
+            3->{
+                binding.hashtag1.text=question.hashtags[0].hashtag
+                binding.hashtag2.text=question.hashtags[1].hashtag
+                binding.hashtag3.text=question.hashtags[2].hashtag
+            }
+        }
 
 
     }
@@ -125,11 +138,11 @@ class DetailedActivity : AppCompatActivity(){
             add(Comment("댓글2-2"))
         }
 
-        /*answerList.apply {
+        answerList.apply {
             add(Answer("답변내용1",commentList))
             add(Answer("답변내용",commentList2))
             add(Answer("답변내용3"))
-        }*/
+        }
         answerAdapter.addItemList(answerList)
         updateExpertNum()
 
@@ -145,8 +158,8 @@ class DetailedActivity : AppCompatActivity(){
         binding.answerNoticeBtn.setOnClickListener {
             if(!isNotified){
                 notifyQuestion(true)
-                /*val dialog=SimpleDialog()
-                dialog.show(supportFragmentManager,"dialog")*/
+                val dialog=SimpleDialog()
+                dialog.show(supportFragmentManager,"dialog")
             }
             else{
                 notifyQuestion(false)
@@ -245,7 +258,11 @@ class DetailedActivity : AppCompatActivity(){
                             Toast.makeText(applicationContext, "수정하기", Toast.LENGTH_SHORT).show()
                         }
                         1->Toast.makeText(applicationContext,"삭제하기",Toast.LENGTH_SHORT).show()
-                        2->Toast.makeText(applicationContext,"신고하기",Toast.LENGTH_SHORT).show()
+                        2-> {
+                            Toast.makeText(applicationContext, "신고하기", Toast.LENGTH_SHORT).show()
+                            val dialog=SimpleDialog()
+                            dialog.show(supportFragmentManager,"dialog")
+                        }
                     }
                 }
                 popupWindow.isOutsideTouchable=true
@@ -260,7 +277,11 @@ class DetailedActivity : AppCompatActivity(){
                 }
                 popupWindow=SimplePopup(applicationContext,list){_,_,position->
                     when(position){
-                        0->Toast.makeText(applicationContext,"신고하기",Toast.LENGTH_SHORT).show()
+                        0-> {
+                            Toast.makeText(applicationContext, "신고하기", Toast.LENGTH_SHORT).show()
+                            val dialog=SimpleDialog()
+                            dialog.show(supportFragmentManager,"dialog")
+                        }
                     }
                 }
                 popupWindow.isOutsideTouchable=true
