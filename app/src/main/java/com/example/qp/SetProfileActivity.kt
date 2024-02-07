@@ -4,14 +4,14 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
-import com.example.qp.databinding.ActivityProfileBinding
+import com.example.qp.databinding.ActivitySetprofileBinding
 
-class ProfileActivity : AppCompatActivity() {
-    lateinit var binding: ActivityProfileBinding
+class SetProfileActivity : AppCompatActivity() {
+    lateinit var binding: ActivitySetprofileBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityProfileBinding.inflate(layoutInflater)
+        binding = ActivitySetprofileBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         binding.profileBackIv.setOnClickListener {
@@ -26,7 +26,7 @@ class ProfileActivity : AppCompatActivity() {
                 binding.profileExitBtnIv.visibility = View.GONE
             }
             else {
-                startActivity(Intent(this, NicknameActivity::class.java))
+                startActivity(Intent(this, SetNicknameActivity::class.java))
             }
         }
 

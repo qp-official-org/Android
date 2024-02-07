@@ -25,8 +25,8 @@
             android:windowSoftInputMode="adjustPan"/>
         <activity android:name=".LoginActivity"/>
         <activity android:name=".WriteQuestionActivity"/>
-        <activity android:name=".NicknameActivity"/>
-        <activity android:name=".ProfileActivity"/>
+        <activity android:name=".SetNicknameActivity"/>
+        <activity android:name=".SetProfileActivity"/>
         <activity android:name=".SearchActivity"/>
     </application>
 

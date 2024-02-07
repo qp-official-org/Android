@@ -6,7 +6,6 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
 import android.widget.Toast
-import android.widget.Toast.makeText
 import androidx.appcompat.app.AppCompatActivity
 import com.example.qp.databinding.ActivityLoginBinding
 
@@ -57,7 +56,7 @@ class LoginActivity : AppCompatActivity() {
         })
 
         binding.loginNextBtn.setOnClickListener {
-            startActivity(Intent(this,NicknameActivity::class.java))
+            startActivity(Intent(this,SetNicknameActivity::class.java))
         }
 
         binding.loginNextInvalidBtn.setOnClickListener {
