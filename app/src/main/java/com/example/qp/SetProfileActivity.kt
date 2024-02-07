@@ -50,6 +50,7 @@ class SetProfileActivity : AppCompatActivity() {
             intent.putExtra("isLogin", 1)
 
             startActivity(intent)
+            finish()
         }
     }
 }

@@ -1,6 +1,7 @@
 package com.example.qp
 
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
@@ -32,15 +33,65 @@ class ProfileActivity : AppCompatActivity() {
             finish()
         }
 
-
+        // 충전 버튼 색상 변경
         binding.profileChargekBtn.setOnClickListener {
             binding.profileChargekBtn.setBackgroundResource(R.drawable.box_orange)
+            binding.profileChargekTv1.setTextColor(Color.WHITE)
+            binding.profileChargekTv2.setTextColor(Color.WHITE)
             binding.profileChargekNaverBtn.visibility = View.VISIBLE
             binding.profileChargekKakaoBtn.visibility = View.VISIBLE
-        }
 
+            binding.profileCharge10kBtn.setBackgroundResource(R.drawable.box_white_lined)
+            binding.profileCharge10kTv1.setTextColor(Color.BLACK)
+            binding.profileCharge10kTv2.setTextColor(Color.BLACK)
+            binding.profileCharge10kNaverBtn.setBackgroundResource(R.drawable.box_white_lined)
+            binding.profileCharge10kNaverBtn.visibility = View.GONE
+            binding.profileCharge10kNaverTv.setTextColor(Color.BLACK)
+            binding.profileCharge10kKakaoBtn.setBackgroundResource(R.drawable.box_white_lined)
+            binding.profileCharge10kKakaoBtn.visibility = View.GONE
+            binding.profileCharge10kKakaoTv.setTextColor(Color.BLACK)
+        }
         binding.profileChargekNaverBtn.setOnClickListener {
             binding.profileChargekNaverBtn.setBackgroundResource(R.drawable.box_orange)
+            binding.profileChargekNaverTv.setTextColor(Color.WHITE)
+            binding.profileChargekKakaoBtn.setBackgroundResource(R.drawable.box_white_lined)
+            binding.profileChargekKakaoTv.setTextColor(Color.BLACK)
+        }
+        binding.profileChargekKakaoBtn.setOnClickListener {
+            binding.profileChargekNaverBtn.setBackgroundResource(R.drawable.box_white_lined)
+            binding.profileChargekNaverTv.setTextColor(Color.BLACK)
+            binding.profileChargekKakaoBtn.setBackgroundResource(R.drawable.box_orange)
+            binding.profileChargekKakaoTv.setTextColor(Color.WHITE)
+        }
+
+        binding.profileCharge10kBtn.setOnClickListener {
+            binding.profileCharge10kBtn.setBackgroundResource(R.drawable.box_orange)
+            binding.profileCharge10kTv1.setTextColor(Color.WHITE)
+            binding.profileCharge10kTv2.setTextColor(Color.WHITE)
+            binding.profileCharge10kNaverBtn.visibility = View.VISIBLE
+            binding.profileCharge10kKakaoBtn.visibility = View.VISIBLE
+
+            binding.profileChargekBtn.setBackgroundResource(R.drawable.box_white_lined)
+            binding.profileChargekTv1.setTextColor(Color.BLACK)
+            binding.profileChargekTv2.setTextColor(Color.BLACK)
+            binding.profileChargekNaverBtn.setBackgroundResource(R.drawable.box_white_lined)
+            binding.profileChargekNaverBtn.visibility = View.GONE
+            binding.profileChargekNaverTv.setTextColor(Color.BLACK)
+            binding.profileChargekKakaoBtn.setBackgroundResource(R.drawable.box_white_lined)
+            binding.profileChargekKakaoBtn.visibility = View.GONE
+            binding.profileChargekKakaoTv.setTextColor(Color.BLACK)
+        }
+        binding.profileCharge10kNaverBtn.setOnClickListener {
+            binding.profileCharge10kNaverBtn.setBackgroundResource(R.drawable.box_orange)
+            binding.profileCharge10kNaverTv.setTextColor(Color.WHITE)
+            binding.profileCharge10kKakaoBtn.setBackgroundResource(R.drawable.box_white_lined)
+            binding.profileCharge10kKakaoTv.setTextColor(Color.BLACK)
+        }
+        binding.profileCharge10kKakaoBtn.setOnClickListener {
+            binding.profileCharge10kNaverBtn.setBackgroundResource(R.drawable.box_white_lined)
+            binding.profileCharge10kNaverTv.setTextColor(Color.BLACK)
+            binding.profileCharge10kKakaoBtn.setBackgroundResource(R.drawable.box_orange)
+            binding.profileCharge10kKakaoTv.setTextColor(Color.WHITE)
         }
 
 

@@ -15,17 +15,14 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent">
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="큐피 로고"
-            android:textSize="10dp"
-            android:textStyle="bold"
-            android:textColor="@color/qp"
-            android:layout_marginStart="20dp"
+        <ImageView
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:src="@drawable/app_logo"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginStart="20dp"/>
         <Button
             android:id="@+id/main_search_bt"
             android:layout_width="200dp"
