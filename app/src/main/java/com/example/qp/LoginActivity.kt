@@ -75,6 +75,9 @@ class LoginActivity : AppCompatActivity() {
 
         binding.loginKakaoBtn.setOnClickListener {
             Toast.makeText(this, "카카오 로그인", Toast.LENGTH_SHORT).show()
+
+            startActivity(Intent(this,SetNicknameActivity::class.java))
+            //빠른 로그인을 위한 임시 설정
         }
     }
 }

@@ -22,7 +22,9 @@ class SearchActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         binding.searchBackIv.setOnClickListener{
-            startActivity(Intent(this@SearchActivity, MainActivity::class.java))
+            val intent = Intent(this@SearchActivity, MainActivity::class.java)
+            intent.putExtra("isLogin", 1)
+            startActivity(intent)
         }
 
         searchResult()

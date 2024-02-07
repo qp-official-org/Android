@@ -62,5 +62,10 @@ class MainActivity : AppCompatActivity() {
             binding.mainLoginBt.visibility = View.VISIBLE
             binding.mainLoginSuccessBt.visibility = View.GONE
         }
+
+
+        binding.mainLoginSuccessBt.setOnClickListener{
+            startActivity(Intent(this, ProfileActivity::class.java))
+        }
     }
 }
