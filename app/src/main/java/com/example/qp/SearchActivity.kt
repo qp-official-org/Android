@@ -3,12 +3,12 @@ package com.example.qp
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.qp.databinding.ActivitySearchBinding
+import com.google.gson.Gson
 
 class SearchActivity : AppCompatActivity() {
 
@@ -75,12 +75,21 @@ class SearchActivity : AppCompatActivity() {
             }
 
         })
+
+        questionRVAdapter.setMyItemClickListner(object : QuestionRVAdapter.MyItemClickListner{
+            override fun onItemClick(question: Question) {
+                val intent = Intent(this@SearchActivity, DetailedActivity::class.java)
+                val gson = Gson()
+                val qJson = gson.toJson(question)
+                intent.putExtra("question", qJson)
+                startActivity(intent)
+            }
+        })
     }
 
     private fun register(){
         binding.searchRegisterBt.setOnClickListener {
-//           Toast.makeText(this, "질문등록 화면으로 전환됩니다!", Toast.LENGTH_LONG).show()
-            startActivity(Intent(this@SearchActivity,WriteQuestionActivity::class.java))
+            startActivity(Intent(this@SearchActivity, WriteQuestionActivity::class.java))
         }
     }
 
