@@ -19,6 +19,7 @@ class SetNicknameActivity : AppCompatActivity() {
 
         binding.nicknameBackIv.setOnClickListener {
             startActivity(Intent(this, LoginActivity::class.java))
+            finish()
         }
 
         // editText 입력마다 체크

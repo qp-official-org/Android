@@ -25,6 +25,7 @@ class LoginActivity : AppCompatActivity() {
 
         binding.loginCloseIv.setOnClickListener {
             startActivity(Intent(this, MainActivity::class.java))
+            finish()
         }
 
         binding.loginExpert2Tv.setOnClickListener {

@@ -3,6 +3,7 @@ package com.example.qp
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.qp.databinding.ActivitySetprofileBinding
 
@@ -27,6 +28,7 @@ class SetProfileActivity : AppCompatActivity() {
             }
             else {
                 startActivity(Intent(this, SetNicknameActivity::class.java))
+                finish()
             }
         }
 
@@ -42,8 +44,12 @@ class SetProfileActivity : AppCompatActivity() {
         }
 
         binding.profileExitBtnIv.setOnClickListener {
-            startActivity(Intent(this,MainActivity::class.java))
+            Toast.makeText(this, "로그인에 성공했습니다.", Toast.LENGTH_SHORT).show()
+
+            val intent = Intent(this, MainActivity::class.java)
+            intent.putExtra("isLogin", 1)
+
+            startActivity(intent)
         }
     }
-
 }
