@@ -3,6 +3,7 @@ package com.example.qp
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.qp.databinding.ActivityMainBinding
 import com.google.gson.Gson
@@ -11,6 +12,7 @@ class MainActivity : AppCompatActivity() {
 
     lateinit var binding: ActivityMainBinding
     private var qDatas = ArrayList<Question>()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -49,5 +51,21 @@ class MainActivity : AppCompatActivity() {
             startActivity(Intent(this@MainActivity, LoginActivity::class.java))
         }
 
+
+        //Login 여부 확인
+        val isLogin = intent.getIntExtra("isLogin", 0)
+        if(isLogin == 1) {
+            binding.mainLoginBt.visibility = View.GONE
+            binding.mainLoginSuccessBt.visibility = View.VISIBLE
+        }
+        else {
+            binding.mainLoginBt.visibility = View.VISIBLE
+            binding.mainLoginSuccessBt.visibility = View.GONE
+        }
+
+
+        binding.mainLoginSuccessBt.setOnClickListener{
+            startActivity(Intent(this, ProfileActivity::class.java))
+        }
     }
 }
