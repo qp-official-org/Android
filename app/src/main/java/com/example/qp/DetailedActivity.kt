@@ -3,6 +3,7 @@ package com.example.qp
 import android.content.Context
 import android.graphics.Rect
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.text.Editable
 import android.util.Log
@@ -13,10 +14,12 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.example.qp.databinding.ActivityDetailedBinding
 import com.google.gson.Gson
+import java.io.Serializable
 
 
 class DetailedActivity : AppCompatActivity(){
@@ -38,9 +41,9 @@ class DetailedActivity : AppCompatActivity(){
         }
 
         binding.detailedSearchBt.setOnClickListener {
-            //val qDatas = intent.getSerializableExtra("qDatas") as ArrayList<Question>
+            val qDatas = intent.getSerializableExtra("qDatas") as ArrayList<Question>
             val intent = Intent(this@DetailedActivity, SearchActivity::class.java)
-            //intent.putExtra("qDatas", qDatas)
+            intent.putExtra("qDatas", qDatas)
             startActivity(intent)
         }
 

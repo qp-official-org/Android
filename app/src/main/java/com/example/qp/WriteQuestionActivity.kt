@@ -162,9 +162,7 @@ class WriteQuestionActivity: AppCompatActivity(),WriteQView {
                 } else {
                     cancelBtn.visibility = View.GONE
                 }
-
         }
-
 
     }
 
@@ -205,10 +203,12 @@ class WriteQuestionActivity: AppCompatActivity(),WriteQView {
 
                     questionService.writeQ(question)
 
+                    val qDatas = intent.getSerializableExtra("qDatas") as ArrayList<Question>
                     val intent= Intent(this@WriteQuestionActivity,DetailedActivity::class.java)
                     val gson= Gson()
                     val qJson=gson.toJson(question)
                     intent.putExtra("question",qJson)
+                    intent.putExtra("qDatas",qDatas)
                     startActivity(intent)
                     Toast.makeText(applicationContext,"등록 완료",Toast.LENGTH_SHORT).show()
 
