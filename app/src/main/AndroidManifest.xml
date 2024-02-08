@@ -6,7 +6,7 @@
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@drawable/app_logo"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
@@ -21,6 +21,15 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".DetailedActivity"
+            android:windowSoftInputMode="adjustPan"/>
+        <activity android:name=".LoginActivity"/>
+        <activity android:name=".WriteQuestionActivity"/>
+        <activity android:name=".SetNicknameActivity"/>
+        <activity android:name=".SetProfileActivity"/>
+        <activity android:name=".SearchActivity"/>
+        <activity android:name=".ProfileActivity"
+            android:windowSoftInputMode="adjustPan"/>
     </application>
 
 </manifest>
