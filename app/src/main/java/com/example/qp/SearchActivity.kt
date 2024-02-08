@@ -37,7 +37,7 @@ class SearchActivity : AppCompatActivity() {
         binding.searchMatchQuestionRv.adapter = questionRVAdapter
         binding.searchMatchQuestionRv.layoutManager = GridLayoutManager(applicationContext, 2)
 
-        binding.searchInputSv.setOnQueryTextListener(object : SearchView.OnQueryTextListener{
+        val textListner = object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 Log.d("qDatas 개수", original.size.toString())
                 val selected = ArrayList<Question>()
@@ -73,8 +73,13 @@ class SearchActivity : AppCompatActivity() {
                 //검색어 변경 시는 별다른 액션 X
                 return false
             }
+        }
 
-        })
+        binding.searchInputSv.setOnQueryTextListener(textListner)
+        binding.searchImageBt.setOnClickListener {
+            textListner.onQueryTextSubmit(binding.searchInputSv.query.toString())
+        }
+
     }
 
     private fun register(){

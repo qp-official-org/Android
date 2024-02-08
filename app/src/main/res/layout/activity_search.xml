@@ -44,6 +44,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@id/search_back_iv"/>
         <ImageView
+            android:id="@+id/search_image_bt"
             android:layout_width="45dp"
             android:layout_height="45dp"
             android:src="@drawable/bt_search"
