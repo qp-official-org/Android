@@ -39,9 +39,9 @@ class QuestionRVAdapter(private val qList: ArrayList<Question>)
         fun bind(question: Question){
             binding.itemTimeTv.text = question.time
             binding.itemQuestionTv.text = question.title
-            binding.itemCategory1Tv.text = question.tag1
-            binding.itemCategory2Tv.text = question.tag2
-            binding.itemCategory3Tv.text = question.tag3
+//            binding.itemCategory1Tv.text = question.tag1
+//            binding.itemCategory2Tv.text = question.tag2
+//            binding.itemCategory3Tv.text = question.tag3
         }
     }
 

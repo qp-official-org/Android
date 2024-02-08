@@ -11,7 +11,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.QP"
-        tools:targetApi="31">
+        tools:targetApi="31"
+        android:usesCleartextTraffic="true">
         <activity
             android:name=".MainActivity"
             android:exported="true">
@@ -28,8 +29,11 @@
         <activity android:name=".SetNicknameActivity"/>
         <activity android:name=".SetProfileActivity"/>
         <activity android:name=".SearchActivity"/>
+        <activity android:name=".ModifyQuestionActivity"/>
         <activity android:name=".ProfileActivity"
             android:windowSoftInputMode="adjustPan"/>
     </application>
+
+    <uses-permission android:name="android.permission.INTERNET" />
 
 </manifest>
