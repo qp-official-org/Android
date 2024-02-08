@@ -39,14 +39,17 @@ class QuestionRVAdapter(private val qList: ArrayList<QuestionInfo>)
         fun bind(questionInfo: QuestionInfo){
             binding.itemTimeTv.text = questionInfo.createAt.toString()
             binding.itemQuestionTv.text = questionInfo.title
-            for (tagInfo in questionInfo.hashtags) {
-                if(tagInfo.hashtagId == 1)
-                    binding.itemCategory1Tv.text = tagInfo.hashtag
-                else if(tagInfo.hashtagId == 2)
-                    binding.itemCategory2Tv.text = tagInfo.hashtag
-                else if(tagInfo.hashtagId == 3)
-                    binding.itemCategory3Tv.text = tagInfo.hashtag
+            if(questionInfo.hashtags?.isEmpty() == false){
+                for (tagInfo in questionInfo.hashtags!!) {
+                    if(tagInfo.hashtagId == 1)
+                        binding.itemCategory1Tv.text = tagInfo.hashtag
+                    else if(tagInfo.hashtagId == 2)
+                        binding.itemCategory2Tv.text = tagInfo.hashtag
+                    else if(tagInfo.hashtagId == 3)
+                        binding.itemCategory3Tv.text = tagInfo.hashtag
+                }
             }
+
 
         }
     }

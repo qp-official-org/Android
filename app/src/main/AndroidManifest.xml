@@ -31,6 +31,7 @@
         <activity android:name=".SetNicknameActivity"/>
         <activity android:name=".SetProfileActivity"/>
         <activity android:name=".SearchActivity"/>
+        <activity android:name=".ModifyQuestionActivity"/>
         <activity android:name=".ProfileActivity"
             android:windowSoftInputMode="adjustPan"/>
     </application>

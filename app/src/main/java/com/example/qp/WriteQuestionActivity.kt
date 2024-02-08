@@ -4,29 +4,26 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Rect
 import android.os.Bundle
-import android.os.PersistableBundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.MotionEvent
 import android.view.View
-import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import androidx.core.widget.addTextChangedListener
 import com.example.qp.databinding.ActivityWriteQuestionBinding
 import com.google.gson.Gson
+import java.util.Date
 
-class WriteQuestionActivity: AppCompatActivity() {
+class WriteQuestionActivity: AppCompatActivity(),WriteQView {
     private lateinit var binding:ActivityWriteQuestionBinding
     private lateinit var adapter:WriteQuestionTagRVAdapter
     private var isChild=false
     private var isTitleValid=false
     private var isContentValid=false
-    private  var tagList=ArrayList<String>()
+    private  var tagList = ArrayList<TagInfo>()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -34,6 +31,8 @@ class WriteQuestionActivity: AppCompatActivity() {
         binding = ActivityWriteQuestionBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        binding.titleEdit.text.clear()
+        binding.contentEdit.text.clear()
         adapter=WriteQuestionTagRVAdapter(applicationContext)
         binding.hashtagRv.adapter=adapter
 
@@ -166,19 +165,30 @@ class WriteQuestionActivity: AppCompatActivity() {
     }
 
     private fun registerQuestion(){
+        val questionService=QuestionService()
+        questionService.setWriteQView(this)
 
         binding.registerBtn.setOnClickListener {
             val titleText=findViewById<EditText>(R.id.title_edit).text.toString()
             val contentText=binding.contentEdit.text.toString()
             val checkBox=binding.noteCheckbox
-            tagList=adapter.getItems()
-            var question=Question()
 
             if(isTitleValid &&isContentValid){
                 if(checkBox.isChecked){
-                    question.title=titleText
-                    question.content=contentText
-                    when(tagList.size){
+
+                    val questionInfo = QuestionInfo(
+                        UserInfo(0,"","student"), //사용자 정보 임의 설정
+                        0, //임의 설정
+                        titleText,
+                        contentText,
+                        0, // 초기값 설정
+                        0, // 초기값 설정
+                        0, // 초기값 설정
+                        Date().getTime().toString(),
+                        updateAt = null, // 초기값 설정
+                        tagList
+                    )
+                    /*when(tagList.size){
                         1->question.tag1=tagList[0]
                         2-> {
                             question.tag1=tagList[0]
@@ -189,10 +199,13 @@ class WriteQuestionActivity: AppCompatActivity() {
                             question.tag2 = tagList[1]
                             question.tag3=tagList[2]
                         }
-                    }
+                    }*/
+
+                    questionService.writeQ(questionInfo)
+
                     val intent= Intent(this@WriteQuestionActivity,DetailedActivity::class.java)
                     val gson= Gson()
-                    val qJson=gson.toJson(question)
+                    val qJson=gson.toJson(questionInfo)
                     intent.putExtra("question",qJson)
                     startActivity(intent)
                     Toast.makeText(applicationContext,"등록 완료",Toast.LENGTH_SHORT).show()
@@ -224,6 +237,13 @@ class WriteQuestionActivity: AppCompatActivity() {
         return super.dispatchTouchEvent(event)
     }
 
+    override fun onWriteSuccess() {
+        TODO("Not yet implemented")
+    }
+
+    override fun onWriteFailure() {
+        TODO("Not yet implemented")
+    }
 
 
 }
