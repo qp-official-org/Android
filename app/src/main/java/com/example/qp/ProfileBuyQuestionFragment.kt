@@ -22,9 +22,12 @@ class ProfileBuyQuestionFragment : Fragment() {
         binding = FragmentProfileBuyQuestionBinding.inflate(inflater, container, false)
 
         qDatas.apply {
-            add(Question("2023.12.20","질문 제목2","질문내용2","#태그1","#태그2","#태그3"))
-            add(Question("2024.01.04","질문 제목4","질문내용4","#태그1","#태그2","#태그3"))
-            add(Question("2024.01.07","질문 제목5","질문내용5","#태그1","#태그2",""))
+//            add(Question("2023.12.20","질문 제목2","질문내용2","#태그1","#태그2","#태그3"))
+//            add(Question("2024.01.04","질문 제목4","질문내용4","#태그1","#태그2","#태그3"))
+//            add(Question("2024.01.07","질문 제목5","질문내용5","#태그1","#태그2",""))
+            add(Question("2023.12.20","질문 제목2","질문내용2"))
+            add(Question("2024.01.04","질문 제목4","질문내용4"))
+            add(Question("2024.01.07","질문 제목5","질문내용5"))
         }
 
         val questionRVAdapter = QuestionRVAdapter(qDatas)

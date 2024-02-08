@@ -48,6 +48,13 @@ class WriteQuestionActivity: AppCompatActivity(),WriteQView {
         checkContentEdit()
         registerQuestion()
 
+        binding.writeSearchBt.setOnClickListener {
+            val qDatas=intent.getSerializableExtra("qDatas") as ArrayList<Question>
+            val intent=Intent(this@WriteQuestionActivity,SearchActivity::class.java)
+            intent.putExtra("qDatas",qDatas)
+            startActivity(intent)
+        }
+
     }
 
     private fun setChild(){

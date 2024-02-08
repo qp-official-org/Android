@@ -124,6 +124,18 @@ class DetailedActivity : AppCompatActivity(){
             }
         }
 
+        val isLogin = intent.getIntExtra("isLogin", 0)
+        if(isLogin == 1) {
+            binding.detailedLoginBtn.visibility = View.GONE
+            binding.detailedProfileBtn.visibility = View.VISIBLE
+        }
+        else {
+            binding.detailedLoginBtn.visibility = View.VISIBLE
+            binding.detailedProfileBtn.visibility = View.GONE
+        }
+
+
+
 
     }
     private fun initAnswerData(){
@@ -167,6 +179,14 @@ class DetailedActivity : AppCompatActivity(){
             else{
                 notifyQuestion(false)
             }
+        }
+
+        binding.detailedLoginBtn.setOnClickListener {
+            startActivity(Intent(this@DetailedActivity, LoginActivity::class.java))
+        }
+        binding.detailedProfileBtn.setOnClickListener {
+            startActivity(Intent(this, ProfileActivity::class.java))
+
         }
     }
 
