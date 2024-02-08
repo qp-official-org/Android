@@ -158,9 +158,7 @@ class WriteQuestionActivity: AppCompatActivity(),WriteQView {
                 } else {
                     cancelBtn.visibility = View.GONE
                 }
-
         }
-
 
     }
 

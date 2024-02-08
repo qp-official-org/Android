@@ -262,7 +262,7 @@ class DetailedQuestionRVAdapter(context:Context): RecyclerView.Adapter<DetailedQ
     }
 
     fun addItem(item: Answer) {
-        this.items.add(0, item)
+        this.items.add(0,item)
         this.notifyDataSetChanged()
     }
     fun addItemList(items:ArrayList<Answer>){

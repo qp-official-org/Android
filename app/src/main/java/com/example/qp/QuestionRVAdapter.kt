@@ -49,8 +49,6 @@ class QuestionRVAdapter(private val qList: ArrayList<QuestionInfo>)
                         binding.itemCategory3Tv.text = tagInfo.hashtag
                 }
             }
-
-
         }
     }
 

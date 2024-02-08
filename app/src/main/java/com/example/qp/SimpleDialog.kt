@@ -34,6 +34,7 @@ class SimpleDialog(): DialogFragment() {
             dismiss()
         }
 
+
         return binding.root
     }
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
