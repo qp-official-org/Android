@@ -6,7 +6,6 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
 import android.widget.Toast
-import android.widget.Toast.makeText
 import androidx.appcompat.app.AppCompatActivity
 import com.example.qp.databinding.ActivityLoginBinding
 
@@ -26,6 +25,7 @@ class LoginActivity : AppCompatActivity() {
 
         binding.loginCloseIv.setOnClickListener {
             startActivity(Intent(this, MainActivity::class.java))
+            finish()
         }
 
         binding.loginExpert2Tv.setOnClickListener {
@@ -57,7 +57,7 @@ class LoginActivity : AppCompatActivity() {
         })
 
         binding.loginNextBtn.setOnClickListener {
-            startActivity(Intent(this,NicknameActivity::class.java))
+            startActivity(Intent(this,SetNicknameActivity::class.java))
         }
 
         binding.loginNextInvalidBtn.setOnClickListener {
@@ -75,6 +75,9 @@ class LoginActivity : AppCompatActivity() {
 
         binding.loginKakaoBtn.setOnClickListener {
             Toast.makeText(this, "카카오 로그인", Toast.LENGTH_SHORT).show()
+
+            startActivity(Intent(this,SetNicknameActivity::class.java))
+            //빠른 로그인을 위한 임시 설정
         }
     }
 }
