@@ -3,12 +3,12 @@ package com.example.qp
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.qp.databinding.ActivitySearchBinding
+import com.google.gson.Gson
 
 class SearchActivity : AppCompatActivity() {
 
@@ -22,7 +22,9 @@ class SearchActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         binding.searchBackIv.setOnClickListener{
-            startActivity(Intent(this@SearchActivity, MainActivity::class.java))
+            val intent = Intent(this@SearchActivity, MainActivity::class.java)
+            intent.putExtra("isLogin", 1)
+            startActivity(intent)
         }
 
         searchResult()
@@ -39,7 +41,7 @@ class SearchActivity : AppCompatActivity() {
         binding.searchMatchQuestionRv.adapter = questionRVAdapter
         binding.searchMatchQuestionRv.layoutManager = GridLayoutManager(applicationContext, 2)
 
-        binding.searchInputSv.setOnQueryTextListener(object : SearchView.OnQueryTextListener{
+        val textListner = object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 Log.d("qDatas 개수", original.size.toString())
                 val selected = ArrayList<QuestionInfo>()
@@ -75,13 +77,27 @@ class SearchActivity : AppCompatActivity() {
                 //검색어 변경 시는 별다른 액션 X
                 return false
             }
+        }
 
+        binding.searchInputSv.setOnQueryTextListener(textListner)
+        binding.searchImageBt.setOnClickListener {
+            textListner.onQueryTextSubmit(binding.searchInputSv.query.toString())
+        }
+
+        questionRVAdapter.setMyItemClickListner(object : QuestionRVAdapter.MyItemClickListner{
+            override fun onItemClick(questionInfo: QuestionInfo) {
+                val intent = Intent(this@SearchActivity, DetailedActivity::class.java)
+                val gson = Gson()
+                val qJson = gson.toJson(questionInfo)
+                intent.putExtra("question", qJson)
+                startActivity(intent)
+            }
         })
     }
 
     private fun register(){
         binding.searchRegisterBt.setOnClickListener {
-           Toast.makeText(this, "질문등록 화면으로 전환됩니다!", Toast.LENGTH_LONG).show()
+            startActivity(Intent(this@SearchActivity, WriteQuestionActivity::class.java))
         }
     }
 

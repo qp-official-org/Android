@@ -4,6 +4,7 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.qp.databinding.ActivityMainBinding
 import com.google.gson.Gson
@@ -28,8 +29,7 @@ class MainActivity : AppCompatActivity() {
 
         questionRVAdapter.setMyItemClickListner(object : QuestionRVAdapter.MyItemClickListner{
             override fun onItemClick(questionInfo: QuestionInfo) {
-                //val intent = Intent(this@MainActivity, DetailedActivity::class.java)
-                val intent = Intent(this@MainActivity, WriteQuestionActivity::class.java)
+                val intent = Intent(this@MainActivity, DetailedActivity::class.java)
                 val gson = Gson()
                 val qJson = gson.toJson(questionInfo)
                 intent.putExtra("question", qJson)
@@ -49,6 +49,21 @@ class MainActivity : AppCompatActivity() {
             startActivity(Intent(this@MainActivity, LoginActivity::class.java))
         }
 
+        //Login 여부 확인
+        val isLogin = intent.getIntExtra("isLogin", 0)
+        if(isLogin == 1) {
+            binding.mainLoginBt.visibility = View.GONE
+            binding.mainLoginSuccessBt.visibility = View.VISIBLE
+        }
+        else {
+            binding.mainLoginBt.visibility = View.VISIBLE
+            binding.mainLoginSuccessBt.visibility = View.GONE
+        }
+
+
+        binding.mainLoginSuccessBt.setOnClickListener{
+            startActivity(Intent(this, ProfileActivity::class.java))
+        }
     }
 
     private fun getQuestions() {
