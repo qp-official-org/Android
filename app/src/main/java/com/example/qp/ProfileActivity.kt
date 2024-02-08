@@ -27,7 +27,7 @@ class ProfileActivity : AppCompatActivity() {
         }.attach()
 
         binding.mainSearchBt.setOnClickListener{
-            val intent = Intent(this, MainActivity::class.java)
+            val intent = Intent(this, SearchActivity::class.java)
             intent.putExtra("isLogin", 1)
             startActivity(intent)
             finish()
