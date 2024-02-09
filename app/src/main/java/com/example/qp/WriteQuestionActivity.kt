@@ -188,21 +188,6 @@ class WriteQuestionActivity: AppCompatActivity(),WriteQView {
                 if(checkBox.isChecked){
                     question.title=titleText
                     question.content=contentText
-                    /*when(tagList.size){
-                        1-> {
-                            question.tag1=tagList[0]
-                            question.hashtags.add(Hashtag(hashtagId,tagList[0]))
-                        }
-                        2-> {
-                            question.tag1=tagList[0]
-                            question.tag2 = tagList[1]
-                        }
-                        3->{
-                            question.tag1=tagList[0]
-                            question.tag2 = tagList[1]
-                            question.tag3=tagList[2]
-                        }
-                    }*/
                     for(i in 0 until tagList.size){
                         question.hashtags.add(Hashtag(TagCount.hashtagId,tagList[i]))
                         TagCount.incId()
@@ -217,6 +202,7 @@ class WriteQuestionActivity: AppCompatActivity(),WriteQView {
                     intent.putExtra("question",qJson)
                     intent.putExtra("qDatas",qDatas)
                     startActivity(intent)
+                    finish()
                     Toast.makeText(applicationContext,"등록 완료",Toast.LENGTH_SHORT).show()
 
                 }

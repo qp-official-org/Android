@@ -41,4 +41,11 @@ class QuestionService {
 
         })
     }
+
+    //해시태그 생성
+    fun getHashtag(hashtag:String){
+        val questionService= getRetrofit().create(QuestionRetrofitInterface::class.java)
+
+
+    }
 }
