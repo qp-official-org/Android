@@ -49,6 +49,10 @@ class DetailedActivity : AppCompatActivity(){
         setQuestionMorePopup()
 
 
+        binding.profileBar.setOnClickListener {
+            startActivity(Intent(this, ProfileActivity::class.java))
+            finish()
+        }
     }
 
 

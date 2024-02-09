@@ -1,21 +1,33 @@
 package com.example.qp
 
+import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.inputmethod.InputMethodManager
+import android.widget.Button
+import android.widget.EditText
+import android.widget.TextView
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.AppCompatButton
 import com.example.qp.databinding.ActivityProfileBinding
+import com.example.qp.databinding.DialogChargeBinding
 import com.google.android.material.tabs.TabLayoutMediator
+import org.w3c.dom.Text
 
 class ProfileActivity : AppCompatActivity() {
     lateinit var binding: ActivityProfileBinding
+//    lateinit var binding2: DialogChargeBinding
 
     private val information = arrayListOf("내가 한 질문", "내가 구매한 답변", "알림신청한 질문")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityProfileBinding.inflate(layoutInflater)
+//        binding2 = DialogChargeBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         val profileVPAdapter = ProfileVPAdapter(this)
@@ -27,13 +39,13 @@ class ProfileActivity : AppCompatActivity() {
         }.attach()
 
         binding.mainSearchBt.setOnClickListener{
-            val intent = Intent(this, MainActivity::class.java)
+            val intent = Intent(this, SearchActivity::class.java)
             intent.putExtra("isLogin", 1)
             startActivity(intent)
             finish()
         }
 
-        // 충전 버튼 색상 변경
+        // 충전 버튼 색상 변경 및 Dialog 등장
         binding.profileChargekBtn.setOnClickListener {
             binding.profileChargekBtn.setBackgroundResource(R.drawable.box_orange)
             binding.profileChargekTv1.setTextColor(Color.WHITE)
@@ -56,12 +68,14 @@ class ProfileActivity : AppCompatActivity() {
             binding.profileChargekNaverTv.setTextColor(Color.WHITE)
             binding.profileChargekKakaoBtn.setBackgroundResource(R.drawable.box_white_lined)
             binding.profileChargekKakaoTv.setTextColor(Color.BLACK)
+            //madeDialog(1000, "네이버 페이")
         }
         binding.profileChargekKakaoBtn.setOnClickListener {
             binding.profileChargekNaverBtn.setBackgroundResource(R.drawable.box_white_lined)
             binding.profileChargekNaverTv.setTextColor(Color.BLACK)
             binding.profileChargekKakaoBtn.setBackgroundResource(R.drawable.box_orange)
             binding.profileChargekKakaoTv.setTextColor(Color.WHITE)
+            //madeDialog(1000, "카카오 페이")
         }
 
         binding.profileCharge10kBtn.setOnClickListener {
@@ -86,15 +100,18 @@ class ProfileActivity : AppCompatActivity() {
             binding.profileCharge10kNaverTv.setTextColor(Color.WHITE)
             binding.profileCharge10kKakaoBtn.setBackgroundResource(R.drawable.box_white_lined)
             binding.profileCharge10kKakaoTv.setTextColor(Color.BLACK)
+            //madeDialog(10000, "네이버 페이")
         }
         binding.profileCharge10kKakaoBtn.setOnClickListener {
             binding.profileCharge10kNaverBtn.setBackgroundResource(R.drawable.box_white_lined)
             binding.profileCharge10kNaverTv.setTextColor(Color.BLACK)
             binding.profileCharge10kKakaoBtn.setBackgroundResource(R.drawable.box_orange)
             binding.profileCharge10kKakaoTv.setTextColor(Color.WHITE)
+            //madeDialog(10000, "카카오 페이")
         }
 
 
+        // 프로필 수정버튼
         binding.profileMainEditBtn.setOnClickListener {
             binding.profileEditSettingIv.visibility = View.VISIBLE
             binding.profileMainTv.visibility = View.GONE
@@ -104,7 +121,6 @@ class ProfileActivity : AppCompatActivity() {
             binding.profileEditNoBtn.visibility = View.VISIBLE
             binding.profileMainImageIv.setAlpha(0.7f)
         }
-
         binding.profileEditYesBtn.setOnClickListener {
             val editname : String = binding.profileEditNicknameEt.text.toString()
             if(editname == null || editname.isEmpty())
@@ -129,5 +145,56 @@ class ProfileActivity : AppCompatActivity() {
             binding.profileEditNoBtn.visibility = View.GONE
             binding.profileMainImageIv.setAlpha(1f)
         }
+
+
+        binding.profileQpLogo.setOnClickListener {
+            val intent = Intent(this, MainActivity::class.java)
+            intent.putExtra("isLogin", 1)
+
+            startActivity(intent)
+            finish()
+        }
     }
+
+//    // Dialog 호출 함수
+//    fun madeDialog(num : Int, str : String) {
+//        val mDialogView = LayoutInflater.from(this).inflate(R.layout.dialog_charge, null)
+//
+//        binding2.chargeText1Tv.text = "선택하신 금액 '${num}원'을"
+//        binding2.chargeText2Tv.text = "'${str}'로"
+//
+//        val mBuilder = AlertDialog.Builder(this)
+//            .setView(mDialogView)
+//
+//        mBuilder.show()
+//
+//        binding2.chargeYesBtn.setOnClickListener {
+//            binding2.chargeText1Tv.visibility = View.GONE
+//            binding2.chargeText2Tv.visibility = View.GONE
+//            binding2.chargeText3Tv.visibility = View.GONE
+//            binding2.chargeYesBtn.visibility = View.GONE
+//            binding2.chargeNoBtn.visibility = View.GONE
+//
+//            binding2.chargeText4Tv.visibility = View.VISIBLE
+//            binding2.chargeText5Tv.visibility = View.VISIBLE
+//            binding2.chargeText6Tv.visibility = View.VISIBLE
+//            binding2.chargeText7Tv.visibility = View.VISIBLE
+//            binding2.chargeNextBtn.visibility = View.VISIBLE
+//
+//            binding2.chargeText5Tv.text = "현재 '큐피'님의 잔여 포인트는"
+//            val pnum : Int = num+800
+//            binding2.chargeText6Tv.text = "${pnum} point입니다."
+//            val pque : Int = pnum/10
+//            binding2.chargeText7Tv.text = "${pque}개의 답변을 확인할 수 있어요!"
+//
+//            binding2.chargeNextBtn.setOnClickListener {
+//                mBuilder.show().dismiss()
+//
+//                binding.profileMainCoinNumTv.text = "$pnum"
+//            }
+//        }
+//        binding2.chargeNoBtn.setOnClickListener {
+//            mBuilder.show().dismiss()
+//        }
+//    }
 }
