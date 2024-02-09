@@ -3,8 +3,10 @@ package com.example.qp
 import android.content.Context
 import android.graphics.Rect
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.text.Editable
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
@@ -12,10 +14,12 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.example.qp.databinding.ActivityDetailedBinding
 import com.google.gson.Gson
+import java.io.Serializable
 
 
 class DetailedActivity : AppCompatActivity(){
@@ -107,9 +111,22 @@ class DetailedActivity : AppCompatActivity(){
         binding.detailedQuestionContentTv.text = question.content
         binding.detailedQuestionTimeTv.text = question.time
 
-        binding.hashtag1.text=question.tag1
-        binding.hashtag2.text=question.tag2
-        binding.hashtag3.text=question.tag3
+//        binding.hashtag1.text=question.tag1
+//        binding.hashtag2.text=question.tag2
+//        binding.hashtag3.text=question.tag3
+        val tagListSize=question.hashtags.size
+        when(tagListSize){
+            1->binding.hashtag1.text=question.hashtags[0].hashtag
+            2->{
+                binding.hashtag1.text=question.hashtags[0].hashtag
+                binding.hashtag2.text=question.hashtags[1].hashtag
+            }
+            3->{
+                binding.hashtag1.text=question.hashtags[0].hashtag
+                binding.hashtag2.text=question.hashtags[1].hashtag
+                binding.hashtag3.text=question.hashtags[2].hashtag
+            }
+        }
 
 
     }
@@ -148,8 +165,8 @@ class DetailedActivity : AppCompatActivity(){
         binding.answerNoticeBtn.setOnClickListener {
             if(!isNotified){
                 notifyQuestion(true)
-                /*val dialog=SimpleDialog()
-                dialog.show(supportFragmentManager,"dialog")*/
+                val dialog=SimpleDialog()
+                dialog.show(supportFragmentManager,"dialog")
             }
             else{
                 notifyQuestion(false)
@@ -238,9 +255,21 @@ class DetailedActivity : AppCompatActivity(){
                 }
                 popupWindow=SimplePopup(applicationContext,list){_,_,position->
                     when(position){
-                        0->Toast.makeText(applicationContext,"수정하기",Toast.LENGTH_SHORT).show()
+                        0-> {
+                            val gson= Gson()
+                            val qJson=gson.toJson(question)
+                            val intent=Intent(this@DetailedActivity,ModifyQuestionActivity::class.java)
+                            intent.putExtra("modifyQuestion",qJson)
+                            startActivity(intent)
+                            Log.d("modifyLog",question.toString())
+                            Toast.makeText(applicationContext, "수정하기", Toast.LENGTH_SHORT).show()
+                        }
                         1->Toast.makeText(applicationContext,"삭제하기",Toast.LENGTH_SHORT).show()
-                        2->Toast.makeText(applicationContext,"신고하기",Toast.LENGTH_SHORT).show()
+                        2-> {
+                            Toast.makeText(applicationContext, "신고하기", Toast.LENGTH_SHORT).show()
+                            val dialog=SimpleDialog()
+                            dialog.show(supportFragmentManager,"dialog")
+                        }
                     }
                 }
                 popupWindow.isOutsideTouchable=true
@@ -255,7 +284,11 @@ class DetailedActivity : AppCompatActivity(){
                 }
                 popupWindow=SimplePopup(applicationContext,list){_,_,position->
                     when(position){
-                        0->Toast.makeText(applicationContext,"신고하기",Toast.LENGTH_SHORT).show()
+                        0-> {
+                            Toast.makeText(applicationContext, "신고하기", Toast.LENGTH_SHORT).show()
+                            val dialog=SimpleDialog()
+                            dialog.show(supportFragmentManager,"dialog")
+                        }
                     }
                 }
                 popupWindow.isOutsideTouchable=true

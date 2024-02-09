@@ -11,8 +11,12 @@ import android.view.WindowManager
 import androidx.fragment.app.DialogFragment
 import com.example.qp.databinding.PopupDialogBinding
 
-class SimpleDialog: DialogFragment() {
+class SimpleDialog(): DialogFragment() {
     private lateinit var binding:PopupDialogBinding
+    private var text="로그인이 필요한 기능입니다."
+    constructor(text:String):this(){
+        this.text=text
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -22,9 +26,14 @@ class SimpleDialog: DialogFragment() {
         binding= PopupDialogBinding.inflate(inflater,container,false)
         isCancelable=false
 
+        if(text!=null){
+            binding.popupText.text=text
+        }
+
         binding.popupButtonOk.setOnClickListener {
             dismiss()
         }
+
 
         return binding.root
     }
