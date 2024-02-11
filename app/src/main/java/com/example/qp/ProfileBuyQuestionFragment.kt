@@ -13,13 +13,14 @@ import com.google.gson.Gson
 class ProfileBuyQuestionFragment : Fragment() {
 
     lateinit var binding: FragmentProfileBuyQuestionBinding
-    private var qDatas = ArrayList<Question>()
+    private var qDatas = ArrayList<QuestionInfo>()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentProfileBuyQuestionBinding.inflate(inflater, container, false)
+
 
         // 임시 데이터 (삭제 요망)
         qDatas.apply {
@@ -33,10 +34,10 @@ class ProfileBuyQuestionFragment : Fragment() {
         binding.questionRv.layoutManager = GridLayoutManager(requireContext(), 2)
 
         questionRVAdapter.setMyItemClickListner(object : QuestionRVAdapter.MyItemClickListner{
-            override fun onItemClick(question: Question) {
+            override fun onItemClick(questionInfo: QuestionInfo) {
                 val intent = Intent(requireContext(), DetailedActivity::class.java)
                 val gson = Gson()
-                val qJson = gson.toJson(question)
+                val qJson = gson.toJson(questionInfo)
                 intent.putExtra("question", qJson)
                 intent.putExtra("qDatas", qDatas)
                 startActivity(intent)

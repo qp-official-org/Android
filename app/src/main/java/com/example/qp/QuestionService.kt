@@ -13,13 +13,13 @@ class QuestionService {
         this.writeQView=view
     }
 
-    fun writeQ(question:Question){
-        val questionService= getRetrofit().create(QuestionRetrofitInterface::class.java)
+    fun writeQ(questionInfo :QuestionInfo){
+        val questionService= getRetrofit().create(QuestionInterface::class.java)
 
-        questionService.writeQ("",question).enqueue(object: Callback<WriteQResponse>{
+        questionService.writeQ("",questionInfo).enqueue(object: Callback<QuestionResponse>{
             override fun onResponse(
-                call: Call<WriteQResponse>,
-                response: Response<WriteQResponse>
+                call: Call<QuestionResponse>,
+                response: Response<QuestionResponse>
             ) {
                 Log.d("writeQ response","success!")
                 val resp=response.body()
@@ -35,7 +35,7 @@ class QuestionService {
 
             }
 
-            override fun onFailure(call: Call<WriteQResponse>, t: Throwable) {
+            override fun onFailure(call: Call<QuestionResponse>, t: Throwable) {
                 Log.d("writeQ Fail",t.message.toString())
             }
 
