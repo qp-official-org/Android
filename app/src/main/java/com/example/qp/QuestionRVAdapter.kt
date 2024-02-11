@@ -40,13 +40,26 @@ class QuestionRVAdapter(private val qList: ArrayList<QuestionInfo>)
             binding.itemTimeTv.text = questionInfo.createAt.toString()
             binding.itemQuestionTv.text = questionInfo.title
             if(questionInfo.hashtags?.isEmpty() == false){
-                for (tagInfo in questionInfo.hashtags!!) {
+                /*for (tagInfo in questionInfo.hashtags!!) {
                     if(tagInfo.hashtagId == 1)
                         binding.itemCategory1Tv.text = tagInfo.hashtag
                     else if(tagInfo.hashtagId == 2)
                         binding.itemCategory2Tv.text = tagInfo.hashtag
                     else if(tagInfo.hashtagId == 3)
                         binding.itemCategory3Tv.text = tagInfo.hashtag
+                }*/
+                val tagList=questionInfo.hashtags
+                if(tagList.size==1){
+                    binding.itemCategory1Tv.text = tagList[0].hashtag
+                }
+                else if(tagList.size==2){
+                    binding.itemCategory1Tv.text = tagList[0].hashtag
+                    binding.itemCategory2Tv.text = tagList[1].hashtag
+                }
+                else if(tagList.size==3){
+                    binding.itemCategory1Tv.text = tagList[0].hashtag
+                    binding.itemCategory2Tv.text = tagList[1].hashtag
+                    binding.itemCategory3Tv.text = tagList[2].hashtag
                 }
             }
         }
