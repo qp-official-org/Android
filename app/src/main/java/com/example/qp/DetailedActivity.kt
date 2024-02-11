@@ -27,7 +27,7 @@ class DetailedActivity : AppCompatActivity(){
     private lateinit var binding: ActivityDetailedBinding
     private var gson: Gson = Gson()
     private lateinit var answerAdapter:DetailedQuestionRVAdapter
-    private lateinit var question:Question
+    private lateinit var questionInfo :QuestionInfo
     private var isNotified:Boolean=false
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -37,11 +37,11 @@ class DetailedActivity : AppCompatActivity(){
 
         if(intent.hasExtra("question")){
             val qJson = intent.getStringExtra("question")
-            question = gson.fromJson(qJson, Question::class.java)
+            questionInfo = gson.fromJson(qJson, QuestionInfo::class.java)
         }
 
         binding.detailedSearchBt.setOnClickListener {
-            val qDatas = intent.getSerializableExtra("qDatas") as ArrayList<Question>
+            val qDatas = intent.getSerializableExtra("qDatas") as ArrayList<QuestionInfo>
             val intent = Intent(this@DetailedActivity, SearchActivity::class.java)
             intent.putExtra("qDatas", qDatas)
             startActivity(intent)
@@ -53,6 +53,10 @@ class DetailedActivity : AppCompatActivity(){
         setQuestionMorePopup()
 
 
+        binding.detailedProfileBtn.setOnClickListener {
+            startActivity(Intent(this, ProfileActivity::class.java))
+            finish()
+        }
     }
 
 
@@ -103,24 +107,21 @@ class DetailedActivity : AppCompatActivity(){
     }
 
     private fun initView(){
-        binding.detailedQuestionTitleTv.text=question.title
-        binding.detailedQuestionContentTv.text = question.content
-        binding.detailedQuestionTimeTv.text = question.time
+        binding.detailedQuestionTitleTv.text = questionInfo.title
+        binding.detailedQuestionContentTv.text = questionInfo.content
+        binding.detailedQuestionTimeTv.text = questionInfo.createAt.toString()
 
-//        binding.hashtag1.text=question.tag1
-//        binding.hashtag2.text=question.tag2
-//        binding.hashtag3.text=question.tag3
-        val tagListSize=question.hashtags.size
+        val tagListSize = questionInfo.hashtags?.size
         when(tagListSize){
-            1->binding.hashtag1.text=question.hashtags[0].hashtag
+            1->binding.hashtag1.text = questionInfo.hashtags!![0].hashtag
             2->{
-                binding.hashtag1.text=question.hashtags[0].hashtag
-                binding.hashtag2.text=question.hashtags[1].hashtag
+                binding.hashtag1.text = questionInfo.hashtags!![0].hashtag
+                binding.hashtag2.text = questionInfo.hashtags!![1].hashtag
             }
             3->{
-                binding.hashtag1.text=question.hashtags[0].hashtag
-                binding.hashtag2.text=question.hashtags[1].hashtag
-                binding.hashtag3.text=question.hashtags[2].hashtag
+                binding.hashtag1.text = questionInfo.hashtags!![0].hashtag
+                binding.hashtag2.text = questionInfo.hashtags!![1].hashtag
+                binding.hashtag3.text = questionInfo.hashtags!![2].hashtag
             }
         }
 
@@ -133,7 +134,6 @@ class DetailedActivity : AppCompatActivity(){
             binding.detailedLoginBtn.visibility = View.VISIBLE
             binding.detailedProfileBtn.visibility = View.GONE
         }
-
 
 
 
@@ -273,11 +273,11 @@ class DetailedActivity : AppCompatActivity(){
                     when(position){
                         0-> {
                             val gson= Gson()
-                            val qJson=gson.toJson(question)
+                            val qJson=gson.toJson(questionInfo)
                             val intent=Intent(this@DetailedActivity,ModifyQuestionActivity::class.java)
                             intent.putExtra("modifyQuestion",qJson)
                             startActivity(intent)
-                            Log.d("modifyLog",question.toString())
+                            Log.d("modifyLog",questionInfo.toString())
                             Toast.makeText(applicationContext, "수정하기", Toast.LENGTH_SHORT).show()
                         }
                         1->Toast.makeText(applicationContext,"삭제하기",Toast.LENGTH_SHORT).show()
