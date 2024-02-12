@@ -23,8 +23,8 @@ class ProfileMyQuestionFragment : Fragment() {
 
         // 임시 데이터 (삭제 요망)
         qDatas.apply {
-            add(Question("2023.11.16","아르테미스 계획","현재 아르테미스 계획은 어떻게 되어 가고 있나요?","#우주","달",""))
-            add(Question("2024.01.04","가장 빠른 동물","가장 빠른 동물이 무엇인가요?","#동물","#환경생물학",""))
+            add(Question("2023.11.16","아르테미스 계획","현재 아르테미스 계획은 어떻게 되어 가고 있나요?",))
+            add(Question("2024.01.04","가장 빠른 동물","가장 빠른 동물이 무엇인가요?"))
         }
 
         val questionRVAdapter = QuestionRVAdapter(qDatas)

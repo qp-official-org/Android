@@ -3,10 +3,13 @@ package com.example.qp
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.qp.databinding.ActivityMainBinding
 import com.google.gson.Gson
+import com.kakao.sdk.common.util.Utility
+import com.kakao.sdk.user.UserApiClient
 
 class MainActivity : AppCompatActivity() {
 
@@ -18,6 +21,23 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        // 키 해시 확인용
+        val keyHash = Utility.getKeyHash(this)
+        Log.d("Hash", keyHash)
+
+        // 로그인 여부 확인
+        UserApiClient.instance.accessTokenInfo { token, error ->
+            if (error != null) {
+                Log.e("TAG", "로그인 실패", error)
+                binding.mainLoginBt.visibility = View.VISIBLE
+                binding.mainLoginSuccessBt.visibility = View.GONE
+            } else if (token != null) {
+                Log.i("TAG", "로그인 성공 $token")
+                binding.mainLoginBt.visibility = View.GONE
+                binding.mainLoginSuccessBt.visibility = View.VISIBLE
+            }
+        }
+
 //        qDatas.apply {
 //            add(Question("2023.11.16","질문 제목1","질문내용1","#태그1","#태그2","#태그3"))
 //            add(Question("2023.12.20","질문 제목2","질문내용2","#태그1","#태그2","#태그3"))
@@ -28,11 +48,11 @@ class MainActivity : AppCompatActivity() {
 
         // 임시 데이터 (삭제 요망)
         qDatas.apply {
-            add(Question("2023.11.16","아르테미스 계획","현재 아르테미스 계획은 어떻게 되어 가고 있나요?","#우주","달",""))
-            add(Question("2023.12.20","퓨전 한복이란?","퓨전한복이랑 개량한복의 차이점이 뭔가요?","#한복","#옷","#전통"))
-            add(Question("2024.12.26","콘크리트는 왜 분해되지 않나요?","콘크리트는 골재, 시멘트, 물 등을 가공해서 만든 것인데, 왜 다시 골재와 물로 분리할 수 없나요?","#콘크리트","#토목",""))
-            add(Question("2024.01.04","가장 빠른 동물","가장 빠른 동물이 무엇인가요?","#동물","#환경생물학",""))
-            add(Question("2024.01.07","필름카메라 필름 보관","필름카메라는 처음인데, 보관을 어떻게 해야 안전한가요?","#카메라","#필름","필름카메라"))
+            add(Question("2023.11.16","아르테미스 계획","현재 아르테미스 계획은 어떻게 되어 가고 있나요?"))
+            add(Question("2023.12.20","퓨전 한복이란?","퓨전한복이랑 개량한복의 차이점이 뭔가요?"))
+            add(Question("2024.12.26","콘크리트는 왜 분해되지 않나요?","콘크리트는 골재, 시멘트, 물 등을 가공해서 만든 것인데, 왜 다시 골재와 물로 분리할 수 없나요?"))
+            add(Question("2024.01.04","가장 빠른 동물","가장 빠른 동물이 무엇인가요?"))
+            add(Question("2024.01.07","필름카메라 필름 보관","필름카메라는 처음인데, 보관을 어떻게 해야 안전한가요?"))
         }
 
         val questionRVAdapter = QuestionRVAdapter(qDatas)
