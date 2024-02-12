@@ -4,21 +4,18 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Rect
 import android.os.Bundle
-import android.os.PersistableBundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.MotionEvent
 import android.view.View
-import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import androidx.core.widget.addTextChangedListener
 import com.example.qp.databinding.ActivityWriteQuestionBinding
 import com.google.gson.Gson
+import java.util.Date
 
 class WriteQuestionActivity: AppCompatActivity(),WriteQView {
     private lateinit var binding:ActivityWriteQuestionBinding
@@ -26,14 +23,13 @@ class WriteQuestionActivity: AppCompatActivity(),WriteQView {
     private var isChild=false
     private var isTitleValid=false
     private var isContentValid=false
-    private  var tagList=ArrayList<String>()
+    private  var tagList = ArrayList<TagInfo>()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityWriteQuestionBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
 
         binding.titleEdit.text.clear()
         binding.contentEdit.text.clear()
@@ -174,18 +170,24 @@ class WriteQuestionActivity: AppCompatActivity(),WriteQView {
             val titleText=findViewById<EditText>(R.id.title_edit).text.toString()
             val contentText=binding.contentEdit.text.toString()
             val checkBox=binding.noteCheckbox
-            tagList=adapter.getItems()
-            var question=Question()
 
             if(isTitleValid &&isContentValid){
                 if(checkBox.isChecked){
-                    question.title=titleText
-                    question.content=contentText
+
+                    val questionInfo = QuestionInfo(
+                        UserInfo(0,"","student"), //사용자 정보 임의 설정
+                        0, //임의 설정
+                        titleText,
+                        contentText,
+                        0, // 초기값 설정
+                        0, // 초기값 설정
+                        0, // 초기값 설정
+                        Date().getTime().toString(),
+                        updateAt = null, // 초기값 설정
+                        tagList
+                    )
                     /*when(tagList.size){
-                        1-> {
-                            question.tag1=tagList[0]
-                            question.hashtags.add(Hashtag(hashtagId,tagList[0]))
-                        }
+                        1->question.tag1=tagList[0]
                         2-> {
                             question.tag1=tagList[0]
                             question.tag2 = tagList[1]
@@ -196,19 +198,13 @@ class WriteQuestionActivity: AppCompatActivity(),WriteQView {
                             question.tag3=tagList[2]
                         }
                     }*/
-                    for(i in 0 until tagList.size){
-                        question.hashtags.add(Hashtag(TagCount.hashtagId,tagList[i]))
-                        TagCount.incId()
-                    }
 
-                    questionService.writeQ(question)
+                    questionService.writeQ(questionInfo)
 
-                    val qDatas = intent.getSerializableExtra("qDatas") as ArrayList<Question>
                     val intent= Intent(this@WriteQuestionActivity,DetailedActivity::class.java)
                     val gson= Gson()
-                    val qJson=gson.toJson(question)
+                    val qJson=gson.toJson(questionInfo)
                     intent.putExtra("question",qJson)
-                    intent.putExtra("qDatas",qDatas)
                     startActivity(intent)
                     Toast.makeText(applicationContext,"등록 완료",Toast.LENGTH_SHORT).show()
 
@@ -239,7 +235,6 @@ class WriteQuestionActivity: AppCompatActivity(),WriteQView {
         return super.dispatchTouchEvent(event)
     }
 
-
     override fun onWriteSuccess() {
         TODO("Not yet implemented")
     }
@@ -249,12 +244,4 @@ class WriteQuestionActivity: AppCompatActivity(),WriteQView {
     }
 
 
-}
-object TagCount{
-    @JvmField
-    var hashtagId:Int = 0
-    fun incId(){
-        Log.d("compId",hashtagId.toString())
-        hashtagId+=1
-    }
 }

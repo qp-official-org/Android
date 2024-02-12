@@ -14,8 +14,8 @@ import com.google.gson.Gson
 class SearchActivity : AppCompatActivity() {
 
     lateinit var binding: ActivitySearchBinding
-    private var original = ArrayList<Question>()
-    private var filtered = ArrayList<Question>()
+    private var original = ArrayList<QuestionInfo>()
+    private var filtered = ArrayList<QuestionInfo>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,7 +33,9 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun searchResult(){
-        original = intent.getSerializableExtra("qDatas") as ArrayList<Question>
+        if(intent.hasExtra("qDatas")){
+            original = intent.getSerializableExtra("qDatas") as ArrayList<QuestionInfo>
+        }
         filtered.addAll(original)
 
         val questionRVAdapter = QuestionRVAdapter(filtered)
@@ -43,7 +45,7 @@ class SearchActivity : AppCompatActivity() {
         val textListner = object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 Log.d("qDatas 개수", original.size.toString())
-                val selected = ArrayList<Question>()
+                val selected = ArrayList<QuestionInfo>()
                 for(i in original){
                     val temp = i.title
                     if( temp?.contains(query.toString()) == true){
@@ -84,10 +86,10 @@ class SearchActivity : AppCompatActivity() {
         }
 
         questionRVAdapter.setMyItemClickListner(object : QuestionRVAdapter.MyItemClickListner{
-            override fun onItemClick(question: Question) {
+            override fun onItemClick(questionInfo: QuestionInfo) {
                 val intent = Intent(this@SearchActivity, DetailedActivity::class.java)
                 val gson = Gson()
-                val qJson = gson.toJson(question)
+                val qJson = gson.toJson(questionInfo)
                 intent.putExtra("question", qJson)
                 startActivity(intent)
             }
@@ -96,9 +98,7 @@ class SearchActivity : AppCompatActivity() {
 
     private fun register(){
         binding.searchRegisterBt.setOnClickListener {
-            val qDatas = intent.getSerializableExtra("qDatas") as ArrayList<Question>
             val intent = Intent(this@SearchActivity, WriteQuestionActivity::class.java)
-            intent.putExtra("qDatas", qDatas)
             startActivity(intent)
 
         }

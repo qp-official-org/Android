@@ -17,7 +17,7 @@ import com.google.gson.Gson
 class ModifyQuestionActivity:AppCompatActivity() {
     private lateinit var binding:ActivityModifyQuestionBinding
     private var gson= Gson()
-    private lateinit var question:Question
+    private lateinit var questionInfo:QuestionInfo
     private var isTitleValid=true
     private var isContentValid=true
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -29,7 +29,7 @@ class ModifyQuestionActivity:AppCompatActivity() {
         if(intent.hasExtra("modifyQuestion")){
             val qJson = intent.getStringExtra("modifyQuestion")
             Log.d("getquestion",qJson.toString())
-            question = gson.fromJson(qJson, Question::class.java)
+            questionInfo = gson.fromJson(qJson, QuestionInfo::class.java)
         }
 
         initView()
@@ -39,8 +39,8 @@ class ModifyQuestionActivity:AppCompatActivity() {
 
     }
     private fun initView(){
-        binding.titleEdit.text=Editable.Factory.getInstance().newEditable(question.title)
-        binding.contentEdit.text=Editable.Factory.getInstance().newEditable(question.content)
+        binding.titleEdit.text=Editable.Factory.getInstance().newEditable(questionInfo.title)
+        binding.contentEdit.text=Editable.Factory.getInstance().newEditable(questionInfo.content)
 
     }
 
