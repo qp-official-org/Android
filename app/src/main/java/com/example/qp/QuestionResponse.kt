@@ -20,16 +20,24 @@ data class QuestionChart(
 )
 
 data class QuestionInfo(
-    @SerializedName(value="user")val user: UserInfo?,
+    @SerializedName(value="user")val user: UserInfo?=null,
     @SerializedName(value="questionId")val questionId: Long,
     @SerializedName(value="title")var title: String,
-    @SerializedName(value="result")var content: String,
-    @SerializedName(value="hit")val hit: Int,
-    @SerializedName(value="answerCount")val answerCount: Int,
-    @SerializedName(value="expertCount")val expertCount: Int,
-    @SerializedName(value="createAt")val createAt: String,
-    @SerializedName(value="updateAt")var updateAt: String?,
-    @SerializedName(value="hashtags")val hashtags: ArrayList<TagInfo>?
+    @SerializedName(value="content")var content: String?,
+    @SerializedName(value="hit")val hit: Int?=0,
+    @SerializedName(value="answerCount")val answerCount: Int?=0,
+    @SerializedName(value="expertCount")val expertCount: Int?=0,
+    @SerializedName(value="createAt")val createAt: String?="",
+    @SerializedName(value="updateAt")var updateAt: String?="",
+    @SerializedName(value="hashtags")val hashtags: ArrayList<TagInfo>?=null,
+    @SerializedName(value="hashtag")val hashtag:ArrayList<Int>?=null    //질문작성 위한 필드..
+)
+
+data class QuestionPost(
+    @SerializedName(value="userId")val userId:String,
+    @SerializedName(value="title")val title:String,
+    @SerializedName(value="content")val content:String,
+    @SerializedName(value="hashtag")val hashtag:ArrayList<Int>?
 )
 
 data class UserInfo(
@@ -42,3 +50,29 @@ data class TagInfo(
     @SerializedName(value="hashtagId")val hashtagId: Int,
     @SerializedName(value="hashtag")val hashtag: String
 )
+
+open class WriteQResponse(
+    @SerializedName(value="isSuccess")val isSuccess: Boolean,
+    @SerializedName(value="code")val code: String,
+    @SerializedName(value="message")val message: String,
+    @SerializedName(value="result")var result:WriteQResult
+)
+data class WriteQResult(
+    @SerializedName("questionId")var questionId:String,
+    @SerializedName("createdAt")var createdAt:String
+)
+
+data class DetailedQResponse(
+    @SerializedName(value="isSuccess")val isSuccess: Boolean?,
+    @SerializedName(value="code")val code: String?,
+    @SerializedName(value="message")val message: String?,
+    @SerializedName(value="result")var result:QuestionInfo?,
+    @SerializedName(value="createdAt")var createdAt: String?,
+    @SerializedName(value="updatedAt")var updateAt: String?
+)
+//data class DetailedQResult(
+//    @SerializedName(value="questionId")var questionId:String?,
+//    @SerializedName(value="title")var title:String?,
+//    @SerializedName(value="content")var content:String?,
+//    @SerializedName(value="hashtags")var hashtags:ArrayList<TagInfo>?
+//)

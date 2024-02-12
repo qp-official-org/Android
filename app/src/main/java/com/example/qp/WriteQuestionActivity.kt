@@ -189,20 +189,30 @@ class WriteQuestionActivity: AppCompatActivity(),WriteQView {
                         incId()
                     }
 
-                    val questionInfo = QuestionInfo(
+                    /*val questionInfo = QuestionInfo(
                         UserInfo(0,"","student"), //사용자 정보 임의 설정
                         0, //임의 설정
-                        titleText,
-                        contentText,
+                        title=titleText,
+                        content=contentText,
                         0, // 초기값 설정
                         0, // 초기값 설정
                         0, // 초기값 설정
                         Date().getTime().toString(),
                         updateAt = null, // 초기값 설정
                         newTagList
+                    )*/
+
+                    var tags=ArrayList<Int>()
+                    for(i in 0 until newTagList.size){
+                        tags.add(newTagList[i].hashtagId)
+                    }
+
+                    val questionInfo=QuestionPost(
+                        userId = "1",
+                        title=titleText,
+                        content=contentText,
+                        hashtag = tags
                     )
-
-
                     questionService.writeQ(questionInfo)
 
                     val intent= Intent(this@WriteQuestionActivity,DetailedActivity::class.java)
@@ -248,11 +258,9 @@ class WriteQuestionActivity: AppCompatActivity(),WriteQView {
     }
 
     override fun onWriteSuccess() {
-        TODO("Not yet implemented")
     }
 
     override fun onWriteFailure() {
-        TODO("Not yet implemented")
     }
 
 

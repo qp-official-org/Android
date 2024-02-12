@@ -22,12 +22,12 @@ import com.google.gson.Gson
 import java.io.Serializable
 
 
-class DetailedActivity : AppCompatActivity(){
+class DetailedActivity : AppCompatActivity(),DetailedQView{
 
     private lateinit var binding: ActivityDetailedBinding
     private var gson: Gson = Gson()
     private lateinit var answerAdapter:DetailedQuestionRVAdapter
-    private lateinit var questionInfo :QuestionInfo
+    private lateinit var questionInfo:QuestionInfo
     private var isNotified:Boolean=false
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -38,8 +38,23 @@ class DetailedActivity : AppCompatActivity(){
         if(intent.hasExtra("question")){
             val qJson = intent.getStringExtra("question")
             questionInfo = gson.fromJson(qJson, QuestionInfo::class.java)
+            Log.d("DetailedQInfo",questionInfo.toString())
         }
 
+        //서버에서 질문 조회 응답
+        val detailedQService=QuestionService()
+        detailedQService.setDetailedQView(this)
+
+        detailedQService.getQuestion(questionInfo.questionId?.toLong())
+
+        //서버에서 답변 받아오기
+        answerAdapter=DetailedQuestionRVAdapter(applicationContext)
+        binding.answerRv.adapter=answerAdapter
+
+        detailedQService.getParentAnswer(questionInfo.questionId!!.toLong())
+
+
+        //검색으로 화면전환
         binding.detailedSearchBt.setOnClickListener {
             val qDatas = intent.getSerializableExtra("qDatas") as ArrayList<QuestionInfo>
             val intent = Intent(this@DetailedActivity, SearchActivity::class.java)
@@ -52,7 +67,7 @@ class DetailedActivity : AppCompatActivity(){
 
         setQuestionMorePopup()
 
-
+        //프로필로 화면 전환
         binding.detailedProfileBtn.setOnClickListener {
             startActivity(Intent(this, ProfileActivity::class.java))
             finish()
@@ -63,9 +78,6 @@ class DetailedActivity : AppCompatActivity(){
     private fun setInit(){
         isNotified=isNotified()
         initView()
-
-        answerAdapter=DetailedQuestionRVAdapter(applicationContext)
-        binding.answerRv.adapter=answerAdapter
 
         initAnswerData()
 
@@ -102,7 +114,8 @@ class DetailedActivity : AppCompatActivity(){
 
         })
 
-        updateNotifyView()
+        //updateNotifyView()
+
 
     }
 
@@ -139,7 +152,7 @@ class DetailedActivity : AppCompatActivity(){
 
     }
     private fun initAnswerData(){
-        val answerList =ArrayList<Answer>()
+        val answerList =ArrayList<AnswerInfo>()
 
         val commentList=ArrayList<Comment>()
         val commentList2=ArrayList<Comment>()
@@ -154,9 +167,9 @@ class DetailedActivity : AppCompatActivity(){
         }
 
         answerList.apply {
-            add(Answer("답변내용1",commentList))
-            add(Answer("답변내용",commentList2))
-            add(Answer("답변내용3"))
+            add(AnswerInfo(0,0,"제목1","답변내용1","PARENT",0,0))
+            /*add(Answer("답변내용",commentList2))
+            add(Answer("답변내용3"))*/
         }
         answerAdapter.addItemList(answerList)
         updateExpertNum()
@@ -236,7 +249,7 @@ class DetailedActivity : AppCompatActivity(){
 
         btn.setOnClickListener {
             var content=editText.text.toString()
-            answerAdapter.addItem(Answer(content))  //임시로 구현..
+            answerAdapter.addItem(AnswerInfo(0,0,"title",content,"PARENT",0,0))  //임시로 구현..
             showWriteAnswerEdit(false)
             updateNotifyView()
             updateExpertNum()
@@ -333,6 +346,21 @@ class DetailedActivity : AppCompatActivity(){
         return super.dispatchTouchEvent(event)
     }
 
+    override fun onGetQSuccess(questionResp:QuestionInfo?) {
+        this.questionInfo.content=questionResp?.content
+    }
+
+    override fun onGetQFailure(msg:String) {
+        Log.d("getQFail",msg)
+    }
+
+    override fun onGetParentSuccess(answerList:ArrayList<AnswerInfo>) {
+        answerAdapter.addItemList(answerList)
+    }
+
+    override fun onGetaParentFailure(msg:String) {
+        Log.d("getParent",msg)
+    }
 
 
 }

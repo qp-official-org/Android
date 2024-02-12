@@ -27,7 +27,7 @@ class ProfileBuyQuestionFragment : Fragment() {
         qDatas.apply {
             add(QuestionInfo(UserInfo(1,"1","USER"),1,"질문제목1","질문내용1",1,2,3,"2024-01-01","2024-01-01",tagList))
             add(QuestionInfo(UserInfo(1,"1","USER"),1,"질문제목2","질문내용2",1,2,3,"2024-01-01","2024-01-01",tagList))
-            add(QuestionInfo(UserInfo(1,"1","USER"),1,"질문제목3","질문내용3",1,2,3,"2024-01-01","2024-01-01",tagList))
+            add(QuestionInfo(UserInfo(1,"1","USER"),0,"질문제목3","질문내용3",1,2,3,"2024-01-01","2024-01-01",tagList))
 
             /*
                 add(Question("2023.12.20","질문 제목2","질문내용2","#태그1","#태그2","#태그3"))

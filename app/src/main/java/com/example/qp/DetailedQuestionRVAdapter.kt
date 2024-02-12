@@ -20,7 +20,7 @@ import com.example.qp.databinding.ItemAnswerBinding
 import com.example.qp.databinding.ItemWriteAnswerBinding
 
 class DetailedQuestionRVAdapter(context:Context): RecyclerView.Adapter<DetailedQuestionRVAdapter.ViewHolder>() {
-    val items= ArrayList<Answer>()
+    val items= ArrayList<AnswerInfo>()
     //private var isCommentShown=false
     private var appContext=context
 
@@ -53,7 +53,7 @@ class DetailedQuestionRVAdapter(context:Context): RecyclerView.Adapter<DetailedQ
         private val profileView=itemView.findViewById<ImageView>(R.id.question_user_img)
         fun bind(position: Int) {
 
-            var commentAdapter=DetailedAnswerCommentRVAdapter(appContext,items[position].commentList!!)
+            /*var commentAdapter=DetailedAnswerCommentRVAdapter(appContext,items[position].commentList!!)
             binding.answerCommentRv.adapter=commentAdapter
 
             //댓글에 대한 동작
@@ -79,7 +79,7 @@ class DetailedQuestionRVAdapter(context:Context): RecyclerView.Adapter<DetailedQ
                         writeLayout.text= Editable.Factory.getInstance().newEditable("")
                     }
                 }
-            })
+            })*/
 
             var likeNum=0       //서버에서 받은 데이터
             var isLiked=false   //사용자가 좋아요 누른지 여부 (서버 데이터?)
@@ -88,7 +88,7 @@ class DetailedQuestionRVAdapter(context:Context): RecyclerView.Adapter<DetailedQ
             var isExpert=true  //전문가 답변 여부(서버에서 받아오기?)
             var isBought=false  //구매 여부(서버)
 
-            setOnclick(position, commentAdapter)
+            //setOnclick(position, commentAdapter)
 
             //좋아요 누르기
             binding.answerLikeBtn.setOnClickListener {
@@ -134,7 +134,7 @@ class DetailedQuestionRVAdapter(context:Context): RecyclerView.Adapter<DetailedQ
         private fun setInit(position: Int,likeNum: Int,isLiked:Boolean,isBlur:Boolean){
             answerContentView.text=items[position].content     //답변 내용
             binding.commentLayout.visibility=View.GONE      //댓글 접은 상태
-            commentNumberUpdate(items[position])    //댓글 수
+            //commentNumberUpdate(items[position])    //댓글 수
             setBlurText(isBlur,likeNum)
         }
 
@@ -161,10 +161,10 @@ class DetailedQuestionRVAdapter(context:Context): RecyclerView.Adapter<DetailedQ
 
 
         //댓글 등록
-        private fun writeComment(content:String,adapter:DetailedAnswerCommentRVAdapter,answer:Answer){
+        private fun writeComment(content:String,adapter:DetailedAnswerCommentRVAdapter,answer:AnswerInfo){
             if(content!=""){
                 adapter.addItem(content)    //임시로 구현..
-                commentNumberUpdate(answer)
+                //commentNumberUpdate(answer)
                 binding.writeCommentEdit.text=Editable.Factory.getInstance().newEditable("")
             }
             else{
@@ -172,14 +172,14 @@ class DetailedQuestionRVAdapter(context:Context): RecyclerView.Adapter<DetailedQ
             }
         }
         //댓글수 표시
-        private fun commentNumberUpdate(answer:Answer){
+        /*private fun commentNumberUpdate(answer:Answer){
             binding.answerCommentBtnTv.text=
                 when (answer.commentList){
                     null->"0"
                     else->answer.commentList!!.size.toString()
                 }
 
-        }
+        }*/
 
         //답변 블러 처리
         private fun setBlurText(isBlur:Boolean,likeNum:Int){
@@ -264,11 +264,11 @@ class DetailedQuestionRVAdapter(context:Context): RecyclerView.Adapter<DetailedQ
         return items[position].content
     }
 
-    fun addItem(item: Answer) {
+    fun addItem(item: AnswerInfo) {
         this.items.add(0,item)
         this.notifyDataSetChanged()
     }
-    fun addItemList(items:ArrayList<Answer>){
+    fun addItemList(items:ArrayList<AnswerInfo>){
         this.items.addAll(items)
         this.notifyDataSetChanged()
     }
