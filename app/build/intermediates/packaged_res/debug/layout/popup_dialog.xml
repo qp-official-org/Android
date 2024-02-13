@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_height="wrap_content"
+    android:layout_width="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/transparent"
+    >
+
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:cardCornerRadius="20dp"
+        android:background="@color/white"
+        app:cardBackgroundColor="@color/white"
+        app:strokeColor="@color/border"
+        app:strokeWidth="2dp"
+        >
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="wrap_content"
+            android:layout_height="120dp"
+            android:layout_margin="10dp"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:layout_gravity="center"
+            android:background="@color/white"
+            >
+            <TextView
+                android:id="@+id/popup_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="로그인이 필요한 기능입니다"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toTopOf="@+id/popup_button_ok"
+                android:layout_marginBottom="20dp"
+                android:layout_marginHorizontal="40dp"/>
+            <TextView
+                android:id="@+id/popup_button_ok"
+                android:layout_width="70dp"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginBottom="5dp"
+                android:gravity="center"
+                android:background="@drawable/box_orange"
+                android:paddingVertical="5dp"
+                android:text="확인"
+                android:textColor="@color/white"/>
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </com.google.android.material.card.MaterialCardView>
+
+
+</FrameLayout>
+
+
+
+
+
+
+
+

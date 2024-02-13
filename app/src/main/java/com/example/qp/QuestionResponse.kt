@@ -1,6 +1,8 @@
 package com.example.qp
 
+import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
+import java.io.Serializable
 import java.sql.Timestamp
 
 data class QuestionResponse(
@@ -8,7 +10,7 @@ data class QuestionResponse(
     @SerializedName(value="code")val code: String,
     @SerializedName(value="message")val message: String,
     @SerializedName(value="result")val result: QuestionChart
-)
+):Serializable
 
 data class QuestionChart(
     @SerializedName(value="questions")val questions: ArrayList<QuestionInfo>,
@@ -17,7 +19,7 @@ data class QuestionChart(
     @SerializedName(value="totalElements")val totalElements: Long?,
     @SerializedName(value="isFirst")val isFirst: Boolean?,
     @SerializedName(value="isLast")val isLast: Boolean?
-)
+):Serializable
 
 data class QuestionInfo(
     @SerializedName(value="user")val user: UserInfo?=null,
@@ -30,8 +32,7 @@ data class QuestionInfo(
     @SerializedName(value="createAt")val createAt: String?="",
     @SerializedName(value="updateAt")var updateAt: String?="",
     @SerializedName(value="hashtags")val hashtags: ArrayList<TagInfo>?=null,
-    @SerializedName(value="hashtag")val hashtag:ArrayList<Int>?=null    //질문작성 위한 필드..
-)
+):Serializable
 
 data class QuestionPost(
     @SerializedName(value="userId")val userId:String,
@@ -44,12 +45,12 @@ data class UserInfo(
     @SerializedName(value="userId")val userId: Long,
     @SerializedName(value="profileImage")val profileImage: String,
     @SerializedName(value="role")val role: String
-)
+):Serializable
 
 data class TagInfo(
     @SerializedName(value="hashtagId")val hashtagId: Int,
     @SerializedName(value="hashtag")val hashtag: String
-)
+):Serializable
 
 open class WriteQResponse(
     @SerializedName(value="isSuccess")val isSuccess: Boolean,

@@ -22,6 +22,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         getQuestions()
+        Log.d("qdatas",qDatas.toString())
 
         //수정 임시 데이터(삭제해도 무관)
         var tagList= arrayListOf<TagInfo>(TagInfo(0,"tag1"),TagInfo(1,"tag2"))
@@ -102,6 +103,7 @@ class MainActivity : AppCompatActivity() {
                             "QUESTION_2000" -> {
                                 Log.d("SUCCESS/DATA_LOAD", "리사이클러뷰의 데이터로 구성됩니다")
                                 qDatas = questionResponse.result.questions
+                                Log.d("getQsResp",qDatas.toString())
                             }
                             else -> {
                                 Log.d("SUCCESS/DATA_FAILURE", "응답 코드 오류입니다")

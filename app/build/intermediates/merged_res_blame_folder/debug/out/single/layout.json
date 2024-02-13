@@ -1,0 +1,94 @@
+[
+    {
+        "merged": "com.example.qp.app-mergeDebugResources-30:/layout/popup_dialog.xml",
+        "source": "com.example.qp.app-main-33:/layout/popup_dialog.xml"
+    },
+    {
+        "merged": "com.example.qp.app-mergeDebugResources-30:/layout/activity_detailed.xml",
+        "source": "com.example.qp.app-main-33:/layout/activity_detailed.xml"
+    },
+    {
+        "merged": "com.example.qp.app-mergeDebugResources-30:/layout/activity_write_question.xml",
+        "source": "com.example.qp.app-main-33:/layout/activity_write_question.xml"
+    },
+    {
+        "merged": "com.example.qp.app-mergeDebugResources-30:/layout/activity_login.xml",
+        "source": "com.example.qp.app-main-33:/layout/activity_login.xml"
+    },
+    {
+        "merged": "com.example.qp.app-mergeDebugResources-30:/layout/activity_setprofile.xml",
+        "source": "com.example.qp.app-main-33:/layout/activity_setprofile.xml"
+    },
+    {
+        "merged": "com.example.qp.app-mergeDebugResources-30:/layout/fragment_profile_buy_question.xml",
+        "source": "com.example.qp.app-main-33:/layout/fragment_profile_buy_question.xml"
+    },
+    {
+        "merged": "com.example.qp.app-mergeDebugResources-30:/layout/activity_profile.xml",
+        "source": "com.example.qp.app-main-33:/layout/activity_profile.xml"
+    },
+    {
+        "merged": "com.example.qp.app-mergeDebugResources-30:/layout/item_write_answer.xml",
+        "source": "com.example.qp.app-main-33:/layout/item_write_answer.xml"
+    },
+    {
+        "merged": "com.example.qp.app-mergeDebugResources-30:/layout/activity_setnickname.xml",
+        "source": "com.example.qp.app-main-33:/layout/activity_setnickname.xml"
+    },
+    {
+        "merged": "com.example.qp.app-mergeDebugResources-30:/layout/activity_main.xml",
+        "source": "com.example.qp.app-main-33:/layout/activity_main.xml"
+    },
+    {
+        "merged": "com.example.qp.app-mergeDebugResources-30:/layout/item_answer_preview.xml",
+        "source": "com.example.qp.app-main-33:/layout/item_answer_preview.xml"
+    },
+    {
+        "merged": "com.example.qp.app-mergeDebugResources-30:/layout/item_recent_word.xml",
+        "source": "com.example.qp.app-main-33:/layout/item_recent_word.xml"
+    },
+    {
+        "merged": "com.example.qp.app-mergeDebugResources-30:/layout/activity_search.xml",
+        "source": "com.example.qp.app-main-33:/layout/activity_search.xml"
+    },
+    {
+        "merged": "com.example.qp.app-mergeDebugResources-30:/layout/item_hashtag.xml",
+        "source": "com.example.qp.app-main-33:/layout/item_hashtag.xml"
+    },
+    {
+        "merged": "com.example.qp.app-mergeDebugResources-30:/layout/layout_popup.xml",
+        "source": "com.example.qp.app-main-33:/layout/layout_popup.xml"
+    },
+    {
+        "merged": "com.example.qp.app-mergeDebugResources-30:/layout/item_notice.xml",
+        "source": "com.example.qp.app-main-33:/layout/item_notice.xml"
+    },
+    {
+        "merged": "com.example.qp.app-mergeDebugResources-30:/layout/fragment_profile_notice_question.xml",
+        "source": "com.example.qp.app-main-33:/layout/fragment_profile_notice_question.xml"
+    },
+    {
+        "merged": "com.example.qp.app-mergeDebugResources-30:/layout/item_question.xml",
+        "source": "com.example.qp.app-main-33:/layout/item_question.xml"
+    },
+    {
+        "merged": "com.example.qp.app-mergeDebugResources-30:/layout/fragment_profile_my_question.xml",
+        "source": "com.example.qp.app-main-33:/layout/fragment_profile_my_question.xml"
+    },
+    {
+        "merged": "com.example.qp.app-mergeDebugResources-30:/layout/item_answer_comment.xml",
+        "source": "com.example.qp.app-main-33:/layout/item_answer_comment.xml"
+    },
+    {
+        "merged": "com.example.qp.app-mergeDebugResources-30:/layout/activity_modify_question.xml",
+        "source": "com.example.qp.app-main-33:/layout/activity_modify_question.xml"
+    },
+    {
+        "merged": "com.example.qp.app-mergeDebugResources-30:/layout/item_popup.xml",
+        "source": "com.example.qp.app-main-33:/layout/item_popup.xml"
+    },
+    {
+        "merged": "com.example.qp.app-mergeDebugResources-30:/layout/item_answer.xml",
+        "source": "com.example.qp.app-main-33:/layout/item_answer.xml"
+    }
+]
