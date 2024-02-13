@@ -4,14 +4,25 @@ import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.qp.databinding.ActivityLoginBinding
+import com.kakao.sdk.auth.model.OAuthToken
+import com.kakao.sdk.user.UserApiClient
 
 class LoginActivity : AppCompatActivity() {
 
     lateinit var binding: ActivityLoginBinding
+
+    val kakaoCallback: (OAuthToken?, Throwable?) -> Unit = { token, error ->
+        if (error != null) {
+            Log.e("TAG", "카카오계정으로 로그인 실패", error)
+        } else if (token != null) {
+            Log.i("TAG", "카카오계정으로 로그인 성공 ${token.accessToken}")
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -76,8 +87,7 @@ class LoginActivity : AppCompatActivity() {
         binding.loginKakaoBtn.setOnClickListener {
             Toast.makeText(this, "카카오 로그인", Toast.LENGTH_SHORT).show()
 
-            startActivity(Intent(this,SetNicknameActivity::class.java))
-            //빠른 로그인을 위한 임시 설정
+            UserApiClient.instance.loginWithKakaoAccount(this, callback = kakaoCallback)
         }
     }
 }

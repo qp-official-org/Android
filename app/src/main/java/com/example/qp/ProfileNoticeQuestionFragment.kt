@@ -42,6 +42,7 @@ class ProfileNoticeQuestionFragment : Fragment() {
             add(Question("2024.01.07","필름카메라 필름 보관","필름카메라는 처음인데, 보관을 어떻게 해야 안전한가요?","#카메라","#필름","필름카메라"))
         }*/
 
+
         val questionRVAdapter = QuestionRVAdapter(qDatas)
         binding.questionRv.adapter = questionRVAdapter
         binding.questionRv.layoutManager = GridLayoutManager(requireContext(), 2)

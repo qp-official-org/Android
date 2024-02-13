@@ -37,6 +37,7 @@ class ProfileMyQuestionFragment : Fragment() {
             add(Question("2024.01.04","가장 빠른 동물","가장 빠른 동물이 무엇인가요?","#동물","#환경생물학",""))
         }*/
 
+
         val questionRVAdapter = QuestionRVAdapter(qDatas)
         binding.questionRv.adapter = questionRVAdapter
         binding.questionRv.layoutManager = GridLayoutManager(requireContext(), 2)
