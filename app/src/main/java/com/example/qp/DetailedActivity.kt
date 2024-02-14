@@ -122,7 +122,7 @@ class DetailedActivity : AppCompatActivity(),DetailedQView{
     private fun initView(){
         binding.detailedQuestionTitleTv.text = questionInfo.title
         binding.detailedQuestionContentTv.text = questionInfo.content
-        binding.detailedQuestionTimeTv.text = questionInfo.createAt.toString()
+        binding.detailedQuestionTimeTv.text = questionInfo.createdAt.toString()
 
         val tagListSize = questionInfo.hashtags?.size
         when(tagListSize){
