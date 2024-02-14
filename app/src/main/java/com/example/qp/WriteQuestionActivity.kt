@@ -3,6 +3,7 @@ package com.example.qp
 import android.content.Context
 import android.content.Intent
 import android.graphics.Rect
+import android.nfc.Tag
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -23,7 +24,7 @@ class WriteQuestionActivity: AppCompatActivity(),WriteQView {
     private var isChild=false
     private var isTitleValid=false
     private var isContentValid=false
-    private  var tagList = ArrayList<TagInfo>()
+    private  var tagList = ArrayList<String>()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -43,6 +44,13 @@ class WriteQuestionActivity: AppCompatActivity(),WriteQView {
         checkTitleEdit()
         checkContentEdit()
         registerQuestion()
+
+        binding.writeSearchBt.setOnClickListener {
+            val qDatas=intent.getSerializableExtra("qDatas") as ArrayList<QuestionInfo>
+            val intent=Intent(this@WriteQuestionActivity,SearchActivity::class.java)
+            intent.putExtra("qDatas",qDatas)
+            startActivity(intent)
+        }
 
     }
 
@@ -174,31 +182,37 @@ class WriteQuestionActivity: AppCompatActivity(),WriteQView {
             if(isTitleValid &&isContentValid){
                 if(checkBox.isChecked){
 
-                    val questionInfo = QuestionInfo(
+                    tagList=adapter.getItems()
+                    val newTagList=ArrayList<TagInfo>()
+                    for(i in 0 until tagList.size){
+                        newTagList.add(TagInfo(tagCount,tagList[i]))
+                        incId()
+                    }
+
+                    /*val questionInfo = QuestionInfo(
                         UserInfo(0,"","student"), //사용자 정보 임의 설정
                         0, //임의 설정
-                        titleText,
-                        contentText,
+                        title=titleText,
+                        content=contentText,
                         0, // 초기값 설정
                         0, // 초기값 설정
                         0, // 초기값 설정
                         Date().getTime().toString(),
                         updateAt = null, // 초기값 설정
-                        tagList
-                    )
-                    /*when(tagList.size){
-                        1->question.tag1=tagList[0]
-                        2-> {
-                            question.tag1=tagList[0]
-                            question.tag2 = tagList[1]
-                        }
-                        3->{
-                            question.tag1=tagList[0]
-                            question.tag2 = tagList[1]
-                            question.tag3=tagList[2]
-                        }
-                    }*/
+                        newTagList
+                    )*/
 
+                    var tags=ArrayList<Int>()
+                    for(i in 0 until newTagList.size){
+                        tags.add(newTagList[i].hashtagId)
+                    }
+
+                    val questionInfo=QuestionPost(
+                        userId = "1",
+                        title=titleText,
+                        content=contentText,
+                        hashtag = tags
+                    )
                     questionService.writeQ(questionInfo)
 
                     val intent= Intent(this@WriteQuestionActivity,DetailedActivity::class.java)
@@ -206,6 +220,7 @@ class WriteQuestionActivity: AppCompatActivity(),WriteQView {
                     val qJson=gson.toJson(questionInfo)
                     intent.putExtra("question",qJson)
                     startActivity(intent)
+                    finish()
                     Toast.makeText(applicationContext,"등록 완료",Toast.LENGTH_SHORT).show()
 
                 }
@@ -235,13 +250,19 @@ class WriteQuestionActivity: AppCompatActivity(),WriteQView {
         return super.dispatchTouchEvent(event)
     }
 
+    companion object{
+        var tagCount=0
+        fun incId(){
+            tagCount+=1
+        }
+    }
+
     override fun onWriteSuccess() {
-        TODO("Not yet implemented")
     }
 
     override fun onWriteFailure() {
-        TODO("Not yet implemented")
     }
 
 
 }
+

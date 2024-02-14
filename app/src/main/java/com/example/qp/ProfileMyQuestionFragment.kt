@@ -22,15 +22,21 @@ class ProfileMyQuestionFragment : Fragment() {
         binding = FragmentProfileMyQuestionBinding.inflate(inflater, container, false)
 
         /*qDatas.apply {
+//            add(Question("2023.11.16","질문 제목1","질문내용1","#태그1","#태그2","#태그3"))
+//            add(Question("2024.01.04","질문 제목4","질문내용4","#태그1","#태그2","#태그3"))
+            add(Question("2023.11.16","질문 제목1","질문내용1"))
+            add(Question("2024.01.04","질문 제목4","질문내용4"))*/
+        /*qDatas.apply {
             add(Question("2023.11.16","질문 제목1","질문내용1","#태그1","#태그2","#태그3"))
             add(Question("2024.01.04","질문 제목4","질문내용4","#태그1","#태그2","#태그3"))
         }*/
         
-//        // 임시 데이터 (삭제 요망)
-//        qDatas.apply {
-//            add(Question("2023.11.16","아르테미스 계획","현재 아르테미스 계획은 어떻게 되어 가고 있나요?",))
-//            add(Question("2024.01.04","가장 빠른 동물","가장 빠른 동물이 무엇인가요?"))
-//        }
+        // 임시 데이터 (삭제 요망)
+        /*qDatas.apply {
+            add(Question("2023.11.16","아르테미스 계획","현재 아르테미스 계획은 어떻게 되어 가고 있나요?","#우주","달",""))
+            add(Question("2024.01.04","가장 빠른 동물","가장 빠른 동물이 무엇인가요?","#동물","#환경생물학",""))
+        }*/
+
 
         val questionRVAdapter = QuestionRVAdapter(qDatas)
         binding.questionRv.adapter = questionRVAdapter

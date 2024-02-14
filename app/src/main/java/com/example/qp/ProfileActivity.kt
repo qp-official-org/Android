@@ -14,7 +14,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatButton
 import com.example.qp.databinding.ActivityProfileBinding
-import com.example.qp.databinding.DialogChargeBinding
+//import com.example.qp.databinding.DialogChargeBinding
 import com.google.android.material.tabs.TabLayoutMediator
 import org.w3c.dom.Text
 
