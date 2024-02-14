@@ -26,7 +26,6 @@ class SearchActivity : AppCompatActivity() {
 
         binding.searchBackIv.setOnClickListener{
             val intent = Intent(this@SearchActivity, MainActivity::class.java)
-            intent.putExtra("isLogin", 1)
             startActivity(intent)
         }
 
@@ -75,7 +74,7 @@ class SearchActivity : AppCompatActivity() {
                                 filtered.clear()
                                 filtered.addAll(questionResponse.result.questions)
                                 setQuestionRVAdapter(filtered)
-                                Log.d("getQsResp",filtered.toString())
+                                Log.d("getFdResp",filtered.toString())
                             }
                             else -> {
                                 Log.d("SUCCESS/DATA_FAILURE", "응답 코드 오류입니다")
@@ -126,7 +125,6 @@ class SearchActivity : AppCompatActivity() {
         binding.searchRegisterBt.setOnClickListener {
             val intent = Intent(this@SearchActivity, WriteQuestionActivity::class.java)
             startActivity(intent)
-
         }
     }
 
