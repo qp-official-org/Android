@@ -20,8 +20,8 @@ import com.example.qp.databinding.ItemAnswerBinding
 import com.example.qp.databinding.ItemWriteAnswerBinding
 
 class DetailedQuestionRVAdapter(context:Context): RecyclerView.Adapter<DetailedQuestionRVAdapter.ViewHolder>() {
-    val items= ArrayList<Answer>()
-    private var isCommentShown=false
+    val items= ArrayList<AnswerInfo>()
+    //private var isCommentShown=false
     private var appContext=context
 
 
@@ -45,130 +45,126 @@ class DetailedQuestionRVAdapter(context:Context): RecyclerView.Adapter<DetailedQ
     }
     override fun getItemCount(): Int =items.size
 
+
+
+
     inner class ViewHolder(val binding:ItemAnswerBinding) : RecyclerView.ViewHolder(binding.root) {
         private val answerContentView=binding.answerContentTv
         private val profileView=itemView.findViewById<ImageView>(R.id.question_user_img)
         fun bind(position: Int) {
 
-            lateinit var commentAdapter:DetailedAnswerCommentRVAdapter
-            if(items[position].commentList!=null){
-                commentAdapter=DetailedAnswerCommentRVAdapter(appContext,items[position].commentList!!)
-                binding.answerCommentRv.adapter=commentAdapter
-            }
+            /*var commentAdapter=DetailedAnswerCommentRVAdapter(appContext,items[position].commentList!!)
+            binding.answerCommentRv.adapter=commentAdapter
+
+            //댓글에 대한 동작
             commentAdapter.setMyItemClickListener(object :
                 DetailedAnswerCommentRVAdapter.CommentClickListener{
-                override fun onItemRemove(pos: Int) {
+
+                override fun onItemRemove(pos: Int) {   //댓글 삭제시
                     commentAdapter.removeItem(pos)
                     commentNumberUpdate(items[position])
                 }
-
-                override fun onCommentModify(position: Int) {
+                override fun onCommentModify(position: Int) {   //댓글 수정 시
                     var content=commentAdapter.getContent(position)
 
+                    //댓글 작성 레이아웃에 텍스트 삽입
                     val writeBtn=itemView.findViewById<TextView>(R.id.write_comment_btn)
                     val writeLayout=binding.writeCommentEdit
                     writeLayout.text= Editable.Factory.getInstance().newEditable(content)
 
+                    //댓글 재등록
                     writeBtn.setOnClickListener {
                         val newContent=writeLayout.text.toString()
                         commentAdapter.modifyComment(position,newContent)
                         writeLayout.text= Editable.Factory.getInstance().newEditable("")
                     }
                 }
-            })
+            })*/
 
-            var isLiked=isLiked()
-            setInit(position)
-            setOnclick(position, commentAdapter)
+            var likeNum=0       //서버에서 받은 데이터
+            var isLiked=false   //사용자가 좋아요 누른지 여부 (서버 데이터?)
+            var isCommentShown=false
 
-            //좋아요
+            var isExpert=true  //전문가 답변 여부(서버에서 받아오기?)
+            var isBought=false  //구매 여부(서버)
+
+            //setOnclick(position, commentAdapter)
+
+            //좋아요 누르기
             binding.answerLikeBtn.setOnClickListener {
                 if(isLiked){
                     likeAnswer(false)
-                    binding.answerLikeBtn.setImageResource(R.drawable.like_off)
+                    binding.answerLikeBtn.setImageResource(R.drawable.like_off)     //좋아요 이미지
+                    val text=binding.answerLikeTv.text.toString()   //좋아요 수 텍스트뷰 수정
+                    val likeNum=text.toInt()-1
+                    binding.answerLikeTv.text=likeNum.toString()
+
                     isLiked=false
                 }
                 else{
                     likeAnswer(true)
                     binding.answerLikeBtn.setImageResource(R.drawable.like_on)
+                    val text=binding.answerLikeTv.text.toString()
+                    val likeNum=text.toInt()+1
+                    binding.answerLikeTv.text=likeNum.toString()
+
                     isLiked=true
                 }
             }
-
-        }
-
-        //답변 내용 블러 처리
-
-
-        private fun setInit(position: Int){
-            answerContentView.text=items[position].content
-            //댓글수
-            commentNumberUpdate(items[position])
-            //댓글 펼치기
-            showComment(true)
-            setBlurText(true)
-
-        }
-        private fun setOnclick(position: Int,adapter: DetailedAnswerCommentRVAdapter){
             //댓글 펼치기/접기
             binding.answerCommentBtnLayout.setOnClickListener {
-                showComment(isCommentShown)
+                val commentRv=binding.commentLayout
+                if(isCommentShown){
+                    commentRv.visibility=View.GONE
+                    isCommentShown=false
+                }
+                else{
+                    commentRv.visibility=View.VISIBLE
+                    isCommentShown=true
+                }
             }
+
+            setInit(position,likeNum,isLiked,isExpert && !isBought)
+
+
+        }
+
+
+
+        private fun setInit(position: Int,likeNum: Int,isLiked:Boolean,isBlur:Boolean){
+            answerContentView.text=items[position].content     //답변 내용
+            binding.commentLayout.visibility=View.GONE      //댓글 접은 상태
+            //commentNumberUpdate(items[position])    //댓글 수
+            setBlurText(isBlur,likeNum)
+        }
+
+        private fun setOnclick(position: Int,adapter: DetailedAnswerCommentRVAdapter){
             //댓글 쓰기
             binding.writeCommentBtn.setOnClickListener {
                 writeComment(binding.writeCommentEdit.text.toString(),adapter,items[position])
             }
             //더보기 팝업 메뉴
             showAnswerMorePopup(position,adapter)
-
         }
 
-        //좋아요 업데이트, 자신이 '좋아요'한 상태 반환
-        private fun isLiked():Boolean{
-            var liked=false
-            var likeNum=0
 
-            binding.answerLikeTv.text=likeNum.toString()
-            return liked
-        }
         //좋아요/해제
         private fun likeAnswer(toLike:Boolean){
             if(toLike){
                 //서버에 post
-                val text=binding.answerLikeTv.text.toString()
-                val likeNum=text.toInt()+1
-                binding.answerLikeTv.text=likeNum.toString()
             }
             else{
                 //서버에 post
-                val text=binding.answerLikeTv.text.toString()
-                val likeNum=text.toInt()-1
-                binding.answerLikeTv.text=likeNum.toString()
             }
         }
 
-        private fun getLikeCount():Int{
-            var likeCount=0
-            return likeCount
-        }
 
-        //댓글 펼치기
-        private fun showComment(isShown: Boolean){
-            val commentRv=binding.commentLayout
-            if(isShown){
-                commentRv.visibility=View.GONE
-                isCommentShown=false
-            }
-            else{
-                commentRv.visibility=View.VISIBLE
-                isCommentShown=true
-            }
-        }
+
         //댓글 등록
-        private fun writeComment(content:String,adapter:DetailedAnswerCommentRVAdapter,answer:Answer){
+        private fun writeComment(content:String,adapter:DetailedAnswerCommentRVAdapter,answer:AnswerInfo){
             if(content!=""){
                 adapter.addItem(content)    //임시로 구현..
-                commentNumberUpdate(answer)
+                //commentNumberUpdate(answer)
                 binding.writeCommentEdit.text=Editable.Factory.getInstance().newEditable("")
             }
             else{
@@ -176,29 +172,36 @@ class DetailedQuestionRVAdapter(context:Context): RecyclerView.Adapter<DetailedQ
             }
         }
         //댓글수 표시
-        private fun commentNumberUpdate(answer:Answer){
+        /*private fun commentNumberUpdate(answer:Answer){
             binding.answerCommentBtnTv.text=
                 when (answer.commentList){
                     null->"0"
                     else->answer.commentList!!.size.toString()
                 }
 
-        }
+        }*/
 
-        private fun setBlurText(isBlur:Boolean){
+        //답변 블러 처리
+        private fun setBlurText(isBlur:Boolean,likeNum:Int){
             binding.answerContentTv.setLayerType(View.LAYER_TYPE_SOFTWARE,null).apply{
                 if(isBlur) binding.answerContentTv.paint.maskFilter=BlurMaskFilter(16f,BlurMaskFilter.Blur.NORMAL)
                 else binding.answerContentTv.paint.maskFilter=null
             }
-            val container=binding.previewContainer
-            val inflater:LayoutInflater=appContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-            inflater.inflate(R.layout.item_answer_preview,container,true)
+            if(isBlur){
+                val container=binding.previewContainer
+                val inflater:LayoutInflater=appContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+                inflater.inflate(R.layout.item_answer_preview,container,true)
 
-            var charCount=binding.answerContentTv.text.count()
-            var likeCount=getLikeCount()
-            val textView=itemView.findViewById<TextView>(R.id.priview_tv)
-            var text=charCount.toString()+"자, "+likeCount.toString()+"명이 도움이 됐대요!"
-            textView.text=text
+                var charCount=binding.answerContentTv.text.count()
+                var likeCount=likeNum
+                val textView=itemView.findViewById<TextView>(R.id.priview_tv)
+                var text=charCount.toString()+"자, "+likeCount.toString()+"명이 도움이 됐대요!"
+                textView.text=text
+
+                binding.answerCommentBtnLayout.isClickable=false
+                binding.answerLikeBtn.isClickable=false
+            }
+
 
 
         }
@@ -261,11 +264,11 @@ class DetailedQuestionRVAdapter(context:Context): RecyclerView.Adapter<DetailedQ
         return items[position].content
     }
 
-    fun addItem(item: Answer) {
+    fun addItem(item: AnswerInfo) {
         this.items.add(0,item)
         this.notifyDataSetChanged()
     }
-    fun addItemList(items:ArrayList<Answer>){
+    fun addItemList(items:ArrayList<AnswerInfo>){
         this.items.addAll(items)
         this.notifyDataSetChanged()
     }
