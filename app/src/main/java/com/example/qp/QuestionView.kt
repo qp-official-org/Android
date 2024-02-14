@@ -5,6 +5,12 @@ import com.example.qp.databinding.ItemAnswerBinding
 interface WriteQView {
     fun onWriteSuccess()
     fun onWriteFailure()
+
+    fun onPostHashtagSuccess(response: HashtagResponse)
+    fun onPostHashtagFailure(tag:String,msg: String)
+
+    fun onGetHashtagSuccess(response: HashtagResponse)
+    fun onGetHashtagFailure(tag:String,msg:String)
 }
 
 interface DetailedQView{

@@ -7,6 +7,7 @@ import android.nfc.Tag
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import android.view.inputmethod.InputMethodManager
@@ -16,6 +17,14 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.example.qp.databinding.ActivityWriteQuestionBinding
 import com.google.gson.Gson
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
 import java.util.Date
 
 class WriteQuestionActivity: AppCompatActivity(),WriteQView {
@@ -25,6 +34,8 @@ class WriteQuestionActivity: AppCompatActivity(),WriteQView {
     private var isTitleValid=false
     private var isContentValid=false
     private  var tagList = ArrayList<String>()
+    private var tagNum=0
+    private var tagPost=false
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -182,46 +193,56 @@ class WriteQuestionActivity: AppCompatActivity(),WriteQView {
             if(isTitleValid &&isContentValid){
                 if(checkBox.isChecked){
 
-                    tagList=adapter.getItems()
-                    val newTagList=ArrayList<TagInfo>()
-                    for(i in 0 until tagList.size){
-                        newTagList.add(TagInfo(tagCount,tagList[i]))
-                        incId()
+                    CoroutineScope(Dispatchers.Main).launch {
+
+                        tagList = adapter.getItems()
+                        val newTagList = ArrayList<TagInfo>()
+                        for (i in 0 until tagList.size) {
+                            postTag(tagList[i])
+                            delay(400)
+
+                            newTagList.add(TagInfo(tagNum, tagList[i]))
+                            Log.d("hashtagNum",tagNum.toString())
+
+                        }
+
+                        delay(1200)
+                        val job3= CoroutineScope(Dispatchers.Main).launch{
+
+                            var tagIds = ArrayList<Int>()
+                            for (i in 0 until newTagList.size) {
+                                tagIds.add(newTagList[i].hashtagId)
+                            }
+
+                            val questionPost = QuestionPost(
+                                userId = "1",
+                                title = titleText,
+                                content = contentText,
+                                hashtag = tagIds
+                            )
+                            questionService.writeQ(questionPost)
+                            
+
+
+                            val questionInfo = QuestionInfo(
+                                title = titleText,
+                                content = contentText,
+                                hashtags = newTagList
+                            )
+
+                            val intent =
+                                Intent(this@WriteQuestionActivity, DetailedActivity::class.java)
+                            val gson = Gson()
+                            val qJson = gson.toJson(questionInfo)
+                            intent.putExtra("question", qJson)
+                            startActivity(intent)
+                            finish()
+                            Toast.makeText(applicationContext, "등록 완료", Toast.LENGTH_SHORT).show()
+                        }
+
                     }
 
-                    /*val questionInfo = QuestionInfo(
-                        UserInfo(0,"","student"), //사용자 정보 임의 설정
-                        0, //임의 설정
-                        title=titleText,
-                        content=contentText,
-                        0, // 초기값 설정
-                        0, // 초기값 설정
-                        0, // 초기값 설정
-                        Date().getTime().toString(),
-                        updateAt = null, // 초기값 설정
-                        newTagList
-                    )*/
 
-                    var tags=ArrayList<Int>()
-                    for(i in 0 until newTagList.size){
-                        tags.add(newTagList[i].hashtagId)
-                    }
-
-                    val questionInfo=QuestionPost(
-                        userId = "1",
-                        title=titleText,
-                        content=contentText,
-                        hashtag = tags
-                    )
-                    questionService.writeQ(questionInfo)
-
-                    val intent= Intent(this@WriteQuestionActivity,DetailedActivity::class.java)
-                    val gson= Gson()
-                    val qJson=gson.toJson(questionInfo)
-                    intent.putExtra("question",qJson)
-                    startActivity(intent)
-                    finish()
-                    Toast.makeText(applicationContext,"등록 완료",Toast.LENGTH_SHORT).show()
 
                 }
                 else Toast.makeText(applicationContext,"동의가 체크되지 않음",Toast.LENGTH_SHORT).show()
@@ -250,17 +271,40 @@ class WriteQuestionActivity: AppCompatActivity(),WriteQView {
         return super.dispatchTouchEvent(event)
     }
 
-    companion object{
-        var tagCount=0
-        fun incId(){
-            tagCount+=1
-        }
+
+    suspend fun postTag(tag:String):Int{
+        val questionService=QuestionService()
+        questionService.setWriteQView(this)
+
+        questionService.postHashtag(tag)
+        return tagNum
     }
+
 
     override fun onWriteSuccess() {
     }
 
     override fun onWriteFailure() {
+    }
+
+    override fun onPostHashtagSuccess(response: HashtagResponse) {
+        tagPost=true
+        tagNum= response.result!!.hashtagId
+        Log.d("postHashtag/SUCCESS",response.toString().plus("tagNum="+tagNum))
+    }
+
+    override fun onPostHashtagFailure(tag: String, msg: String) {
+        tagPost=false
+        Log.d("postHashtag/FAIL",tag.plus(msg))
+    }
+
+    override fun onGetHashtagSuccess(response: HashtagResponse) {
+        tagNum=response.result?.hashtagId?:0
+        Log.d("getHashtag/SUCCESS",response.toString())
+    }
+
+    override fun onGetHashtagFailure(tag: String, msg: String) {
+        Log.d("getHashtag/FAIL",tag.plus(msg))
     }
 
 

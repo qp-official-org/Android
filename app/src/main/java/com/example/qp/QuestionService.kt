@@ -121,15 +121,55 @@ class QuestionService {
             }
 
             override fun onFailure(call: Call<DetailedAnswerResponse>, t: Throwable) {
-                Log.d("getParent",t.message.toString())
+                Log.d("getParentResp/FAIL",t.message.toString())
             }
 
         })
     }
     //해시태그 생성
-    fun getHashtag(hashtag:String){
+    fun postHashtag(hashtag:String){
         val questionService= getRetrofit().create(QuestionInterface::class.java)
 
+        questionService.postHashtag(hashtag).enqueue(object:Callback<HashtagResponse>{
+            override fun onResponse(
+                call: Call<HashtagResponse>,
+                response: Response<HashtagResponse>
+            ) {
+                val resp=response.body()
+                Log.d("postHashtagResp",resp.toString())
+                when(resp?.code){
+                    "HASHTAG_6000"->writeQView.onPostHashtagSuccess(resp)
+                    else->writeQView.onPostHashtagFailure(hashtag,response.errorBody()?.string().toString())
+                }
+            }
 
+            override fun onFailure(call: Call<HashtagResponse>, t: Throwable) {
+                Log.d("postHashtagResp/FAIL",t.message.toString())
+            }
+
+        })
+
+    }
+    fun getHashtag(hashtag: String){
+        val questionService= getRetrofit().create(QuestionInterface::class.java)
+
+        questionService.getHashtag(hashtag).enqueue(object:Callback<HashtagResponse>{
+            override fun onResponse(
+                call: Call<HashtagResponse>,
+                response: Response<HashtagResponse>
+            ) {
+                val resp=response.body()
+                Log.d("getHashtagResp",resp.toString())
+                when(resp?.code){
+                    "2000"->writeQView.onGetHashtagSuccess(resp)
+                    else->writeQView.onGetHashtagFailure(hashtag,response.errorBody()?.string().toString())
+                }
+            }
+
+            override fun onFailure(call: Call<HashtagResponse>, t: Throwable) {
+                Log.d("getHashtagResp/FAIL",t.message.toString())
+            }
+
+        })
     }
 }
