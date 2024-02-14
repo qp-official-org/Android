@@ -26,34 +26,8 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        //백엔드로부터 질문 정보를 가져와 리사이클러뷰를 구성하는 함수
         getQuestions()
-        Log.d("qdatas",qDatas.toString())
-
-        //수정 임시 데이터(삭제해도 무관)
-        var tagList= arrayListOf<TagInfo>(TagInfo(0,"tag1"),TagInfo(1,"tag2"))
-        qDatas.apply {
-            add(QuestionInfo(UserInfo(1,"1","USER"),0,"질문제목1","질문내용1",1,2,3,"2024-01-01","2024-01-01",tagList))
-            add(QuestionInfo(UserInfo(1,"1","USER"),0,"질문제목2","질문내용2",1,2,3,"2024-01-01","2024-01-01",tagList))
-            add(QuestionInfo(UserInfo(1,"1","USER"),0,"질문제목3","질문내용3",1,2,3,"2024-01-01","2024-01-01",tagList))
-
-        }
-
-
-        val questionRVAdapter = QuestionRVAdapter(qDatas)
-        binding.mainQuestionRv.adapter = questionRVAdapter
-        binding.mainQuestionRv.layoutManager = GridLayoutManager(applicationContext, 2)
-
-        //특정 질문 클릭 시 질문상세화면으로 전환
-        questionRVAdapter.setMyItemClickListner(object : QuestionRVAdapter.MyItemClickListner{
-            override fun onItemClick(questionInfo: QuestionInfo) {
-                val intent = Intent(this@MainActivity, DetailedActivity::class.java)
-                val gson = Gson()
-                val qJson = gson.toJson(questionInfo)
-                intent.putExtra("question", qJson)
-                intent.putExtra("qDatas", qDatas)
-                startActivity(intent)
-            }
-        })
 
         // 키 해시 확인용
         val keyHash = Utility.getKeyHash(this)
@@ -90,9 +64,9 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+        //상단 검색바 클릭 시 검색화면으로 화면 전환
         binding.mainSearchBt.setOnClickListener {
             val intent = Intent(this@MainActivity, SearchActivity::class.java)
-            intent.putExtra("qDatas", qDatas)
             startActivity(intent)
         }
 
@@ -121,7 +95,7 @@ class MainActivity : AppCompatActivity() {
     private fun getQuestions() {
         val questionService = getRetrofit().create(QuestionInterface::class.java)
 
-        questionService.getQuestions(0, 10, null)
+        questionService.getQuestions(0, 10, null) //스크롤에 따라 추가 페이징 할 것!
             .enqueue(object: Callback<QuestionResponse>{
                 override fun onResponse(
                     call: Call<QuestionResponse>,
@@ -135,7 +109,8 @@ class MainActivity : AppCompatActivity() {
                         when(questionResponse.code){
                             "QUESTION_2000" -> {
                                 Log.d("SUCCESS/DATA_LOAD", "리사이클러뷰의 데이터로 구성됩니다")
-                                qDatas = questionResponse.result.questions
+                                qDatas.addAll(questionResponse.result.questions)
+                                setQuestionRVAdapter()
                                 Log.d("getQsResp",qDatas.toString())
                             }
                             else -> {
@@ -150,6 +125,24 @@ class MainActivity : AppCompatActivity() {
                 }
 
             })
+    }
+
+    private fun setQuestionRVAdapter(){
+        val questionRVAdapter = QuestionRVAdapter(qDatas)
+        binding.mainQuestionRv.adapter = questionRVAdapter
+        binding.mainQuestionRv.layoutManager = GridLayoutManager(applicationContext, 2)
+
+        //특정 질문 클릭 시 질문상세화면으로 전환
+        questionRVAdapter.setMyItemClickListner(object : QuestionRVAdapter.MyItemClickListner{
+            override fun onItemClick(questionInfo: QuestionInfo) {
+                val intent = Intent(this@MainActivity, DetailedActivity::class.java)
+                val gson = Gson()
+                val qJson = gson.toJson(questionInfo)
+                intent.putExtra("question", qJson)
+                intent.putExtra("qDatas", qDatas)
+                startActivity(intent)
+            }
+        })
     }
 
 }
