@@ -1,5 +1,6 @@
 package com.example.qp
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
@@ -11,16 +12,23 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.qp.databinding.ActivityLoginBinding
 import com.kakao.sdk.auth.model.OAuthToken
 import com.kakao.sdk.user.UserApiClient
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class LoginActivity : AppCompatActivity() {
 
     lateinit var binding: ActivityLoginBinding
+    lateinit var qpAccessToken : String     // 카카오에서 발급받은 것과 다른 자체 Token
 
     val kakaoCallback: (OAuthToken?, Throwable?) -> Unit = { token, error ->
         if (error != null) {
-            Log.e("TAG", "카카오계정으로 로그인 실패", error)
+            Toast.makeText(this, "카카오계정으로 로그인 실패 $error", Toast.LENGTH_SHORT).show()
         } else if (token != null) {
-            Log.i("TAG", "카카오계정으로 로그인 성공 ${token.accessToken}")
+            Log.i("Login TAG", "카카오계정으로 로그인 성공 ${token.accessToken}")
+            Toast.makeText(this, "카카오계정으로 로그인 성공 ${token.accessToken}", Toast.LENGTH_SHORT).show()
+
+            signUp(token.accessToken, this)
         }
     }
 
@@ -85,9 +93,35 @@ class LoginActivity : AppCompatActivity() {
         }
 
         binding.loginKakaoBtn.setOnClickListener {
+            qpAccessToken = ""
             Toast.makeText(this, "카카오 로그인", Toast.LENGTH_SHORT).show()
 
             UserApiClient.instance.loginWithKakaoAccount(this, callback = kakaoCallback)
         }
+    }
+
+    private fun signUp(token: String, context: Context) {
+        val userService = getRetrofit().create(UserInterface::class.java)
+
+        userService.signUp(token).enqueue(object: Callback<UserResponse>{
+            override fun onResponse(call: Call<UserResponse>, response: Response<UserResponse>) {
+                Log.d("singUp Success", response.toString())
+                val resp = response.body()
+                if(resp!=null){
+                    when(resp.code){
+                        "USER_1000"-> {
+                            Log.d("singUp Result", resp.message)
+                            qpAccessToken = resp.result.accessToken
+                            startActivity(Intent(context, SetNicknameActivity::class.java))
+                        }
+                        else->Log.d("singUp Result", resp.message)
+                    }
+                }
+            }
+
+            override fun onFailure(call: Call<UserResponse>, t: Throwable) {
+                Log.d("singUp Fail", t.message.toString())
+            }
+        })
     }
 }
