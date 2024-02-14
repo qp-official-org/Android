@@ -1,10 +1,12 @@
 package com.example.qp
 
 import android.content.Intent
+import android.content.Intent.FLAG_ACTIVITY_CLEAR_TOP
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.Toast
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.qp.databinding.ActivityMainBinding
 import com.google.gson.Gson
@@ -38,6 +40,24 @@ class MainActivity : AppCompatActivity() {
                 Log.i("TAG", "로그인 성공 $token")
                 binding.mainLoginBt.visibility = View.GONE
                 binding.mainLoginSuccessBt.visibility = View.VISIBLE
+            }
+        }
+
+        // 사용자명 불러오기
+        UserApiClient.instance.me { user, error ->
+            binding.mainBarNicknameTv.text = "${user?.kakaoAccount?.profile?.nickname}"
+        }
+
+        // 임시 로그아웃 (로고 클릭시)
+        binding.mainLogoIv.setOnClickListener {
+            UserApiClient.instance.logout { error ->
+                if (error != null) {
+                    Toast.makeText(this, "로그아웃 실패 $error", Toast.LENGTH_SHORT).show()
+                }else {
+                    Toast.makeText(this, "로그아웃 성공", Toast.LENGTH_SHORT).show()
+                    binding.mainLoginBt.visibility = View.VISIBLE
+                    binding.mainLoginSuccessBt.visibility = View.GONE
+                }
             }
         }
 
