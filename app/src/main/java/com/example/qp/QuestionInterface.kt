@@ -28,4 +28,11 @@ interface QuestionInterface {
         @Query("page") page:Int,
         @Query("size") size:Int
     ):Call<DetailedAnswerResponse>
+
+    @GET("/answers/{parentAnswerId}")
+    fun getChildAnswer(
+        @Path("parentAnswerId")parentAnswerId:Long,
+        @Query("page")page:Int,
+        @Query("size")size:Int
+    )
 }

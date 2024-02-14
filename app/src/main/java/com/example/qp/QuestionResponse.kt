@@ -23,7 +23,7 @@ data class QuestionChart(
 
 data class QuestionInfo(
     @SerializedName(value="user")val user: UserInfo?=null,
-    @SerializedName(value="questionId")val questionId: Long,
+    @SerializedName(value="questionId")val questionId: Long=0,
     @SerializedName(value="title")var title: String,
     @SerializedName(value="content")var content: String?,
     @SerializedName(value="hit")val hit: Int?=0,

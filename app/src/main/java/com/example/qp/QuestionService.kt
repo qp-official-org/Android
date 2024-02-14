@@ -1,6 +1,11 @@
 package com.example.qp
 
 import android.util.Log
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.withContext
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -54,45 +59,63 @@ class QuestionService {
 
     }
     fun getQuestion(questionId:Long?){
-        val questionService= getRetrofit().create(QuestionInterface::class.java)
+            val questionService= getRetrofit().create(QuestionInterface::class.java)
 
-        questionService.getQuestion(questionId).enqueue(object :Callback<DetailedQResponse>{
-            override fun onResponse(
-                call: Call<DetailedQResponse>,
-                response: Response<DetailedQResponse>
-            ) {
-                val resp=response.body()
-                when(resp?.code){
-                    "2000"-> {
-                        detailedQView.onGetQSuccess(resp.result)
-                    }
-                    else-> {
-                        detailedQView.onGetQFailure(response.errorBody()?.string().toString())
+            questionService.getQuestion(questionId).enqueue(object :Callback<DetailedQResponse>{
+                override fun onResponse(
+                    call: Call<DetailedQResponse>,
+                    response: Response<DetailedQResponse>
+                ) {
+
+                    val resp=response.body()
+                    Log.d("getDetailedResp",resp.toString())
+                    when(resp?.code){
+                        "QUESTION_2000"-> {
+                            detailedQView.onGetQSuccess(resp.result)
+                        }
+                        else-> {
+                            detailedQView.onGetQFailure(response.errorBody()?.string().toString())
+                            //Log.d("getDetailedQFail",response.errorBody()?.string().toString().plus(questionId))
+                        }
                     }
                 }
-            }
 
-            override fun onFailure(call: Call<DetailedQResponse>, t: Throwable) {
-                Log.d("detailedQFail",t.message.toString())
-            }
+                override fun onFailure(call: Call<DetailedQResponse>, t: Throwable) {
+                    Log.d("detailedQFail",t.message.toString())
+                }
 
-        })
+            })
 
     }
 
-    fun getParentAnswer(questionId:Long){
+    fun getParentAnswer(id:Long,isParent:Boolean,position:Int=0){
         val questionService= getRetrofit().create(QuestionInterface::class.java)
 
-        questionService.getParentAnswer(questionId,0,0).enqueue(object :Callback<DetailedAnswerResponse>{
+        questionService.getParentAnswer(id,1,1).enqueue(object :Callback<DetailedAnswerResponse>{
             override fun onResponse(
                 call: Call<DetailedAnswerResponse>,
                 response: Response<DetailedAnswerResponse>
             ) {
                 val resp=response.body()
+                Log.d("getParentResp",resp.toString())
                 when(resp?.code){
-                    "3000"->detailedQView.onGetParentSuccess(resp.result.answerList)
+                    "ANSWER_3000"-> {
+                        if(isParent) {
+                            detailedQView.onGetParentSuccess(resp.result.answerList)
+                        }
+                        else{
+                            detailedQView.onGetChildSuccess(resp.result.answerList,id,position)
+                        }
+                    }
                     else-> {
-                        detailedQView.onGetaParentFailure(response.errorBody()?.string().toString())
+                        if(isParent) {
+                            detailedQView.onGetaParentFailure(
+                                response.errorBody()?.string().toString()
+                            )
+                        }
+                        else{
+                            detailedQView.onGetChildFailure(response.errorBody()?.string().toString())
+                        }
                     }
                 }
             }

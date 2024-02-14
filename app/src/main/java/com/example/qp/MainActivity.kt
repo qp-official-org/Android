@@ -30,7 +30,7 @@ class MainActivity : AppCompatActivity() {
         //수정 임시 데이터(삭제해도 무관)
         var tagList= arrayListOf<TagInfo>(TagInfo(0,"tag1"),TagInfo(1,"tag2"))
         qDatas.apply {
-            add(QuestionInfo(UserInfo(1,"1","USER"),0,"질문제목1","질문내용1",1,2,3,"2024-01-01","2024-01-01",tagList))
+            add(QuestionInfo(UserInfo(1,"1","USER"),34,"질문제목1","질문내용1",1,2,3,"2024-01-01","2024-01-01",tagList))
             add(QuestionInfo(UserInfo(1,"1","USER"),0,"질문제목2","질문내용2",1,2,3,"2024-01-01","2024-01-01",tagList))
             add(QuestionInfo(UserInfo(1,"1","USER"),0,"질문제목3","질문내용3",1,2,3,"2024-01-01","2024-01-01",tagList))
 

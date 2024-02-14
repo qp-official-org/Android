@@ -19,7 +19,7 @@ data class DetailedAnswerResponse(
     @SerializedName("result")var result:DetailedAnswerResult
 )
 data class DetailedAnswerResult(
-    @SerializedName("answerList")var answerList:ArrayList<AnswerInfo>,
+    @SerializedName("answerList")var answerList:ArrayList<AnswerInfo>?,
     @SerializedName("listSize")var listSize:Int,
     @SerializedName("totalPage")var totalPage:Int,
     @SerializedName("totalElements")var totalElements:Long,
