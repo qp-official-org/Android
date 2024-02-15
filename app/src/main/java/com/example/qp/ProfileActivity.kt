@@ -3,13 +3,17 @@ package com.example.qp
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
+import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
+import androidx.activity.OnBackPressedCallback
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatButton
@@ -24,11 +28,25 @@ class ProfileActivity : AppCompatActivity() {
 
     private val information = arrayListOf("내가 한 질문", "내가 구매한 답변", "알림신청한 질문")
 
+    // 뒤로가기 버튼 눌렀을 때 발동되는 함수
+    private val onBackPressedCallback = object : OnBackPressedCallback(true) {
+        override fun handleOnBackPressed() {
+            finish()
+        }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityProfileBinding.inflate(layoutInflater)
 //        binding2 = DialogChargeBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        onBackPressedDispatcher.addCallback(this, onBackPressedCallback)    // 종료함수
+
+        // MainActivity에서 넘겨준 UserData 객체를 받기 위함
+        val intent = intent
+        val qpUserData = intent.getSerializableExtra("data", QpUserData::class.java)
 
         val profileVPAdapter = ProfileVPAdapter(this)
         binding.profileQuestionVp.adapter = profileVPAdapter
@@ -148,15 +166,17 @@ class ProfileActivity : AppCompatActivity() {
 
 
         binding.profileQpLogo.setOnClickListener {
-            val intent = Intent(this, MainActivity::class.java)
-            intent.putExtra("isLogin", 1)
-
-            startActivity(intent)
-            finish()
+            if (qpUserData != null) {
+                Log.d("proffile Data1", qpUserData.accessToken)
+                Log.d("proffile Data2", qpUserData.userId.toString())
+            }
+            else {
+                Log.d("errorMessage", "main error")
+            }
         }
     }
 
-//    // Dialog 호출 함수
+//    // Dialog 호출 함수 (개발중)
 //    fun madeDialog(num : Int, str : String) {
 //        val mDialogView = LayoutInflater.from(this).inflate(R.layout.dialog_charge, null)
 //

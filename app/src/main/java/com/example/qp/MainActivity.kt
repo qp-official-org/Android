@@ -2,11 +2,16 @@ package com.example.qp
 
 import android.content.Intent
 import android.content.Intent.FLAG_ACTIVITY_CLEAR_TOP
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.view.View
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
+import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.qp.databinding.ActivityMainBinding
 import com.google.gson.Gson
@@ -21,11 +26,31 @@ class MainActivity : AppCompatActivity() {
     lateinit var binding: ActivityMainBinding
     private var qDatas = ArrayList<QuestionInfo>()
 
+    // 뒤로가기 버튼 눌렀을 때 발동되는 함수 (두번 눌러야 종료)
+    private val onBackPressedCallback = object : OnBackPressedCallback(true) {
+        var isExit : Boolean = false
+        override fun handleOnBackPressed() {
+            if(isExit) {
+                finish()
+            }
+            else {
+                Toast.makeText(this@MainActivity, "종료하려면 뒤로가기를 한 번 더 누르세요.", Toast.LENGTH_SHORT).show()
+            }
+
+            Handler(Looper.getMainLooper()).postDelayed(Runnable {
+                isExit = true
+            }, 1000)
+        }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        onBackPressedDispatcher.addCallback(this, onBackPressedCallback)    // 종료함수
+        
         //백엔드로부터 질문 정보를 가져와 리사이클러뷰를 구성하는 함수
         getQuestions()
 
@@ -46,7 +71,11 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        // 사용자명 불러오기
+        // 유저 데이터가 담긴 객체를 받기 위함
+        val intent = intent
+        val qpUserData = intent.getSerializableExtra("data", QpUserData::class.java)
+
+        // 사용자명 불러오기 (유저 닉네임으로 수정 필요)
         UserApiClient.instance.me { user, error ->
             binding.mainBarNicknameTv.text = "${user?.kakaoAccount?.profile?.nickname}"
         }
@@ -70,25 +99,16 @@ class MainActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
+        // 로그인 화면으로 이동
         binding.mainLoginBt.setOnClickListener{
             startActivity(Intent(this@MainActivity, LoginActivity::class.java))
         }
 
-
-        //Login 여부 확인
-        val isLogin = intent.getIntExtra("isLogin", 0)
-        if(isLogin == 1) {
-            binding.mainLoginBt.visibility = View.GONE
-            binding.mainLoginSuccessBt.visibility = View.VISIBLE
-        }
-        else {
-            binding.mainLoginBt.visibility = View.VISIBLE
-            binding.mainLoginSuccessBt.visibility = View.GONE
-        }
-
-
+        // 프로필 화면으로 이동
         binding.mainLoginSuccessBt.setOnClickListener{
-            startActivity(Intent(this, ProfileActivity::class.java))
+            val intent = Intent(this, ProfileActivity::class.java)
+            intent.putExtra("data", qpUserData)
+            startActivity(intent)
         }
     }
 
