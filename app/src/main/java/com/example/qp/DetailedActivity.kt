@@ -53,7 +53,7 @@ class DetailedActivity : AppCompatActivity(),DetailedQView{
 
 
         CoroutineScope(Dispatchers.Main).launch {
-            val server= CoroutineScope(Dispatchers.IO).async {
+            val server = CoroutineScope(Dispatchers.IO).async {
                 getQ()
                 Log.d("getServer","server")
                 delay(200)
@@ -80,13 +80,14 @@ class DetailedActivity : AppCompatActivity(),DetailedQView{
                 finish()
             }
 
-            Log.d("detailedQOncreate",questionInfo.toString())
-            
+            Log.d("detailedQOncreate", questionInfo.toString())
+
             //검색으로 화면전환
             binding.detailedSearchBt.setOnClickListener {
                 val intent = Intent(this@DetailedActivity, SearchActivity::class.java)
                 startActivity(intent)
             }
+        }
 
     }
 
