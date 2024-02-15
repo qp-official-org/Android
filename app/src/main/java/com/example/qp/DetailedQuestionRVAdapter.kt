@@ -18,6 +18,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.qp.databinding.ItemAnswerBinding
 import com.example.qp.databinding.ItemWriteAnswerBinding
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class DetailedQuestionRVAdapter(context:Context,view:DetailedQView): RecyclerView.Adapter<DetailedQuestionRVAdapter.ViewHolder>() {
     val items= ArrayList<AnswerInfo>()
@@ -58,9 +61,10 @@ class DetailedQuestionRVAdapter(context:Context,view:DetailedQView): RecyclerVie
             commentAdapterList[position].addItems(ArrayList<AnswerInfo>())
             binding.answerCommentRv.adapter=commentAdapterList[position]
 
-            var questionService=QuestionService()
-            questionService.setDetailedQView(detailedQView)
-            questionService.getParentAnswer(items[position].answerId!!,false,)
+//            var questionService=QuestionService()
+//            questionService.setDetailedQView(detailedQView)
+//            questionService.getParentAnswer(items[position].answerId!!,false,)
+            getChildAnswerService(items[position].answerId!!,position)
 
             //댓글에 대한 동작
             commentAdapterList[position].setMyItemClickListener(object :
@@ -304,6 +308,33 @@ class DetailedQuestionRVAdapter(context:Context,view:DetailedQView): RecyclerVie
 //            questionService.getParentAnswer(items[position].answerId!!,false,)
 //        }
 //    }
+
+
+    fun getChildAnswerService(id:Long,position:Int){
+        val questionService= getRetrofit().create(QuestionInterface::class.java)
+
+        questionService.getChildAnswer(id,0,1).enqueue(object : Callback<ChildAnswerResponse>{
+            override fun onResponse(
+                call: Call<ChildAnswerResponse>,
+                response: Response<ChildAnswerResponse>
+            ) {
+                val resp=response.body()
+                when(resp?.code){
+                    "ANSWER_3000"->{
+                        commentAdapterList[position].addItems(resp.result.answerList)
+                    }
+                    else->{
+                        Log.d("getChild/FAIL",response.errorBody()?.string().toString())
+                    }
+                }
+            }
+
+            override fun onFailure(call: Call<ChildAnswerResponse>, t: Throwable) {
+                TODO("Not yet implemented")
+            }
+
+        })
+    }
 
 
 

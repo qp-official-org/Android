@@ -195,7 +195,9 @@ class WriteQuestionActivity: AppCompatActivity(),WriteQView {
         // 유저 데이터가 담긴 객체를 받기 위함
         val intent = intent
         if(intent.hasExtra("data")){
-            qpUserData = intent.getSerializableExtra("data", QpUserData::class.java)!!
+            val userData=intent.getSerializableExtra("data", QpUserData::class.java)
+            if(userData!=null)
+                qpUserData=userData
         }
 
         Log.d("accessToken",qpUserData.toString())

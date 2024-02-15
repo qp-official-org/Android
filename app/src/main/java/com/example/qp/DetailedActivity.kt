@@ -73,7 +73,9 @@ class DetailedActivity : AppCompatActivity(),DetailedQView{
         // 유저 데이터가 담긴 객체를 받기 위함
         val intent = intent
         if(intent.hasExtra("data")) {
-            qpUserData = intent.getSerializableExtra("data", QpUserData::class.java)!!
+            val userData=intent.getSerializableExtra("data", QpUserData::class.java)
+            if(userData!=null)
+                qpUserData=userData
         }
 
         // 사용자명 불러오기 (유저 닉네임으로 수정 필요)
@@ -140,7 +142,7 @@ class DetailedActivity : AppCompatActivity(),DetailedQView{
         answerAdapter=DetailedQuestionRVAdapter(applicationContext,this@DetailedActivity)
         binding.answerRv.adapter=answerAdapter
 
-        detailedQService.getParentAnswer(questionInfo.questionId!!.toLong(),true)
+        getParentAnswerService(questionInfo.questionId!!.toLong())
 
     }
 
@@ -149,7 +151,7 @@ class DetailedActivity : AppCompatActivity(),DetailedQView{
         isNotified=isNotified()
         initView()
 
-        initAnswerData()
+        //initAnswerData()
 
         answerAdapter.setMyItemClickListener(object :
             DetailedQuestionRVAdapter.ItemClickListener{
@@ -209,13 +211,13 @@ class DetailedActivity : AppCompatActivity(),DetailedQView{
         }
 
     }
-    private fun initAnswerData(){
-        val answerList =ArrayList<AnswerInfo>()
-
-        answerAdapter.addItemList(answerList)
-        updateExpertNum()
-
-    }
+//    private fun initAnswerData(){
+//        val answerList =ArrayList<AnswerInfo>()
+//
+//        answerAdapter.addItemList(answerList)
+//        updateExpertNum()
+//
+//    }
     private fun isNotified(): Boolean {
         return false     //서버에서 정보 받아와 설정
     }
@@ -453,6 +455,34 @@ class DetailedActivity : AppCompatActivity(),DetailedQView{
                 Log.d("writeAnswerResp/FAIL",t.message.toString())
             }
 
+
+        })
+    }
+
+    fun getParentAnswerService(id:Long){
+        val questionService= getRetrofit().create(QuestionInterface::class.java)
+
+        questionService.getParentAnswer(id,0,10).enqueue(object :Callback<ParentAnswerResponse>{
+            override fun onResponse(
+                call: Call<ParentAnswerResponse>,
+                response: Response<ParentAnswerResponse>
+            ) {
+                Log.d("getParentReq",id.toString())
+                val resp=response.body()
+                Log.d("getParentResp",resp.toString())
+                when(resp?.code){
+                    "ANSWER_3000"-> {
+                        answerAdapter.addItemList(resp.result.answerList)
+                    }
+                    else-> {
+                        Log.d("getParent/FAIL",response.errorBody()?.string().toString())
+                    }
+                }
+            }
+
+            override fun onFailure(call: Call<ParentAnswerResponse>, t: Throwable) {
+                Log.d("getParentResp/FAIL",t.message.toString())
+            }
 
         })
     }

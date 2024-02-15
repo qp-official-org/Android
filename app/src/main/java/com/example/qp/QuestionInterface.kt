@@ -27,14 +27,14 @@ interface QuestionInterface {
         @Path("questionId")questionId:Long,
         @Query("page") page:Int,
         @Query("size") size:Int
-    ):Call<DetailedAnswerResponse>
+    ):Call<ParentAnswerResponse>
 
-    /*@GET("/answers/{parentAnswerId}")
+    @GET("/answers/{parentAnswerId}")
     fun getChildAnswer(
         @Path("parentAnswerId")parentAnswerId:Long,
         @Query("page")page:Int,
         @Query("size")size:Int
-    )*/
+    ):Call<ChildAnswerResponse>
 
     @POST("/hashtag/")
     fun postHashtag(

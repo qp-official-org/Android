@@ -20,7 +20,7 @@ class SearchActivity : AppCompatActivity() {
 
     lateinit var binding: ActivitySearchBinding
     private var filtered = ArrayList<QuestionInfo>()
-    private lateinit var qpUserData:QpUserData
+    private  var qpUserData=QpUserData("",0)
 
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -131,7 +131,11 @@ class SearchActivity : AppCompatActivity() {
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     private fun register(){
         binding.searchRegisterBt.setOnClickListener {
-            qpUserData = intent.getSerializableExtra("data", QpUserData::class.java)!!
+            if(intent.hasExtra("data")){
+                val userData=intent.getSerializableExtra("data", QpUserData::class.java)
+                if(userData!=null)
+                    qpUserData=userData
+            }
             Log.d("search_userIntent",qpUserData.toString())
             val intent = Intent(this@SearchActivity, WriteQuestionActivity::class.java)
             intent.putExtra("data",qpUserData)
