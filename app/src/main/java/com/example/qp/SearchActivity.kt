@@ -10,11 +10,13 @@ import androidx.core.view.isVisible
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.qp.databinding.ActivitySearchBinding
 import com.google.gson.Gson
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class SearchActivity : AppCompatActivity() {
 
     lateinit var binding: ActivitySearchBinding
-    private var original = ArrayList<QuestionInfo>()
     private var filtered = ArrayList<QuestionInfo>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -24,7 +26,6 @@ class SearchActivity : AppCompatActivity() {
 
         binding.searchBackIv.setOnClickListener{
             val intent = Intent(this@SearchActivity, MainActivity::class.java)
-            intent.putExtra("isLogin", 1)
             startActivity(intent)
         }
 
@@ -33,45 +34,11 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun searchResult(){
-        if(intent.hasExtra("qDatas")){
-            original = intent.getSerializableExtra("qDatas") as ArrayList<QuestionInfo>
-        }
-        filtered.addAll(original)
-
-        val questionRVAdapter = QuestionRVAdapter(filtered)
-        binding.searchMatchQuestionRv.adapter = questionRVAdapter
-        binding.searchMatchQuestionRv.layoutManager = GridLayoutManager(applicationContext, 2)
-
         val textListner = object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
-                Log.d("qDatas 개수", original.size.toString())
-                val selected = ArrayList<QuestionInfo>()
-                for(i in original){
-                    val temp = i.title
-                    if( temp?.contains(query.toString()) == true){
-                        selected.add(i)
-                    }
-                }
+                getfilteredQuestions(query)
                 binding.searchRecentWord.isVisible = false
-                if(selected.size == 0){
-                    //이전 결과
-                    binding.searchMatchQuestionRv.isVisible = false
-                    //검색 결과 X
-                    binding.searchRegisterInfo.isVisible = true
-                    binding.searhNoResultTv.isVisible = true
-                }
-                else{
-                    //이전 결과
-                    binding.searchRegisterInfo.isVisible = false
-                    binding.searhNoResultTv.isVisible = false
-                    //검색 결과 O
-                    filtered = selected
-                    questionRVAdapter.setData(filtered)
-                    questionRVAdapter.notifyDataSetChanged()
-                    binding.searchMatchQuestionRv.isVisible = true
-                }
-                // 키보드 숨기기
-                binding.searchInputSv.clearFocus();
+                binding.searchInputSv.clearFocus() // 키보드 숨기기
                 return true
             }
             override fun onQueryTextChange(newText: String?): Boolean {
@@ -85,22 +52,79 @@ class SearchActivity : AppCompatActivity() {
             textListner.onQueryTextSubmit(binding.searchInputSv.query.toString())
         }
 
-        questionRVAdapter.setMyItemClickListner(object : QuestionRVAdapter.MyItemClickListner{
-            override fun onItemClick(questionInfo: QuestionInfo) {
-                val intent = Intent(this@SearchActivity, DetailedActivity::class.java)
-                val gson = Gson()
-                val qJson = gson.toJson(questionInfo)
-                intent.putExtra("question", qJson)
-                startActivity(intent)
-            }
-        })
+    }
+
+    private fun getfilteredQuestions(query: String?){
+        val questionService = getRetrofit().create(QuestionInterface::class.java)
+
+        questionService.getQuestions(0, 10, query) //스크롤에 따라 추가 페이징 할 것!
+            .enqueue(object: Callback<QuestionResponse> {
+                override fun onResponse(
+                    call: Call<QuestionResponse>,
+                    response: Response<QuestionResponse>
+                ) {
+                    if(response.isSuccessful && response.code() == 200){
+                        val questionResponse: QuestionResponse = response.body()!!
+
+                        Log.d("Q-RESPONSE/SUCCESS", questionResponse.toString())
+
+                        when(questionResponse.code){
+                            "QUESTION_2000" -> {
+                                Log.d("SUCCESS/DATA_LOAD", "리사이클러뷰의 데이터로 구성됩니다")
+                                filtered.clear()
+                                filtered.addAll(questionResponse.result.questions)
+                                setQuestionRVAdapter(filtered)
+                                Log.d("getFdResp",filtered.toString())
+                            }
+                            else -> {
+                                Log.d("SUCCESS/DATA_FAILURE", "응답 코드 오류입니다")
+                            }
+                        }
+                    }
+                }
+
+                override fun onFailure(call: Call<QuestionResponse>, t: Throwable) {
+                    Log.d("Q-RESPONSE/FAILURE", t.message.toString())
+                }
+
+            })
+    }
+
+    private fun setQuestionRVAdapter(filtered: ArrayList<QuestionInfo>){
+        if(filtered.size == 0){
+            //이전 결과
+            binding.searchMatchQuestionRv.isVisible = false
+            //검색 결과 X
+            binding.searchRegisterInfo.isVisible = true
+            binding.searhNoResultTv.isVisible = true
+        }
+        else{
+            //이전 결과
+            binding.searchRegisterInfo.isVisible = false
+            binding.searhNoResultTv.isVisible = false
+            //검색 결과 O
+            binding.searchMatchQuestionRv.isVisible = true
+
+            val questionRVAdapter = QuestionRVAdapter(filtered)
+            binding.searchMatchQuestionRv.adapter = questionRVAdapter
+            binding.searchMatchQuestionRv.layoutManager = GridLayoutManager(applicationContext, 2)
+
+            questionRVAdapter.setMyItemClickListner(object : QuestionRVAdapter.MyItemClickListner{
+                override fun onItemClick(questionInfo: QuestionInfo) {
+                    val intent = Intent(this@SearchActivity, DetailedActivity::class.java)
+                    val gson = Gson()
+                    val qJson = gson.toJson(questionInfo)
+                    intent.putExtra("question", qJson)
+                    startActivity(intent)
+                }
+            })
+        }
     }
 
     private fun register(){
         binding.searchRegisterBt.setOnClickListener {
             val intent = Intent(this@SearchActivity, WriteQuestionActivity::class.java)
             startActivity(intent)
-
         }
     }
 
