@@ -23,11 +23,11 @@ class QuestionService {
         this.detailedQView=view
     }
 
-    fun writeQ(questionInfo :QuestionPost){
+    fun writeQ(questionInfo :QuestionPost,token:String){
         val questionService= getRetrofit().create(QuestionInterface::class.java)
         Log.d("writeQArgument",questionInfo.toString())
 
-        questionService.writeQ("",questionInfo).enqueue(object: Callback<WriteQResponse>{
+        questionService.writeQ(token,questionInfo).enqueue(object: Callback<WriteQResponse>{
             override fun onResponse(
                 call: Call<WriteQResponse>,
                 response: Response<WriteQResponse>
@@ -35,6 +35,7 @@ class QuestionService {
                 val resp=response.body()
                 Log.d("writeQLog",resp.toString())
                 Log.d("writeQ response","response:".plus(response.errorBody()?.string().toString()))
+                Log.d("writeQ token",token)
 
                 if(resp!=null){
                     when(resp.code){
@@ -88,44 +89,45 @@ class QuestionService {
 
     }
 
-    fun getParentAnswer(id:Long,isParent:Boolean,position:Int=0){
-        val questionService= getRetrofit().create(QuestionInterface::class.java)
-
-        questionService.getParentAnswer(id,1,1).enqueue(object :Callback<DetailedAnswerResponse>{
-            override fun onResponse(
-                call: Call<DetailedAnswerResponse>,
-                response: Response<DetailedAnswerResponse>
-            ) {
-                val resp=response.body()
-                Log.d("getParentResp",resp.toString())
-                when(resp?.code){
-                    "ANSWER_3000"-> {
-                        if(isParent) {
-                            detailedQView.onGetParentSuccess(resp.result.answerList)
-                        }
-                        else{
-                            detailedQView.onGetChildSuccess(resp.result.answerList,id,position)
-                        }
-                    }
-                    else-> {
-                        if(isParent) {
-                            detailedQView.onGetaParentFailure(
-                                response.errorBody()?.string().toString()
-                            )
-                        }
-                        else{
-                            detailedQView.onGetChildFailure(response.errorBody()?.string().toString())
-                        }
-                    }
-                }
-            }
-
-            override fun onFailure(call: Call<DetailedAnswerResponse>, t: Throwable) {
-                Log.d("getParentResp/FAIL",t.message.toString())
-            }
-
-        })
-    }
+//    fun getParentAnswer(id:Long,isParent:Boolean,position:Int=0){
+//        val questionService= getRetrofit().create(QuestionInterface::class.java)
+//
+//        questionService.getParentAnswer(id,0,1).enqueue(object :Callback<DetailedAnswerResponse>{
+//            override fun onResponse(
+//                call: Call<DetailedAnswerResponse>,
+//                response: Response<DetailedAnswerResponse>
+//            ) {
+//                Log.d("getParentReq",id.toString())
+//                val resp=response.body()
+//                Log.d("getParentResp",resp.toString())
+//                when(resp?.code){
+//                    "ANSWER_3000"-> {
+//                        if(isParent) {
+//                            detailedQView.onGetParentSuccess(resp.result.answerList)
+//                        }
+//                        else{
+//                            detailedQView.onGetChildSuccess(resp.result.answerList,id,position)
+//                        }
+//                    }
+//                    else-> {
+//                        if(isParent) {
+//                            detailedQView.onGetaParentFailure(
+//                                response.errorBody()?.string().toString()
+//                            )
+//                        }
+//                        else{
+//                            detailedQView.onGetChildFailure(response.errorBody()?.string().toString())
+//                        }
+//                    }
+//                }
+//            }
+//
+//            override fun onFailure(call: Call<DetailedAnswerResponse>, t: Throwable) {
+//                Log.d("getParentResp/FAIL",t.message.toString())
+//            }
+//
+//        })
+//    }
     //해시태그 생성
     fun postHashtag(hashtag:String){
         val questionService= getRetrofit().create(QuestionInterface::class.java)
