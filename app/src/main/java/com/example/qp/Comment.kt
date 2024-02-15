@@ -1,5 +1,5 @@
 package com.example.qp
 
-class Comment (
+/*class Comment (
     var content:String
-)
+)*/

@@ -10,7 +10,7 @@ import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.example.qp.databinding.ItemAnswerCommentBinding
 
-class DetailedAnswerCommentRVAdapter(context: Context, private val items:ArrayList<Comment>):RecyclerView.Adapter<DetailedAnswerCommentRVAdapter.ViewHolder>() {
+class DetailedAnswerCommentRVAdapter(context: Context, private val items:ArrayList<AnswerInfo>):RecyclerView.Adapter<DetailedAnswerCommentRVAdapter.ViewHolder>() {
     private var appContext=context
 
     interface CommentClickListener{
@@ -45,7 +45,7 @@ class DetailedAnswerCommentRVAdapter(context: Context, private val items:ArrayLi
         }
 
 
-        private fun showCommentMorePopup(comment: Comment,position:Int){
+        private fun showCommentMorePopup(comment: AnswerInfo,position:Int){
             lateinit var popupWindow:SimplePopup
             binding.commentMoreBtn.setOnClickListener {
                 val list= mutableListOf<String>().apply {
@@ -86,13 +86,20 @@ class DetailedAnswerCommentRVAdapter(context: Context, private val items:ArrayLi
         return items.isEmpty()||items==null
     }
     fun addItem(content:String){
-        items.add(Comment(content))
+        items.add(AnswerInfo(answerId = 0, userId = 0, title = "title1", content=content,category = "CHILD", answerGroup = 0, likes = 0))
         notifyDataSetChanged()
+    }
+    fun addItems(answerList:ArrayList<AnswerInfo>?){
+        if(items!=null){
+            items.addAll(answerList!!)
+            notifyDataSetChanged()
+        }
     }
     fun removeItem(position: Int){
         this.items.removeAt(position)
         this.notifyDataSetChanged()
     }
+
 }
 
 

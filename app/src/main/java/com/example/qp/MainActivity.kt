@@ -54,6 +54,7 @@ class MainActivity : AppCompatActivity() {
         //백엔드로부터 질문 정보를 가져와 리사이클러뷰를 구성하는 함수
         getQuestions()
 
+
         // 키 해시 확인용
         val keyHash = Utility.getKeyHash(this)
         Log.d("Hash", keyHash)

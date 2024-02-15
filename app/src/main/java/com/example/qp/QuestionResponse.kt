@@ -23,7 +23,7 @@ data class QuestionChart(
 
 data class QuestionInfo(
     @SerializedName(value="user")val user: UserInfo?=null,
-    @SerializedName(value="questionId")val questionId: Long,
+    @SerializedName(value="questionId")val questionId: Long=0,
     @SerializedName(value="title")var title: String,
     @SerializedName(value="content")var content: String?,
     @SerializedName(value="hit")val hit: Int?=0,
@@ -57,11 +57,11 @@ open class WriteQResponse(
     @SerializedName(value="code")val code: String,
     @SerializedName(value="message")val message: String,
     @SerializedName(value="result")var result:WriteQResult
-)
+):Serializable
 data class WriteQResult(
     @SerializedName("questionId")var questionId:String,
     @SerializedName("createdAt")var createdAt:String
-)
+):Serializable
 
 data class DetailedQResponse(
     @SerializedName(value="isSuccess")val isSuccess: Boolean?,
@@ -70,10 +70,11 @@ data class DetailedQResponse(
     @SerializedName(value="result")var result:QuestionInfo?,
     @SerializedName(value="createdAt")var createdAt: String?,
     @SerializedName(value="updatedAt")var updateAt: String?
-)
-//data class DetailedQResult(
-//    @SerializedName(value="questionId")var questionId:String?,
-//    @SerializedName(value="title")var title:String?,
-//    @SerializedName(value="content")var content:String?,
-//    @SerializedName(value="hashtags")var hashtags:ArrayList<TagInfo>?
-//)
+):Serializable
+
+data class HashtagResponse(
+    @SerializedName(value="isSuccess")val isSuccess: Boolean?,
+    @SerializedName(value="code")val code: String?,
+    @SerializedName(value="message")val message: String?,
+    @SerializedName(value="result")val result:TagInfo?=null
+):Serializable

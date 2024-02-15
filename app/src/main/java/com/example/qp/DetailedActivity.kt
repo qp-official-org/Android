@@ -18,7 +18,14 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.example.qp.databinding.ActivityDetailedBinding
+import com.example.qp.databinding.ItemAnswerBinding
 import com.google.gson.Gson
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import java.io.Serializable
 
 
@@ -40,36 +47,57 @@ class DetailedActivity : AppCompatActivity(),DetailedQView{
             questionInfo = gson.fromJson(qJson, QuestionInfo::class.java)
             Log.d("DetailedQInfo",questionInfo.toString())
         }
+        else{
+            questionInfo= QuestionInfo(title="",content="")
+        }
 
+
+        CoroutineScope(Dispatchers.Main).launch {
+            val server = CoroutineScope(Dispatchers.IO).async {
+                getQ()
+                Log.d("getServer","server")
+                delay(200)
+            }.await()
+
+            Log.d("view","view")
+
+
+            setInit()
+            setOnClickListeners()
+
+            setQuestionMorePopup()
+
+            //프로필로 화면 전환
+            binding.detailedProfileBtn.setOnClickListener {
+                startActivity(Intent(this@DetailedActivity, ProfileActivity::class.java))
+                finish()
+            }
+
+            Log.d("detailedQOncreate", questionInfo.toString())
+
+            //검색으로 화면전환
+            binding.detailedSearchBt.setOnClickListener {
+                val intent = Intent(this@DetailedActivity, SearchActivity::class.java)
+                startActivity(intent)
+            }
+        }
+
+    }
+
+
+    fun getQ()= CoroutineScope(Dispatchers.IO).launch{
         //서버에서 질문 조회 응답
         val detailedQService=QuestionService()
-        detailedQService.setDetailedQView(this)
+        detailedQService.setDetailedQView(this@DetailedActivity)
 
         detailedQService.getQuestion(questionInfo.questionId?.toLong())
 
         //서버에서 답변 받아오기
-        answerAdapter=DetailedQuestionRVAdapter(applicationContext)
+        answerAdapter=DetailedQuestionRVAdapter(applicationContext,this@DetailedActivity)
         binding.answerRv.adapter=answerAdapter
 
-        detailedQService.getParentAnswer(questionInfo.questionId!!.toLong())
+        detailedQService.getParentAnswer(questionInfo.questionId!!.toLong(),true)
 
-
-        //검색으로 화면전환
-        binding.detailedSearchBt.setOnClickListener {
-            val intent = Intent(this@DetailedActivity, SearchActivity::class.java)
-            startActivity(intent)
-        }
-
-        setInit()
-        setOnClickListeners()
-
-        setQuestionMorePopup()
-
-        //프로필로 화면 전환
-        binding.detailedProfileBtn.setOnClickListener {
-            startActivity(Intent(this, ProfileActivity::class.java))
-            finish()
-        }
     }
 
 
@@ -152,23 +180,6 @@ class DetailedActivity : AppCompatActivity(),DetailedQView{
     private fun initAnswerData(){
         val answerList =ArrayList<AnswerInfo>()
 
-        val commentList=ArrayList<Comment>()
-        val commentList2=ArrayList<Comment>()
-
-        commentList.apply {
-            add(Comment("댓글1"))
-            add(Comment("댓글2"))
-        }
-        commentList2.apply {
-            add(Comment("댓글2-1"))
-            add(Comment("댓글2-2"))
-        }
-
-        answerList.apply {
-            add(AnswerInfo(0,0,"제목1","답변내용1","PARENT",0,0))
-            /*add(Answer("답변내용",commentList2))
-            add(Answer("답변내용3"))*/
-        }
         answerAdapter.addItemList(answerList)
         updateExpertNum()
 
@@ -345,20 +356,33 @@ class DetailedActivity : AppCompatActivity(),DetailedQView{
     }
 
     override fun onGetQSuccess(questionResp:QuestionInfo?) {
-        this.questionInfo.content=questionResp?.content
+        questionInfo.content=(questionResp?.content.toString())
+        Log.d("getQ/SUCCESS",questionResp?.content.toString()+"questionInfo: ".plus(questionInfo.content))
     }
 
     override fun onGetQFailure(msg:String) {
-        Log.d("getQFail",msg)
+        Log.d("getQ/FAIL",msg)
     }
 
-    override fun onGetParentSuccess(answerList:ArrayList<AnswerInfo>) {
+    override fun onGetParentSuccess(answerList:ArrayList<AnswerInfo>?) {
+        Log.d("getParent/SUCCESS",answerList.toString())
         answerAdapter.addItemList(answerList)
     }
 
     override fun onGetaParentFailure(msg:String) {
-        Log.d("getParent",msg)
+        Log.d("getParent/FAIL",msg)
     }
+
+    override fun onGetChildSuccess(answerList: ArrayList<AnswerInfo>?, id: Long, position: Int) {
+        answerAdapter.getChildAnswer(answerList,id,position)
+        Log.d("getChild/SUCCESS",answerList.toString())
+    }
+
+    override fun onGetChildFailure(msg:String) {
+        Log.d("getChild/FAIL",msg)
+    }
+
+
 
 
 }

@@ -19,10 +19,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.qp.databinding.ItemAnswerBinding
 import com.example.qp.databinding.ItemWriteAnswerBinding
 
-class DetailedQuestionRVAdapter(context:Context): RecyclerView.Adapter<DetailedQuestionRVAdapter.ViewHolder>() {
+class DetailedQuestionRVAdapter(context:Context,view:DetailedQView): RecyclerView.Adapter<DetailedQuestionRVAdapter.ViewHolder>() {
     val items= ArrayList<AnswerInfo>()
     //private var isCommentShown=false
     private var appContext=context
+    private var detailedQView=view
+    private var commentAdapterList=ArrayList<DetailedAnswerCommentRVAdapter>()
 
 
     interface ItemClickListener{
@@ -41,7 +43,6 @@ class DetailedQuestionRVAdapter(context:Context): RecyclerView.Adapter<DetailedQ
     }
     override fun onBindViewHolder(holder: DetailedQuestionRVAdapter.ViewHolder, position: Int) {
         holder.bind(position)
-
     }
     override fun getItemCount(): Int =items.size
 
@@ -53,19 +54,23 @@ class DetailedQuestionRVAdapter(context:Context): RecyclerView.Adapter<DetailedQ
         private val profileView=itemView.findViewById<ImageView>(R.id.question_user_img)
         fun bind(position: Int) {
 
-            /*var commentAdapter=DetailedAnswerCommentRVAdapter(appContext,items[position].commentList!!)
-            binding.answerCommentRv.adapter=commentAdapter
+            commentAdapterList.add(position,DetailedAnswerCommentRVAdapter(appContext,ArrayList<AnswerInfo>()))
+            binding.answerCommentRv.adapter=commentAdapterList[position]
+
+            var questionService=QuestionService()
+            questionService.setDetailedQView(detailedQView)
+            questionService.getParentAnswer(items[position].answerId!!,false,)
 
             //댓글에 대한 동작
-            commentAdapter.setMyItemClickListener(object :
+            commentAdapterList[position].setMyItemClickListener(object :
                 DetailedAnswerCommentRVAdapter.CommentClickListener{
 
                 override fun onItemRemove(pos: Int) {   //댓글 삭제시
-                    commentAdapter.removeItem(pos)
-                    commentNumberUpdate(items[position])
+                    commentAdapterList[position].removeItem(pos)
+                    commentNumberUpdate(position)
                 }
                 override fun onCommentModify(position: Int) {   //댓글 수정 시
-                    var content=commentAdapter.getContent(position)
+                    var content=commentAdapterList[position].getContent(position)
 
                     //댓글 작성 레이아웃에 텍스트 삽입
                     val writeBtn=itemView.findViewById<TextView>(R.id.write_comment_btn)
@@ -75,20 +80,20 @@ class DetailedQuestionRVAdapter(context:Context): RecyclerView.Adapter<DetailedQ
                     //댓글 재등록
                     writeBtn.setOnClickListener {
                         val newContent=writeLayout.text.toString()
-                        commentAdapter.modifyComment(position,newContent)
+                        commentAdapterList[position].modifyComment(position,newContent)
                         writeLayout.text= Editable.Factory.getInstance().newEditable("")
                     }
                 }
-            })*/
+            })
 
             var likeNum=0       //서버에서 받은 데이터
             var isLiked=false   //사용자가 좋아요 누른지 여부 (서버 데이터?)
             var isCommentShown=false
 
-            var isExpert=true  //전문가 답변 여부(서버에서 받아오기?)
+            var isExpert=false  //전문가 답변 여부(서버에서 받아오기?)
             var isBought=false  //구매 여부(서버)
 
-            //setOnclick(position, commentAdapter)
+            setOnclick(position, commentAdapterList[position])
 
             //좋아요 누르기
             binding.answerLikeBtn.setOnClickListener {
@@ -134,14 +139,14 @@ class DetailedQuestionRVAdapter(context:Context): RecyclerView.Adapter<DetailedQ
         private fun setInit(position: Int,likeNum: Int,isLiked:Boolean,isBlur:Boolean){
             answerContentView.text=items[position].content     //답변 내용
             binding.commentLayout.visibility=View.GONE      //댓글 접은 상태
-            //commentNumberUpdate(items[position])    //댓글 수
+            commentNumberUpdate(position)    //댓글 수
             setBlurText(isBlur,likeNum)
         }
 
         private fun setOnclick(position: Int,adapter: DetailedAnswerCommentRVAdapter){
             //댓글 쓰기
             binding.writeCommentBtn.setOnClickListener {
-                writeComment(binding.writeCommentEdit.text.toString(),adapter,items[position])
+                writeComment(binding.writeCommentEdit.text.toString(),adapter,position)
             }
             //더보기 팝업 메뉴
             showAnswerMorePopup(position,adapter)
@@ -161,10 +166,10 @@ class DetailedQuestionRVAdapter(context:Context): RecyclerView.Adapter<DetailedQ
 
 
         //댓글 등록
-        private fun writeComment(content:String,adapter:DetailedAnswerCommentRVAdapter,answer:AnswerInfo){
+        private fun writeComment(content:String,adapter:DetailedAnswerCommentRVAdapter,position:Int){
             if(content!=""){
                 adapter.addItem(content)    //임시로 구현..
-                //commentNumberUpdate(answer)
+                commentNumberUpdate(position)
                 binding.writeCommentEdit.text=Editable.Factory.getInstance().newEditable("")
             }
             else{
@@ -172,14 +177,9 @@ class DetailedQuestionRVAdapter(context:Context): RecyclerView.Adapter<DetailedQ
             }
         }
         //댓글수 표시
-        /*private fun commentNumberUpdate(answer:Answer){
-            binding.answerCommentBtnTv.text=
-                when (answer.commentList){
-                    null->"0"
-                    else->answer.commentList!!.size.toString()
-                }
-
-        }*/
+       private fun commentNumberUpdate(position: Int){
+            binding.answerCommentBtnTv.text=commentAdapterList[position].itemCount.toString()
+        }
 
         //답변 블러 처리
         private fun setBlurText(isBlur:Boolean,likeNum:Int){
@@ -268,9 +268,11 @@ class DetailedQuestionRVAdapter(context:Context): RecyclerView.Adapter<DetailedQ
         this.items.add(0,item)
         this.notifyDataSetChanged()
     }
-    fun addItemList(items:ArrayList<AnswerInfo>){
-        this.items.addAll(items)
-        this.notifyDataSetChanged()
+    fun addItemList(items:ArrayList<AnswerInfo>?){
+        if(items!=null){
+            this.items.addAll(items)
+            this.notifyDataSetChanged()
+        }
     }
 
     fun removeItem(position: Int){
@@ -283,6 +285,24 @@ class DetailedQuestionRVAdapter(context:Context): RecyclerView.Adapter<DetailedQ
         this.items[position].content=content
         this.notifyDataSetChanged()
     }
+
+    fun getChildAnswer(answerList:ArrayList<AnswerInfo>?,id:Long,position: Int){
+        commentAdapterList[position].addItems(answerList)
+    }
+
+    fun getChild(binding:ItemAnswerBinding,id:Long,position:Int){
+        detailedQView
+    }
+
+//    fun setCommentAdapters(){
+//        for(position in 0 until itemCount){
+//            commentAdapterList.add(DetailedAnswerCommentRVAdapter(appContext,ArrayList<AnswerInfo>()))
+//
+//            var questionService=QuestionService()
+//            questionService.setDetailedQView(detailedQView)
+//            questionService.getParentAnswer(items[position].answerId!!,false,)
+//        }
+//    }
 
 
 
