@@ -29,8 +29,8 @@ data class QuestionInfo(
     @SerializedName(value="hit")val hit: Int?=0,
     @SerializedName(value="answerCount")val answerCount: Int?=0,
     @SerializedName(value="expertCount")val expertCount: Int?=0,
-    @SerializedName(value="createAt")val createAt: String?="",
-    @SerializedName(value="updateAt")var updateAt: String?="",
+    @SerializedName(value="createdAt")val createdAt: String?="",
+    @SerializedName(value="updatedAt")var updatedAt: String?="",
     @SerializedName(value="hashtags")val hashtags: ArrayList<TagInfo>?=null,
 ):Serializable
 

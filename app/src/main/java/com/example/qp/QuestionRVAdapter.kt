@@ -37,7 +37,7 @@ class QuestionRVAdapter(private val qList: ArrayList<QuestionInfo>)
 
     inner class ViewHolder(val binding: ItemQuestionBinding) : RecyclerView.ViewHolder(binding.root){
         fun bind(questionInfo: QuestionInfo){
-            binding.itemTimeTv.text = questionInfo.createAt.toString()
+            binding.itemTimeTv.text = questionInfo.createdAt.toString()
             binding.itemQuestionTv.text = questionInfo.title
             if(questionInfo.hashtags?.isEmpty() == false){
                 /*for (tagInfo in questionInfo.hashtags!!) {
