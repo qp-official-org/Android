@@ -306,12 +306,30 @@
 
     </androidx.core.widget.NestedScrollView>
 
+    <Button
+        android:id="@+id/detailed_login_btn"
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:text="로그인 하기"
+        android:textStyle="bold"
+        android:textSize="20dp"
+        android:textColor="@color/qp"
+        android:background="@drawable/login_button_design"
+        app:backgroundTint="@null"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/profile_bar"
+        android:id="@+id/detailed_profile_btn"
         android:layout_width="match_parent"
         android:layout_height="85dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:background="@color/transparent">
+        android:visibility="gone">
+
+<!--    <androidx.constraintlayout.widget.ConstraintLayout-->
+<!--        android:id="@+id/profile_bar"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="85dp"-->
+<!--        app:layout_constraintBottom_toBottomOf="parent"-->
+<!--        android:background="@color/transparent">-->
 
         <ImageView
             android:layout_width="match_parent"
