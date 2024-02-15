@@ -56,9 +56,7 @@ class DetailedActivity : AppCompatActivity(),DetailedQView{
 
         //검색으로 화면전환
         binding.detailedSearchBt.setOnClickListener {
-            val qDatas = intent.getSerializableExtra("qDatas") as ArrayList<QuestionInfo>
             val intent = Intent(this@DetailedActivity, SearchActivity::class.java)
-            intent.putExtra("qDatas", qDatas)
             startActivity(intent)
         }
 

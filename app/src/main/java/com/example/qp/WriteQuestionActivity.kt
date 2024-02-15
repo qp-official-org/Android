@@ -46,9 +46,7 @@ class WriteQuestionActivity: AppCompatActivity(),WriteQView {
         registerQuestion()
 
         binding.writeSearchBt.setOnClickListener {
-            val qDatas=intent.getSerializableExtra("qDatas") as ArrayList<QuestionInfo>
             val intent=Intent(this@WriteQuestionActivity,SearchActivity::class.java)
-            intent.putExtra("qDatas",qDatas)
             startActivity(intent)
         }
 
