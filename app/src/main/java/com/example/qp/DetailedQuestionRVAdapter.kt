@@ -91,7 +91,7 @@ class DetailedQuestionRVAdapter(context:Context,view:DetailedQView): RecyclerVie
                 }
             })
 
-            var likeNum=0       //서버에서 받은 데이터
+            var likeNum=items[position].likes       //서버에서 받은 데이터
             var isLiked=false   //사용자가 좋아요 누른지 여부 (서버 데이터?)
             var isCommentShown=false
 
@@ -134,7 +134,7 @@ class DetailedQuestionRVAdapter(context:Context,view:DetailedQView): RecyclerVie
                 }
             }
 
-            setInit(position,likeNum,isLiked,isExpert && !isBought)
+            setInit(position,likeNum?.toInt()?:0,isLiked,isExpert && !isBought)
 
 
         }

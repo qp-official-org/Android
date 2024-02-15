@@ -52,4 +52,11 @@ interface QuestionInterface {
         @Path("questionId")questionId:Long,
         @Body answer:AnswerInfo
     ):Call<WriteAnswerResponse>
+
+    @PATCH("/questions/{questionId}")
+    fun modifyQuestion(
+        @Header("accessToken")token:String,
+        @Path("questionId")questionId:Long,
+        @Body questionInfo:ModifyQInfo
+    ):Call<ModifyQResponse>
 }

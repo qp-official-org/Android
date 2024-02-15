@@ -1,7 +1,9 @@
 package com.example.qp
 
 import android.content.Context
+import android.content.Intent
 import android.graphics.Rect
+import android.os.Build
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -9,17 +11,24 @@ import android.util.Log
 import android.view.MotionEvent
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
+import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.example.qp.databinding.ActivityModifyQuestionBinding
 import com.google.gson.Gson
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class ModifyQuestionActivity:AppCompatActivity() {
     private lateinit var binding:ActivityModifyQuestionBinding
     private var gson= Gson()
-    private lateinit var questionInfo:QuestionInfo
+    private var questionInfo:QuestionInfo?=null
+    private var qpUserData:QpUserData?=null
     private var isTitleValid=true
     private var isContentValid=true
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding=ActivityModifyQuestionBinding.inflate(layoutInflater)
@@ -27,9 +36,16 @@ class ModifyQuestionActivity:AppCompatActivity() {
 
 
         if(intent.hasExtra("modifyQuestion")){
-            val qJson = intent.getStringExtra("modifyQuestion")
-            Log.d("getquestion",qJson.toString())
-            questionInfo = gson.fromJson(qJson, QuestionInfo::class.java)
+            questionInfo=intent.getSerializableExtra("modifyQuestion",QuestionInfo::class.java)
+            Log.d("intentQ",questionInfo.toString())
+        }
+        if(intent.hasExtra("data")){
+            qpUserData=intent.getSerializableExtra("data",QpUserData::class.java)
+            Log.d("intentUser",qpUserData.toString())
+        }
+
+        binding.modifyBackBtn.setOnClickListener {
+            finish()
         }
 
         initView()
@@ -39,16 +55,20 @@ class ModifyQuestionActivity:AppCompatActivity() {
 
     }
     private fun initView(){
-        binding.titleEdit.text=Editable.Factory.getInstance().newEditable(questionInfo.title)
-        binding.contentEdit.text=Editable.Factory.getInstance().newEditable(questionInfo.content)
+        binding.titleEdit.text=Editable.Factory.getInstance().newEditable(questionInfo?.title)
+        binding.contentEdit.text=Editable.Factory.getInstance().newEditable(questionInfo?.content)
 
     }
 
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     private fun updateQuestion(){
         binding.registerBtn.setOnClickListener {
             val title=binding.titleEdit.text.toString()
             val content=binding.contentEdit.text.toString()
 
+            if(isTitleValid&&isContentValid){
+                registerService(title,content)
+            }
         }
     }
 
@@ -115,5 +135,47 @@ class ModifyQuestionActivity:AppCompatActivity() {
             }
         }
         return super.dispatchTouchEvent(event)
+    }
+
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
+    fun registerService(title:String, content:String){
+        var modifyQInfo:ModifyQInfo?
+
+        modifyQInfo=ModifyQInfo(qpUserData!!.userId.toLong(),title,content)
+
+        val questionService= getRetrofit().create(QuestionInterface::class.java)
+        questionService.modifyQuestion(qpUserData!!.accessToken,questionInfo?.questionId!!,modifyQInfo!!).enqueue(object : Callback<ModifyQResponse>{
+            override fun onResponse(
+                call: Call<ModifyQResponse>,
+                response: Response<ModifyQResponse>
+            ) {
+                Log.d("modifyQReq",questionInfo?.questionId.toString().plus(qpUserData!!.userId).plus(title))
+                val resp=response.body()
+                when(resp?.code){
+                    "QUESTION_2000"->{
+                        Log.d("modifyQ/SUCCESS",resp.toString())
+                        questionInfo?.title=title
+                        questionInfo?.content=content
+
+                        intent= Intent(this@ModifyQuestionActivity,DetailedActivity::class.java)
+                        intent.putExtra("data",qpUserData)
+                        val gson = Gson()
+                        val qJson = gson.toJson(questionInfo)
+                        intent.putExtra("question", qJson)
+                        startActivity(intent)
+                        finish()
+                    }
+                    else->{
+                        Log.d("modifyQ/FAIL",response.errorBody()?.string().toString())
+                        Toast.makeText(applicationContext,"질문 등록 실패",Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }
+
+            override fun onFailure(call: Call<ModifyQResponse>, t: Throwable) {
+                Log.d("modifyQResp/FAIL",t.message.toString())
+            }
+
+        })
     }
 }

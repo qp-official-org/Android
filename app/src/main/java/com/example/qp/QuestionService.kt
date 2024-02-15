@@ -12,53 +12,13 @@ import retrofit2.Response
 
 class QuestionService {
 
-    private lateinit var writeQView: WriteQView
     private lateinit var detailedQView:DetailedQView
-
-    fun setWriteQView(view:WriteQView){
-        this.writeQView=view
-    }
 
     fun setDetailedQView(view:DetailedQView){
         this.detailedQView=view
     }
 
-    fun writeQ(questionInfo :QuestionPost,token:String){
-        val questionService= getRetrofit().create(QuestionInterface::class.java)
-        Log.d("writeQArgument",questionInfo.toString())
 
-        questionService.writeQ(token,questionInfo).enqueue(object: Callback<WriteQResponse>{
-            override fun onResponse(
-                call: Call<WriteQResponse>,
-                response: Response<WriteQResponse>
-            ) {
-                val resp=response.body()
-                Log.d("writeQLog",resp.toString())
-                Log.d("writeQ response","response:".plus(response.errorBody()?.string().toString()))
-                Log.d("writeQ token",token)
-
-                if(resp!=null){
-                    when(resp.code){
-                        "2000"-> {
-                            writeQView.onWriteSuccess()
-                            Log.d("writeQ success","success!")
-                        }
-                        else-> {
-                            writeQView.onWriteFailure()
-                        }
-                    }
-                }
-
-            }
-
-            override fun onFailure(call: Call<WriteQResponse>, t: Throwable) {
-                Log.d("writeQ Fail",t.message.toString())
-            }
-
-        })
-
-
-    }
     fun getQuestion(questionId:Long?){
             val questionService= getRetrofit().create(QuestionInterface::class.java)
 
@@ -89,70 +49,8 @@ class QuestionService {
 
     }
 
-//    fun getParentAnswer(id:Long,isParent:Boolean,position:Int=0){
-//        val questionService= getRetrofit().create(QuestionInterface::class.java)
-//
-//        questionService.getParentAnswer(id,0,1).enqueue(object :Callback<DetailedAnswerResponse>{
-//            override fun onResponse(
-//                call: Call<DetailedAnswerResponse>,
-//                response: Response<DetailedAnswerResponse>
-//            ) {
-//                Log.d("getParentReq",id.toString())
-//                val resp=response.body()
-//                Log.d("getParentResp",resp.toString())
-//                when(resp?.code){
-//                    "ANSWER_3000"-> {
-//                        if(isParent) {
-//                            detailedQView.onGetParentSuccess(resp.result.answerList)
-//                        }
-//                        else{
-//                            detailedQView.onGetChildSuccess(resp.result.answerList,id,position)
-//                        }
-//                    }
-//                    else-> {
-//                        if(isParent) {
-//                            detailedQView.onGetaParentFailure(
-//                                response.errorBody()?.string().toString()
-//                            )
-//                        }
-//                        else{
-//                            detailedQView.onGetChildFailure(response.errorBody()?.string().toString())
-//                        }
-//                    }
-//                }
-//            }
-//
-//            override fun onFailure(call: Call<DetailedAnswerResponse>, t: Throwable) {
-//                Log.d("getParentResp/FAIL",t.message.toString())
-//            }
-//
-//        })
-//    }
-    //해시태그 생성
-    fun postHashtag(hashtag:String){
-        val questionService= getRetrofit().create(QuestionInterface::class.java)
 
-        questionService.postHashtag(hashtag).enqueue(object:Callback<HashtagResponse>{
-            override fun onResponse(
-                call: Call<HashtagResponse>,
-                response: Response<HashtagResponse>
-            ) {
-                val resp=response.body()
-                Log.d("postHashtagResp",resp.toString())
-                when(resp?.code){
-                    "HASHTAG_6000"->writeQView.onPostHashtagSuccess(resp)
-                    else->writeQView.onPostHashtagFailure(hashtag,response.errorBody()?.string().toString())
-                }
-            }
-
-            override fun onFailure(call: Call<HashtagResponse>, t: Throwable) {
-                Log.d("postHashtagResp/FAIL",t.message.toString())
-            }
-
-        })
-
-    }
-    fun getHashtag(hashtag: String){
+    /*fun getHashtag(hashtag: String){
         val questionService= getRetrofit().create(QuestionInterface::class.java)
 
         questionService.getHashtag(hashtag).enqueue(object:Callback<HashtagResponse>{
@@ -173,5 +71,5 @@ class QuestionService {
             }
 
         })
-    }
+    }*/
 }
