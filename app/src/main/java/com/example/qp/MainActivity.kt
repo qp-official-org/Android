@@ -50,23 +50,9 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         onBackPressedDispatcher.addCallback(this, onBackPressedCallback)    // 종료함수
-
+        
+        //백엔드로부터 질문 정보를 가져와 리사이클러뷰를 구성하는 함수
         getQuestions()
-        Log.d("qdatas",qDatas.toString())
-
-        //수정 임시 데이터(삭제해도 무관)
-        var tagList= arrayListOf<TagInfo>(TagInfo(0,"tag1"),TagInfo(1,"tag2"))
-        qDatas.apply {
-            add(QuestionInfo(UserInfo(1,"1","USER"),0,"질문제목1","질문내용1",1,2,3,"2024-01-01","2024-01-01",tagList))
-            add(QuestionInfo(UserInfo(1,"1","USER"),0,"질문제목2","질문내용2",1,2,3,"2024-01-01","2024-01-01",tagList))
-            add(QuestionInfo(UserInfo(1,"1","USER"),0,"질문제목3","질문내용3",1,2,3,"2024-01-01","2024-01-01",tagList))
-
-        }
-
-
-        val questionRVAdapter = QuestionRVAdapter(qDatas)
-        binding.mainQuestionRv.adapter = questionRVAdapter
-        binding.mainQuestionRv.layoutManager = GridLayoutManager(applicationContext, 2)
 
         // 키 해시 확인용
         val keyHash = Utility.getKeyHash(this)
@@ -107,43 +93,9 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-//        getQuestions()
-//        qDatas.apply {
-//            add(Question("2023.11.16","질문 제목1","질문내용1","#태그1","#태그2","#태그3"))
-//            add(Question("2023.12.20","질문 제목2","질문내용2","#태그1","#태그2","#태그3"))
-//            add(Question("2024.01.01","질문 제목3","질문내용3","#태그1","#태그2","#태그3"))
-//            add(Question("2024.01.04","질문 제목4","질문내용4","#태그1","#태그2","#태그3"))
-//            add(Question("2024.01.07","질문 제목5","질문내용5","#태그1","#태그2",""))
-//        }
-
-//        // 임시 데이터 (삭제 요망)
-//        qDatas.apply {
-//            add(Question("2023.11.16","아르테미스 계획","현재 아르테미스 계획은 어떻게 되어 가고 있나요?"))
-//            add(Question("2023.12.20","퓨전 한복이란?","퓨전한복이랑 개량한복의 차이점이 뭔가요?"))
-//            add(Question("2024.12.26","콘크리트는 왜 분해되지 않나요?","콘크리트는 골재, 시멘트, 물 등을 가공해서 만든 것인데, 왜 다시 골재와 물로 분리할 수 없나요?"))
-//            add(Question("2024.01.04","가장 빠른 동물","가장 빠른 동물이 무엇인가요?"))
-//            add(Question("2024.01.07","필름카메라 필름 보관","필름카메라는 처음인데, 보관을 어떻게 해야 안전한가요?"))
-//        }
-
-//        val questionRVAdapter = QuestionRVAdapter(qDatas)
-//        binding.mainQuestionRv.adapter = questionRVAdapter
-//        binding.mainQuestionRv.layoutManager = GridLayoutManager(applicationContext, 2)
-//
-//        questionRVAdapter.setMyItemClickListner(object : QuestionRVAdapter.MyItemClickListner{
-//            override fun onItemClick(questionInfo: QuestionInfo) {
-//                val intent = Intent(this@MainActivity, DetailedActivity::class.java)
-//                val gson = Gson()
-//                val qJson = gson.toJson(question)
-//                intent.putExtra("question", qJson)
-//                intent.putExtra("qDatas", qDatas)
-//                startActivity(intent)
-//            }
-//        })
-
-        // 검색 화면으로 이동
+        //상단 검색바 클릭 시 검색화면으로 화면 전환
         binding.mainSearchBt.setOnClickListener {
             val intent = Intent(this@MainActivity, SearchActivity::class.java)
-            intent.putExtra("qDatas", qDatas)
             startActivity(intent)
         }
 
@@ -163,7 +115,7 @@ class MainActivity : AppCompatActivity() {
     private fun getQuestions() {
         val questionService = getRetrofit().create(QuestionInterface::class.java)
 
-        questionService.getQuestions(0, 10, null)
+        questionService.getQuestions(0, 10, null) //스크롤에 따라 추가 페이징 할 것!
             .enqueue(object: Callback<QuestionResponse>{
                 override fun onResponse(
                     call: Call<QuestionResponse>,
@@ -177,7 +129,8 @@ class MainActivity : AppCompatActivity() {
                         when(questionResponse.code){
                             "QUESTION_2000" -> {
                                 Log.d("SUCCESS/DATA_LOAD", "리사이클러뷰의 데이터로 구성됩니다")
-                                qDatas = questionResponse.result.questions
+                                qDatas.addAll(questionResponse.result.questions)
+                                setQuestionRVAdapter()
                                 Log.d("getQsResp",qDatas.toString())
                             }
                             else -> {
@@ -192,6 +145,24 @@ class MainActivity : AppCompatActivity() {
                 }
 
             })
+    }
+
+    private fun setQuestionRVAdapter(){
+        val questionRVAdapter = QuestionRVAdapter(qDatas)
+        binding.mainQuestionRv.adapter = questionRVAdapter
+        binding.mainQuestionRv.layoutManager = GridLayoutManager(applicationContext, 2)
+
+        //특정 질문 클릭 시 질문상세화면으로 전환
+        questionRVAdapter.setMyItemClickListner(object : QuestionRVAdapter.MyItemClickListner{
+            override fun onItemClick(questionInfo: QuestionInfo) {
+                val intent = Intent(this@MainActivity, DetailedActivity::class.java)
+                val gson = Gson()
+                val qJson = gson.toJson(questionInfo)
+                intent.putExtra("question", qJson)
+                intent.putExtra("qDatas", qDatas)
+                startActivity(intent)
+            }
+        })
     }
 
 }
