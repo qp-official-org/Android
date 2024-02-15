@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Rect
 import android.nfc.Tag
+import android.os.Build
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -13,6 +14,7 @@ import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.example.qp.databinding.ActivityWriteQuestionBinding
@@ -25,6 +27,9 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import java.util.Date
 
 class WriteQuestionActivity: AppCompatActivity(),WriteQView {
@@ -34,10 +39,13 @@ class WriteQuestionActivity: AppCompatActivity(),WriteQView {
     private var isTitleValid=false
     private var isContentValid=false
     private  var tagList = ArrayList<String>()
+    private val newTagList = ArrayList<TagInfo>()
     private var tagNum=0
     private var tagPost=false
+    private var qpUserData=QpUserData("",0)
 
 
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityWriteQuestionBinding.inflate(layoutInflater)
@@ -179,9 +187,18 @@ class WriteQuestionActivity: AppCompatActivity(),WriteQView {
 
     }
 
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     private fun registerQuestion(){
         val questionService=QuestionService()
         questionService.setWriteQView(this)
+
+        // 유저 데이터가 담긴 객체를 받기 위함
+        val intent = intent
+        if(intent.hasExtra("data")){
+            qpUserData = intent.getSerializableExtra("data", QpUserData::class.java)!!
+        }
+
+        Log.d("accessToken",qpUserData.toString())
 
         binding.registerBtn.setOnClickListener {
             val titleText=findViewById<EditText>(R.id.title_edit).text.toString()
@@ -194,7 +211,6 @@ class WriteQuestionActivity: AppCompatActivity(),WriteQView {
                     CoroutineScope(Dispatchers.Main).launch {
 
                         tagList = adapter.getItems()
-                        val newTagList = ArrayList<TagInfo>()
                         for (i in 0 until tagList.size) {
                             postTag(tagList[i])
                             delay(400)
@@ -213,16 +229,18 @@ class WriteQuestionActivity: AppCompatActivity(),WriteQView {
                             }
 
                             val questionPost = QuestionPost(
-                                userId = "1",
+                                userId = qpUserData?.userId?:0,
                                 title = titleText,
                                 content = contentText,
                                 hashtag = tagIds
                             )
-                            questionService.writeQ(questionPost)
+
+                            writeQ(questionPost,qpUserData?.accessToken?:"")
+                            //questionService.writeQ(questionPost,qpUserData?.accessToken?:"")
                             
 
 
-                            val questionInfo = QuestionInfo(
+                            /*val questionInfo = QuestionInfo(
                                 title = titleText,
                                 content = contentText,
                                 hashtags = newTagList
@@ -235,7 +253,7 @@ class WriteQuestionActivity: AppCompatActivity(),WriteQView {
                             intent.putExtra("question", qJson)
                             startActivity(intent)
                             finish()
-                            Toast.makeText(applicationContext, "등록 완료", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(applicationContext, "등록 완료", Toast.LENGTH_SHORT).show()*/
                         }
 
                     }
@@ -305,6 +323,103 @@ class WriteQuestionActivity: AppCompatActivity(),WriteQView {
         Log.d("getHashtag/FAIL",tag.plus(msg))
     }
 
+
+
+    fun writeQ(questionInfo :QuestionPost,token:String){
+        val questionService= getRetrofit().create(QuestionInterface::class.java)
+        Log.d("writeQArgument",questionInfo.toString())
+
+        questionService.writeQ(token,questionInfo).enqueue(object: Callback<WriteQResponse> {
+            override fun onResponse(
+                call: Call<WriteQResponse>,
+                response: Response<WriteQResponse>
+            ) {
+                val resp=response.body()
+                Log.d("writeQLog",resp.toString())
+                Log.d("writeQ response","response:".plus(response.errorBody()?.string().toString()))
+                Log.d("writeQ token",token)
+
+                //if(resp!=null){
+                    when(resp?.code){
+                        "QUESTION_2000"-> {
+                            Log.d("writeQ success","success!")
+
+                            val question = QuestionInfo(
+                                user=UserInfo(qpUserData.userId.toLong(),"","student"),
+                                title = questionInfo.title,
+                                content = questionInfo.content,
+                                hashtags = newTagList,
+                                questionId = resp.result.questionId,
+                            )
+
+                            val intent =
+                                Intent(this@WriteQuestionActivity, DetailedActivity::class.java)
+                            val gson = Gson()
+                            val qJson = gson.toJson(question)
+                            intent.putExtra("question", qJson)
+                            startActivity(intent)
+                            finish()
+                            Toast.makeText(applicationContext, "등록 완료", Toast.LENGTH_SHORT).show()
+                        }
+                        else-> {
+                            val question = QuestionInfo(
+                                title = questionInfo.title,
+                                content = questionInfo.content,
+                                hashtags = newTagList
+                            )
+
+                            val intent =
+                                Intent(this@WriteQuestionActivity, DetailedActivity::class.java)
+                            val gson = Gson()
+                            val qJson = gson.toJson(question)
+                            intent.putExtra("question", qJson)
+                            startActivity(intent)
+                            finish()
+                            Toast.makeText(applicationContext, "등록 완료", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                //}
+
+            }
+
+            override fun onFailure(call: Call<WriteQResponse>, t: Throwable) {
+                Log.d("writeQ Fail",t.message.toString())
+            }
+
+        })
+
+
+    }
+
+
+    fun postHashtag(hashtag:String){
+        val questionService= getRetrofit().create(QuestionInterface::class.java)
+
+        questionService.postHashtag(hashtag).enqueue(object:Callback<HashtagResponse>{
+            override fun onResponse(
+                call: Call<HashtagResponse>,
+                response: Response<HashtagResponse>
+            ) {
+                val resp=response.body()
+                Log.d("postHashtagResp",resp.toString())
+                when(resp?.code){
+                    "HASHTAG_6000"->{
+                        newTagList.add(TagInfo(resp.result!!.hashtagId,hashtag))
+                        Log.d("postHashtag/SUCCESS",response.toString().plus("tagNum="+tagNum))
+                    }
+                    else->{
+
+                    }
+                }
+            }
+
+            override fun onFailure(call: Call<HashtagResponse>, t: Throwable) {
+                Log.d("postHashtagResp/FAIL",t.message.toString())
+            }
+
+        })
+
+    }
 
 }
 

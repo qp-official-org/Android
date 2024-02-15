@@ -26,3 +26,14 @@ data class DetailedAnswerResult(
     @SerializedName("isFirst")var isFirst:Boolean,
     @SerializedName("isLast")var isLast:Boolean
 )
+
+data class WriteAnswerResponse(
+    @SerializedName("isSuccess")var isSuccess:Boolean,
+    @SerializedName("code")var code:String,
+    @SerializedName("message")var message:String,
+    @SerializedName("result")var result:WriteAnswerResult
+)
+data class WriteAnswerResult(
+    @SerializedName("answerId")var answerId:Long,
+    @SerializedName("createdAt")var createdAt:String
+)

@@ -1,8 +1,10 @@
 package com.example.qp
 
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
+import androidx.annotation.RequiresApi
 
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
@@ -18,7 +20,9 @@ class SearchActivity : AppCompatActivity() {
 
     lateinit var binding: ActivitySearchBinding
     private var filtered = ArrayList<QuestionInfo>()
+    private lateinit var qpUserData:QpUserData
 
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivitySearchBinding.inflate(layoutInflater)
@@ -110,20 +114,27 @@ class SearchActivity : AppCompatActivity() {
             binding.searchMatchQuestionRv.layoutManager = GridLayoutManager(applicationContext, 2)
 
             questionRVAdapter.setMyItemClickListner(object : QuestionRVAdapter.MyItemClickListner{
+                @RequiresApi(Build.VERSION_CODES.TIRAMISU)
                 override fun onItemClick(questionInfo: QuestionInfo) {
+                    qpUserData = intent.getSerializableExtra("data", QpUserData::class.java)!!
                     val intent = Intent(this@SearchActivity, DetailedActivity::class.java)
                     val gson = Gson()
                     val qJson = gson.toJson(questionInfo)
                     intent.putExtra("question", qJson)
+                    intent.putExtra("data",qpUserData)
                     startActivity(intent)
                 }
             })
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     private fun register(){
         binding.searchRegisterBt.setOnClickListener {
+            qpUserData = intent.getSerializableExtra("data", QpUserData::class.java)!!
+            Log.d("search_userIntent",qpUserData.toString())
             val intent = Intent(this@SearchActivity, WriteQuestionActivity::class.java)
+            intent.putExtra("data",qpUserData)
             startActivity(intent)
         }
     }

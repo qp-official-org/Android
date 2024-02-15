@@ -97,6 +97,7 @@ class MainActivity : AppCompatActivity() {
         //상단 검색바 클릭 시 검색화면으로 화면 전환
         binding.mainSearchBt.setOnClickListener {
             val intent = Intent(this@MainActivity, SearchActivity::class.java)
+            intent.putExtra("data",qpUserData)
             startActivity(intent)
         }
 
@@ -155,12 +156,15 @@ class MainActivity : AppCompatActivity() {
 
         //특정 질문 클릭 시 질문상세화면으로 전환
         questionRVAdapter.setMyItemClickListner(object : QuestionRVAdapter.MyItemClickListner{
+            @RequiresApi(Build.VERSION_CODES.TIRAMISU)
             override fun onItemClick(questionInfo: QuestionInfo) {
+                val qpUserData = intent.getSerializableExtra("data", QpUserData::class.java)
                 val intent = Intent(this@MainActivity, DetailedActivity::class.java)
                 val gson = Gson()
                 val qJson = gson.toJson(questionInfo)
                 intent.putExtra("question", qJson)
                 intent.putExtra("qDatas", qDatas)
+                intent.putExtra("data",qpUserData)
                 startActivity(intent)
             }
         })

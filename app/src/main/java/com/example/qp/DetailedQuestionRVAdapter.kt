@@ -54,7 +54,8 @@ class DetailedQuestionRVAdapter(context:Context,view:DetailedQView): RecyclerVie
         private val profileView=itemView.findViewById<ImageView>(R.id.question_user_img)
         fun bind(position: Int) {
 
-            commentAdapterList.add(position,DetailedAnswerCommentRVAdapter(appContext,ArrayList<AnswerInfo>()))
+            commentAdapterList.add(position,DetailedAnswerCommentRVAdapter(appContext))
+            commentAdapterList[position].addItems(ArrayList<AnswerInfo>())
             binding.answerCommentRv.adapter=commentAdapterList[position]
 
             var questionService=QuestionService()

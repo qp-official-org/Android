@@ -35,7 +35,7 @@ data class QuestionInfo(
 ):Serializable
 
 data class QuestionPost(
-    @SerializedName(value="userId")val userId:String,
+    @SerializedName(value="userId")val userId:Int,
     @SerializedName(value="title")val title:String,
     @SerializedName(value="content")val content:String,
     @SerializedName(value="hashtag")val hashtag:ArrayList<Int>?
@@ -59,7 +59,7 @@ open class WriteQResponse(
     @SerializedName(value="result")var result:WriteQResult
 ):Serializable
 data class WriteQResult(
-    @SerializedName("questionId")var questionId:String,
+    @SerializedName("questionId")var questionId:Long,
     @SerializedName("createdAt")var createdAt:String
 ):Serializable
 

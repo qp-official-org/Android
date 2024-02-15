@@ -20,12 +20,16 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import com.example.qp.databinding.ActivityDetailedBinding
 import com.example.qp.databinding.ItemAnswerBinding
 import com.google.gson.Gson
+import com.kakao.sdk.user.UserApiClient
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import java.io.Serializable
 
 
@@ -36,7 +40,9 @@ class DetailedActivity : AppCompatActivity(),DetailedQView{
     private lateinit var answerAdapter:DetailedQuestionRVAdapter
     private lateinit var questionInfo:QuestionInfo
     private var isNotified:Boolean=false
+    private  var qpUserData=QpUserData("",0)
 
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityDetailedBinding.inflate(layoutInflater)
@@ -49,6 +55,43 @@ class DetailedActivity : AppCompatActivity(),DetailedQView{
         }
         else{
             questionInfo= QuestionInfo(title="",content="")
+        }
+
+        // 로그인 여부 확인
+        UserApiClient.instance.accessTokenInfo { token, error ->
+            if (error != null) {
+                Log.e("TAG", "로그인 실패", error)
+                binding.detailedLoginBtn.visibility = View.VISIBLE
+                binding.detailedProfileBtn.visibility = View.GONE
+            } else if (token != null) {
+                Log.i("TAG", "로그인 성공 $token")
+                binding.detailedLoginBtn.visibility = View.GONE
+                binding.detailedProfileBtn.visibility = View.VISIBLE
+            }
+        }
+
+        // 유저 데이터가 담긴 객체를 받기 위함
+        val intent = intent
+        if(intent.hasExtra("data")) {
+            qpUserData = intent.getSerializableExtra("data", QpUserData::class.java)!!
+        }
+
+        // 사용자명 불러오기 (유저 닉네임으로 수정 필요)
+        UserApiClient.instance.me { user, error ->
+            binding.detailedProfileName.text = "${user?.kakaoAccount?.profile?.nickname}"
+        }
+
+        // 임시 로그아웃 (로고 클릭시)
+        binding.detailedLogoIv.setOnClickListener {
+            UserApiClient.instance.logout { error ->
+                if (error != null) {
+                    Toast.makeText(this, "로그아웃 실패 $error", Toast.LENGTH_SHORT).show()
+                }else {
+                    Toast.makeText(this, "로그아웃 성공", Toast.LENGTH_SHORT).show()
+                    binding.detailedLoginBtn.visibility = View.VISIBLE
+                    binding.detailedProfileBtn.visibility = View.GONE
+                }
+            }
         }
 
 
@@ -78,6 +121,7 @@ class DetailedActivity : AppCompatActivity(),DetailedQView{
             //검색으로 화면전환
             binding.detailedSearchBt.setOnClickListener {
                 val intent = Intent(this@DetailedActivity, SearchActivity::class.java)
+                intent.putExtra("data",qpUserData)
                 startActivity(intent)
             }
         }
@@ -164,18 +208,6 @@ class DetailedActivity : AppCompatActivity(),DetailedQView{
             }
         }
 
-        val isLogin = intent.getIntExtra("isLogin", 0)
-        if(isLogin == 1) {
-            binding.detailedLoginBtn.visibility = View.GONE
-            binding.detailedProfileBtn.visibility = View.VISIBLE
-        }
-        else {
-            binding.detailedLoginBtn.visibility = View.VISIBLE
-            binding.detailedProfileBtn.visibility = View.GONE
-        }
-
-
-
     }
     private fun initAnswerData(){
         val answerList =ArrayList<AnswerInfo>()
@@ -258,11 +290,17 @@ class DetailedActivity : AppCompatActivity(),DetailedQView{
 
         btn.setOnClickListener {
             var content=editText.text.toString()
-            answerAdapter.addItem(AnswerInfo(0,0,"title",content,"PARENT",0,0))  //임시로 구현..
-            showWriteAnswerEdit(false)
-            updateNotifyView()
-            updateExpertNum()
-            Toast.makeText(applicationContext,"답변이 등록되었습니다.",Toast.LENGTH_SHORT).show()
+            var answer=AnswerInfo(
+                0,
+                qpUserData.userId.toLong(),
+                "title11",
+                 content,
+                "PARENT",
+                0,
+                0
+            )
+            writeAnswerService(answer,qpUserData.accessToken)
+
         }
     }
 
@@ -380,6 +418,43 @@ class DetailedActivity : AppCompatActivity(),DetailedQView{
 
     override fun onGetChildFailure(msg:String) {
         Log.d("getChild/FAIL",msg)
+    }
+
+
+
+    fun writeAnswerService(answer:AnswerInfo,token:String){
+        val answerService= getRetrofit().create(QuestionInterface::class.java)
+
+        answerService.writeAnswer(token,questionInfo.questionId,answer).enqueue(object : Callback<WriteAnswerResponse> {
+            override fun onResponse(
+                call: Call<WriteAnswerResponse>,
+                response: Response<WriteAnswerResponse>
+            ) {
+                Log.d("writeAnswerReq",token.plus(questionInfo.questionId).plus(answer.toString()))
+                val resp=response.body()
+                when(resp?.code){
+                    "ANSWER_3000"->{
+                        Log.d("writeAnswer/SUCCESS",resp.toString())
+                        answer.answerId=resp.result.answerId
+                        answerAdapter.addItem(answer)
+                        Log.d("writeAnswer/answer",answer.toString())
+                        showWriteAnswerEdit(false)
+                        updateNotifyView()
+                        updateExpertNum()
+                        Toast.makeText(applicationContext,"답변이 등록되었습니다.",Toast.LENGTH_SHORT).show()
+                    }
+                    else->{
+                        Log.d("writeAnswer/FAIL",response.errorBody()?.string().toString())
+                    }
+                }
+            }
+
+            override fun onFailure(call: Call<WriteAnswerResponse>, t: Throwable) {
+                Log.d("writeAnswerResp/FAIL",t.message.toString())
+            }
+
+
+        })
     }
 
 

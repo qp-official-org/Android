@@ -10,8 +10,9 @@ import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.example.qp.databinding.ItemAnswerCommentBinding
 
-class DetailedAnswerCommentRVAdapter(context: Context, private val items:ArrayList<AnswerInfo>):RecyclerView.Adapter<DetailedAnswerCommentRVAdapter.ViewHolder>() {
+class DetailedAnswerCommentRVAdapter(context: Context ):RecyclerView.Adapter<DetailedAnswerCommentRVAdapter.ViewHolder>() {
     private var appContext=context
+    private val items=ArrayList<AnswerInfo>()
 
     interface CommentClickListener{
         fun onItemRemove(position:Int)

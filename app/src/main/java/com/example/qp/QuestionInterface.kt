@@ -45,4 +45,11 @@ interface QuestionInterface {
     fun getHashtag(
          @Query("hashtag") hashtag:String
     ):Call<HashtagResponse>
+
+    @POST("/answers/questions/{questionId}")
+    fun writeAnswer(
+        @Header("accessToken")token:String,
+        @Path("questionId")questionId:Long,
+        @Body answer:AnswerInfo
+    ):Call<WriteAnswerResponse>
 }
