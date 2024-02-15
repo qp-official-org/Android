@@ -61,13 +61,6 @@ class DetailedActivity : AppCompatActivity(),DetailedQView{
 
             Log.d("view","view")
 
-            //검색으로 화면전환
-//             binding.detailedSearchBt.setOnClickListener {
-//                 val qDatas = intent.getSerializableExtra("qDatas") as ArrayList<QuestionInfo>
-//                 val intent = Intent(this@DetailedActivity, SearchActivity::class.java)
-//                 intent.putExtra("qDatas", qDatas)
-//                 startActivity(intent)
-//             }
 
             setInit()
             setOnClickListeners()
@@ -187,23 +180,6 @@ class DetailedActivity : AppCompatActivity(),DetailedQView{
     private fun initAnswerData(){
         val answerList =ArrayList<AnswerInfo>()
 
-        /*val commentList=ArrayList<Comment>()
-        val commentList2=ArrayList<Comment>()
-
-        commentList.apply {
-            add(Comment("댓글1"))
-            add(Comment("댓글2"))
-        }
-        commentList2.apply {
-            add(Comment("댓글2-1"))
-            add(Comment("댓글2-2"))
-        }*/
-
-        answerList.apply {
-            add(AnswerInfo(0,0,"제목1","답변내용1","PARENT",0,0))
-            /*add(Answer("답변내용",commentList2))
-            add(Answer("답변내용3"))*/
-        }
         answerAdapter.addItemList(answerList)
         updateExpertNum()
 
@@ -406,9 +382,7 @@ class DetailedActivity : AppCompatActivity(),DetailedQView{
         Log.d("getChild/FAIL",msg)
     }
 
-//    override fun getChildAnswer(binding: ItemAnswerBinding, id: Long, position: Int) {
-//
-//    }
+
 
 
 }
