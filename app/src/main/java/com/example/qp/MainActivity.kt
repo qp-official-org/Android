@@ -12,6 +12,7 @@ import android.view.View
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.annotation.RequiresApi
+import androidx.core.app.ActivityCompat
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.qp.databinding.ActivityMainBinding
 import com.google.gson.Gson
@@ -31,7 +32,9 @@ class MainActivity : AppCompatActivity() {
         var isExit : Boolean = false
         override fun handleOnBackPressed() {
             if(isExit) {
-                finish()
+                ActivityCompat.finishAffinity(this@MainActivity)
+                System.runFinalization()
+                System.exit(0)
             }
             else {
                 Toast.makeText(this@MainActivity, "종료하려면 뒤로가기를 한 번 더 누르세요.", Toast.LENGTH_SHORT).show()
@@ -69,6 +72,8 @@ class MainActivity : AppCompatActivity() {
                 Log.i("TAG", "로그인 성공 $token")
                 binding.mainLoginBt.visibility = View.GONE
                 binding.mainLoginSuccessBt.visibility = View.VISIBLE
+
+                Log.d("DData", token.toString())
             }
         }
 
