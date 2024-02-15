@@ -54,6 +54,7 @@ class MainActivity : AppCompatActivity() {
         //백엔드로부터 질문 정보를 가져와 리사이클러뷰를 구성하는 함수
         getQuestions()
 
+        Toast.makeText(applicationContext, "로그인한 유저 아이디: "+AppData.qpUserData.userId.toString(),Toast.LENGTH_SHORT).show()
 
         // 키 해시 확인용
         val keyHash = Utility.getKeyHash(this)

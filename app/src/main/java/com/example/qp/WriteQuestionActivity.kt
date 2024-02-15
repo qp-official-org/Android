@@ -193,12 +193,7 @@ class WriteQuestionActivity: AppCompatActivity(),WriteQView {
         questionService.setWriteQView(this)
 
         // 유저 데이터가 담긴 객체를 받기 위함
-        val intent = intent
-        if(intent.hasExtra("data")){
-            val userData=intent.getSerializableExtra("data", QpUserData::class.java)
-            if(userData!=null)
-                qpUserData=userData
-        }
+        qpUserData = AppData.qpUserData
 
         Log.d("accessToken",qpUserData.toString())
 
@@ -347,7 +342,7 @@ class WriteQuestionActivity: AppCompatActivity(),WriteQView {
                             Log.d("writeQ success","success!")
 
                             val question = QuestionInfo(
-                                user=UserInfo(qpUserData.userId.toLong(),"","student"),
+                                user=UserInfo(qpUserData.userId,"","student"),
                                 title = questionInfo.title,
                                 content = questionInfo.content,
                                 hashtags = newTagList,
