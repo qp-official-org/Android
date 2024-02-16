@@ -85,6 +85,8 @@ class DetailedActivity : AppCompatActivity(),DetailedQView{
                     Toast.makeText(this, "로그아웃 실패 $error", Toast.LENGTH_SHORT).show()
                 }else {
                     Toast.makeText(this, "로그아웃 성공", Toast.LENGTH_SHORT).show()
+                    AppData.qpUserData.userId = 0
+                    AppData.qpUserData.accessToken = ""
                     binding.detailedLoginBtn.visibility = View.VISIBLE
                     binding.detailedProfileBtn.visibility = View.GONE
                 }
