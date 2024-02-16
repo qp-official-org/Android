@@ -78,3 +78,48 @@ data class HashtagResponse(
     @SerializedName(value="message")val message: String?,
     @SerializedName(value="result")val result:TagInfo?=null
 ):Serializable
+
+data class ModifyQResponse(
+    @SerializedName(value="isSuccess")val isSuccess: Boolean?,
+    @SerializedName(value="code")val code: String,
+    @SerializedName(value="message")val message: String,
+    @SerializedName(value="result")val result:ModifyQResult
+):Serializable
+
+data class ModifyQResult(
+    @SerializedName(value="questionId")val questionId:Long,
+    @SerializedName(value="title")val title:String,
+    @SerializedName(value="content")val content:String,
+    @SerializedName(value="updatedAt")val updatedAt:String
+):Serializable
+
+data class ModifyQInfo(
+    @SerializedName(value="userId")var userId:Long,
+    @SerializedName(value="title")var title:String,
+    @SerializedName(value="content")var content:String
+)
+
+data class ModifyAnswerResponse(
+    @SerializedName(value="isSuccess")val isSuccess: Boolean?,
+    @SerializedName(value="code")val code: String,
+    @SerializedName(value="message")val message: String,
+    @SerializedName(value="result")val result:ModifyAnswerResult?
+)
+data class ModifyAnswerResult(
+    @SerializedName(value="answerId")var answerId:Long,
+    @SerializedName(value="title")var title:String,
+    @SerializedName(value="content")var content:String,
+    @SerializedName(value="likeCount")var likeCount:Int,
+    @SerializedName(value="updatedAt")var updatedAt:String
+)
+
+data class LikeAnswerResponse(
+    @SerializedName(value="isSuccess")val isSuccess: Boolean?,
+    @SerializedName(value="code")val code: String,
+    @SerializedName(value="message")val message: String,
+    @SerializedName(value="result")val result:LikeAnswerResult,
+    ):Serializable
+
+data class LikeAnswerResult(
+    @SerializedName(value="answerLikeStatus")val answerLikeStatus:String?
+):Serializable

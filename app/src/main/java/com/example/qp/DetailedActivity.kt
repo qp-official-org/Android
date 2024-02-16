@@ -11,6 +11,7 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
+import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -34,6 +35,7 @@ class DetailedActivity : AppCompatActivity(),DetailedQView{
     private lateinit var answerAdapter:DetailedQuestionRVAdapter
     private lateinit var questionInfo:QuestionInfo
     private var isNotified:Boolean=false
+    private var isLogin:Boolean=false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,6 +58,7 @@ class DetailedActivity : AppCompatActivity(),DetailedQView{
                 binding.detailedLoginBtn.visibility = View.VISIBLE
                 binding.detailedLoginSuccessBt.visibility = View.GONE
             } else if (token != null) {
+                isLogin=true
                 Log.i("TAG", "로그인 성공 $token")
                 binding.detailedLoginBtn.visibility = View.GONE
                 binding.detailedLoginSuccessBt.visibility = View.VISIBLE
@@ -73,8 +76,10 @@ class DetailedActivity : AppCompatActivity(),DetailedQView{
                     Toast.makeText(this, "로그아웃 실패 $error", Toast.LENGTH_SHORT).show()
                 }else {
                     Toast.makeText(this, "로그아웃 성공", Toast.LENGTH_SHORT).show()
+                    isLogin=false
                     AppData.qpUserID = 0
                     AppData.qpAccessToken = ""
+                    AppData.searchRecord.clear()
                     binding.detailedLoginBtn.visibility = View.VISIBLE
                     binding.detailedLoginSuccessBt.visibility = View.GONE
                 }
@@ -121,7 +126,7 @@ class DetailedActivity : AppCompatActivity(),DetailedQView{
         detailedQService.getQuestion(questionInfo.questionId?.toLong())
 
         //서버에서 답변 받아오기
-        answerAdapter=DetailedQuestionRVAdapter(applicationContext,this@DetailedActivity)
+        answerAdapter=DetailedQuestionRVAdapter(applicationContext)
         binding.answerRv.adapter=answerAdapter
 
         getParentAnswerService(questionInfo.questionId!!.toLong())
@@ -133,26 +138,22 @@ class DetailedActivity : AppCompatActivity(),DetailedQView{
         isNotified=isNotified()
         initView()
 
-        //initAnswerData()
-
         answerAdapter.setMyItemClickListener(object :
             DetailedQuestionRVAdapter.ItemClickListener{
             //답변 삭제
-            override fun onItemRemove(position:Int) {
-                answerAdapter.removeItem(position)
-                updateExpertNum()
-                if(answerAdapter.isItemListEmpty()){
-                    binding.answerBtn.visibility=View.VISIBLE
-                    updateNotifyView()
-                }
+            override fun onItemRemove(position:Int,answerId: Long) {
+
+                deleteAnswer(answerId,position)
             }
             //답변 수정
-            override fun onAnswerModify(position: Int) {
+            override fun onAnswerModify(position: Int,answerId:Long) {
                 val container=binding.writeAnswerContainer
                 var content=answerAdapter.getContent(position)
 
+                container.removeAllViews()
                 val inflater:LayoutInflater=getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
                 inflater.inflate(R.layout.item_write_answer,container,true)
+                binding.answerBtn.visibility=View.GONE
 
                 val writeBtn=findViewById<TextView>(R.id.write_answer_btn)
                 val writeLayout=findViewById<EditText>(R.id.write_answer_edit)
@@ -160,8 +161,7 @@ class DetailedActivity : AppCompatActivity(),DetailedQView{
 
                 writeBtn.setOnClickListener {
                     val newContent=writeLayout.text.toString()
-                    answerAdapter.modifyAnswer(position,newContent)
-                    container.removeAllViews()
+                    modifyAnswerService(answerId,"title",newContent,position)
                 }
 
             }
@@ -177,29 +177,24 @@ class DetailedActivity : AppCompatActivity(),DetailedQView{
         binding.detailedQuestionTitleTv.text = questionInfo.title
         binding.detailedQuestionContentTv.text = questionInfo.content
         binding.detailedQuestionTimeTv.text = questionInfo.createdAt.toString()
+        //binding.questionUserImg.setImageResource()
 
         val tagListSize = questionInfo.hashtags?.size
         when(tagListSize){
-            1->binding.hashtag1.text = questionInfo.hashtags!![0].hashtag
+            1->binding.hashtag1.text = "#".plus(questionInfo.hashtags!![0].hashtag)
             2->{
-                binding.hashtag1.text = questionInfo.hashtags!![0].hashtag
-                binding.hashtag2.text = questionInfo.hashtags!![1].hashtag
+                binding.hashtag1.text = "#".plus(questionInfo.hashtags!![0].hashtag)
+                binding.hashtag2.text = "#".plus(questionInfo.hashtags!![1].hashtag)
             }
             3->{
-                binding.hashtag1.text = questionInfo.hashtags!![0].hashtag
-                binding.hashtag2.text = questionInfo.hashtags!![1].hashtag
-                binding.hashtag3.text = questionInfo.hashtags!![2].hashtag
+                binding.hashtag1.text = "#".plus(questionInfo.hashtags!![0].hashtag)
+                binding.hashtag2.text = "#".plus(questionInfo.hashtags!![1].hashtag)
+                binding.hashtag3.text = "#".plus(questionInfo.hashtags!![2].hashtag)
             }
         }
 
     }
-//    private fun initAnswerData(){
-//        val answerList =ArrayList<AnswerInfo>()
-//
-//        answerAdapter.addItemList(answerList)
-//        updateExpertNum()
-//
-//    }
+
     private fun isNotified(): Boolean {
         return false     //서버에서 정보 받아와 설정
     }
@@ -247,7 +242,7 @@ class DetailedActivity : AppCompatActivity(),DetailedQView{
 
     }
     private fun updateExpertNum(){
-        binding.answerCountTv.text=answerAdapter.itemCount.toString()+"명의 전문가가 답변을 했어요"
+        binding.answerCountTv.text=questionInfo.expertCount.toString()+"명의 전문가가 답변을 했어요"
     }
 
     private fun notifyQuestion(toNotify:Boolean){
@@ -305,7 +300,8 @@ class DetailedActivity : AppCompatActivity(),DetailedQView{
 
     private fun setQuestionMorePopup(){
         lateinit var popupWindow: SimplePopup
-        if(answerAdapter.isItemListEmpty()){
+        var isMine=questionInfo.user?.userId==AppData.qpUserID
+        if(answerAdapter.isItemListEmpty()&&isMine){
             binding.questionMoreBtn.setOnClickListener {
                 val list= mutableListOf<String>().apply {
                     add("수정하기")
@@ -315,10 +311,8 @@ class DetailedActivity : AppCompatActivity(),DetailedQView{
                 popupWindow=SimplePopup(applicationContext,list){_,_,position->
                     when(position){
                         0-> {
-                            val gson= Gson()
-                            val qJson=gson.toJson(questionInfo)
                             val intent=Intent(this@DetailedActivity,ModifyQuestionActivity::class.java)
-                            intent.putExtra("modifyQuestion",qJson)
+                            intent.putExtra("modifyQuestion",questionInfo)
                             startActivity(intent)
                             Log.d("modifyLog",questionInfo.toString())
                             Toast.makeText(applicationContext, "수정하기", Toast.LENGTH_SHORT).show()
@@ -423,24 +417,6 @@ class DetailedActivity : AppCompatActivity(),DetailedQView{
         Log.d("getQ/FAIL",msg)
     }
 
-    override fun onGetParentSuccess(answerList:ArrayList<AnswerInfo>?) {
-        Log.d("getParent/SUCCESS",answerList.toString())
-        answerAdapter.addItemList(answerList)
-    }
-
-    override fun onGetaParentFailure(msg:String) {
-        Log.d("getParent/FAIL",msg)
-    }
-
-    override fun onGetChildSuccess(answerList: ArrayList<AnswerInfo>?, id: Long, position: Int) {
-        answerAdapter.getChildAnswer(answerList,id,position)
-        Log.d("getChild/SUCCESS",answerList.toString())
-    }
-
-    override fun onGetChildFailure(msg:String) {
-        Log.d("getChild/FAIL",msg)
-    }
-
 
 
     fun writeAnswerService(answer:AnswerInfo,token:String){
@@ -460,7 +436,7 @@ class DetailedActivity : AppCompatActivity(),DetailedQView{
                         answerAdapter.addItem(answer)
                         Log.d("writeAnswer/answer",answer.toString())
                         showWriteAnswerEdit(false)
-                        updateNotifyView()
+                        //updateNotifyView()
                         updateExpertNum()
                         Toast.makeText(applicationContext,"답변이 등록되었습니다.",Toast.LENGTH_SHORT).show()
                     }
@@ -505,6 +481,71 @@ class DetailedActivity : AppCompatActivity(),DetailedQView{
 
         })
     }
+
+    fun modifyAnswerService(answerId:Long,title:String,content:String,position:Int){
+        val questionService= getRetrofit().create(QuestionInterface::class.java)
+        var answerPost=ModifyQInfo(AppData.qpUserID.toLong(),title,content)
+
+        questionService.modifyAnswer(AppData.qpAccessToken,answerId,answerPost).enqueue(object :Callback<ModifyAnswerResponse>{
+            override fun onResponse(
+                call: Call<ModifyAnswerResponse>,
+                response: Response<ModifyAnswerResponse>
+            ) {
+                val resp=response.body()
+                when(resp?.code){
+                    "ANSWER_3000"->{
+                        val container=binding.writeAnswerContainer
+                        answerAdapter.modifyAnswer(position,content)
+                        container.removeAllViews()
+                        binding.answerBtn.visibility=View.VISIBLE
+                    }
+                    else->{
+                        Log.d("modifyAnswer/FAIL",response.errorBody()?.string().toString())
+                        Toast.makeText(applicationContext,"답변 수정 실패",Toast.LENGTH_SHORT).show()
+                    }
+                }
+
+            }
+
+            override fun onFailure(call: Call<ModifyAnswerResponse>, t: Throwable) {
+                Log.d("modifyAnswerResp/FAIL",t.message.toString())
+            }
+
+        })
+    }
+
+    fun deleteAnswer(answerId:Long,position: Int){
+        val questionService= getRetrofit().create(QuestionInterface::class.java)
+
+        questionService.deleteAnswer(AppData.qpAccessToken,answerId,AppData.qpUserID.toLong()).enqueue(object:Callback<ModifyAnswerResponse>{
+            override fun onResponse(
+                call: Call<ModifyAnswerResponse>,
+                response: Response<ModifyAnswerResponse>
+            ) {
+                val resp=response.body()
+                when(resp?.code){
+                    "ANSWER_3000"->{
+                        answerAdapter.removeItem(position)
+                        updateExpertNum()
+                        if(answerAdapter.isItemListEmpty()){
+                            binding.answerBtn.visibility=View.VISIBLE
+                            //updateNotifyView()
+                        }
+                    }
+                    else->{
+                        Toast.makeText(applicationContext,"답변 삭제 실패",Toast.LENGTH_SHORT).show()
+                        Log.d("deleteAnswer/FAIL",response.errorBody()?.string().toString())
+                    }
+                }
+            }
+
+            override fun onFailure(call: Call<ModifyAnswerResponse>, t: Throwable) {
+                Log.d("deleteAnswerResp/FAIL",t.message.toString())
+            }
+
+        })
+    }
+
 
 
 

@@ -15,8 +15,8 @@ class DetailedAnswerCommentRVAdapter(context: Context ):RecyclerView.Adapter<Det
     private val items=ArrayList<AnswerInfo>()
 
     interface CommentClickListener{
-        fun onItemRemove(position:Int)
-        fun onCommentModify(position: Int)
+        fun onItemRemove(position:Int,answerId:Long)
+        fun onCommentModify(pos: Int,answerId:Long)
     }
     private lateinit var myItemClickListener: CommentClickListener
     fun setMyItemClickListener(itemClickListener: CommentClickListener){
@@ -58,11 +58,11 @@ class DetailedAnswerCommentRVAdapter(context: Context ):RecyclerView.Adapter<Det
                     when(menuPos){
                         0-> {
                             Toast.makeText(appContext, "수정하기", Toast.LENGTH_SHORT).show()
-                            myItemClickListener.onCommentModify(position)
+                            myItemClickListener.onCommentModify(position,items[position].answerId!!.toLong())
                         }
                         1-> {
                             Toast.makeText(appContext, "삭제하기", Toast.LENGTH_SHORT).show()
-                            myItemClickListener.onItemRemove(position)
+                            myItemClickListener.onItemRemove(position,items[position].answerId!!)
                         }
                         2-> Toast.makeText(appContext,"신고하기", Toast.LENGTH_SHORT).show()
                     }
@@ -86,8 +86,9 @@ class DetailedAnswerCommentRVAdapter(context: Context ):RecyclerView.Adapter<Det
     fun isCommentListEmpty():Boolean{
         return items.isEmpty()||items==null
     }
-    fun addItem(content:String){
-        items.add(AnswerInfo(answerId = 0, userId = 0, title = "title1", content=content,category = "CHILD", answerGroup = 0, likes = 0))
+    fun addItem(position:Int,answer:AnswerInfo){
+        //items.add(AnswerInfo(answerId = 0, userId = 0, title = "title1", content=content,category = "CHILD", answerGroup = 0, likes = 0))
+        items.add(position,answer)
         notifyDataSetChanged()
     }
     fun addItems(answerList:ArrayList<AnswerInfo>?){

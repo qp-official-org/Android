@@ -94,6 +94,7 @@ class MainActivity : AppCompatActivity() {
                     Toast.makeText(this, "로그아웃 성공", Toast.LENGTH_SHORT).show()
                     AppData.qpUserID = 0
                     AppData.qpAccessToken = ""
+                    AppData.searchRecord.clear()
                     binding.mainLoginBt.visibility = View.VISIBLE
                     binding.mainLoginSuccessBt.visibility = View.GONE
                 }
@@ -172,7 +173,7 @@ class MainActivity : AppCompatActivity() {
                 val gson = Gson()
                 val qJson = gson.toJson(questionInfo)
                 intent.putExtra("question", qJson)
-                intent.putExtra("qDatas", qDatas)
+
                 startActivity(intent)
             }
         })

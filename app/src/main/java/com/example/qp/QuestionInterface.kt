@@ -59,4 +59,32 @@ interface QuestionInterface {
         @Path("questionId")questionId:Long,
         @Body answer:AnswerInfo
     ):Call<WriteAnswerResponse>
+
+    @PATCH("/questions/{questionId}")
+    fun modifyQuestion(
+        @Header("accessToken")token:String,
+        @Path("questionId")questionId:Long,
+        @Body questionInfo:ModifyQInfo
+    ):Call<ModifyQResponse>
+
+    @PATCH("/answers/{answerId}")
+    fun modifyAnswer(
+        @Header("accessToken")token:String,
+        @Path("answerId")answerId:Long,
+        @Body answerInfo:ModifyQInfo
+    ):Call<ModifyAnswerResponse>
+
+    @DELETE("/answers/{answerId}")
+    fun deleteAnswer(
+        @Header("accessToken")token:String,
+        @Path("answerId")answerId:Long,
+        @Query("userId")userId:Long
+    ):Call<ModifyAnswerResponse>
+
+    @POST("/answers/{answerId}/users/{userId}")
+    fun likeAnswer(
+        @Header("accessToken")token:String,
+        @Path("userId")userId:Int,
+        @Path("answerId")answerId:Long
+    ):Call<LikeAnswerResponse>
 }

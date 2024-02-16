@@ -1,9 +1,13 @@
 package com.example.qp
 
-import android.util.Log
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.CircleCrop
+import com.bumptech.glide.request.RequestOptions
 import com.example.qp.databinding.ItemQuestionBinding
 
 class QuestionRVAdapter(private val qList: ArrayList<QuestionInfo>)
@@ -20,13 +24,13 @@ class QuestionRVAdapter(private val qList: ArrayList<QuestionInfo>)
     override fun onCreateViewHolder(
         viewGroup: ViewGroup,
         viewType: Int
-    ): QuestionRVAdapter.ViewHolder {
+    ): ViewHolder {
         val binding: ItemQuestionBinding =ItemQuestionBinding.inflate(LayoutInflater.from(viewGroup.context), viewGroup, false)
 
-        return ViewHolder(binding)
+        return ViewHolder(binding, viewGroup.context)
     }
 
-    override fun onBindViewHolder(holder: QuestionRVAdapter.ViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.bind(qList[position])
         holder.itemView.setOnClickListener{
             myItemClickListner.onItemClick(qList[position])
@@ -35,34 +39,41 @@ class QuestionRVAdapter(private val qList: ArrayList<QuestionInfo>)
 
     override fun getItemCount(): Int = qList.size
 
-    inner class ViewHolder(val binding: ItemQuestionBinding) : RecyclerView.ViewHolder(binding.root){
+    inner class ViewHolder(val binding: ItemQuestionBinding, val con: Context) : RecyclerView.ViewHolder(binding.root){
         fun bind(questionInfo: QuestionInfo){
             binding.itemTimeTv.text = questionInfo.createdAt.toString()
             binding.itemQuestionTv.text = questionInfo.title
-            if(questionInfo.hashtags?.isEmpty() == false){
-                /*for (tagInfo in questionInfo.hashtags!!) {
-                    if(tagInfo.hashtagId == 1)
-                        binding.itemCategory1Tv.text = tagInfo.hashtag
-                    else if(tagInfo.hashtagId == 2)
-                        binding.itemCategory2Tv.text = tagInfo.hashtag
-                    else if(tagInfo.hashtagId == 3)
-                        binding.itemCategory3Tv.text = tagInfo.hashtag
-                }*/
-                val tagList=questionInfo.hashtags
-                if(tagList.size==1){
-                    binding.itemCategory1Tv.text = tagList[0].hashtag
-                }
-                else if(tagList.size==2){
-                    binding.itemCategory1Tv.text = tagList[0].hashtag
-                    binding.itemCategory2Tv.text = tagList[1].hashtag
-                }
-                else if(tagList.size==3){
-                    binding.itemCategory1Tv.text = tagList[0].hashtag
-                    binding.itemCategory2Tv.text = tagList[1].hashtag
-                    binding.itemCategory3Tv.text = tagList[2].hashtag
-                }
+            setStringImage(questionInfo.user!!.profileImage, binding.itemUserIv, con)
+            val tagList=questionInfo.hashtags
+            if(tagList?.size==1){
+                binding.itemCategory1Tv.text = "#"+tagList[0].hashtag
+                binding.itemCategory2Tv.text = ""
+                binding.itemCategory3Tv.text = ""
+            }
+            else if(tagList?.size==2){
+                binding.itemCategory1Tv.text = "#"+tagList[0].hashtag
+                binding.itemCategory2Tv.text = "#"+tagList[1].hashtag
+                binding.itemCategory3Tv.text = ""
+            }
+            else if(tagList?.size==3){
+                binding.itemCategory1Tv.text = "#"+tagList[0].hashtag
+                binding.itemCategory2Tv.text = "#"+tagList[1].hashtag
+                binding.itemCategory3Tv.text = "#"+tagList[2].hashtag
+            }
+            else{ //해시태그 X
+                binding.itemCategory1Tv.text = ""
+                binding.itemCategory2Tv.text = ""
+                binding.itemCategory3Tv.text = ""
             }
         }
+    }
+
+    // 이미지뷰에 문자열 형태의 이미지를 설정
+    fun setStringImage(imageUrl: String, imageView: ImageView, con: Context) {
+        Glide.with(con)
+            .load(imageUrl)
+            .apply(RequestOptions().transform(CircleCrop()))
+            .into(imageView)
     }
 
 }

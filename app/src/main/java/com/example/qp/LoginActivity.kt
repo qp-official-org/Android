@@ -121,6 +121,7 @@ class LoginActivity : AppCompatActivity() {
                             // 전역변수 사용
                             AppData.qpAccessToken = resp.result.accessToken
                             AppData.qpUserID = resp.result.userId
+                            AppData.searchRecord.clear()
                             Log.d("qpUserData1", AppData.qpAccessToken)
                             Log.d("qpUserData2", AppData.qpUserID.toString())
 

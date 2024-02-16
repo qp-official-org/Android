@@ -85,5 +85,7 @@ class AppData : Application() {
                 }
             })
         }
+
+        var searchRecord = ArrayList<String>()
     }
 }
