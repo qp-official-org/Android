@@ -38,6 +38,11 @@ class WriteQuestionTagRVAdapter(val activity: AppCompatActivity, val text: Array
                     AppData.searchRecord.removeAt(position)
                 }
             }
+            binding.hashtagText.setOnClickListener{
+                if(activity is SearchActivity){
+                    activity.textListner.onQueryTextSubmit(items[position])
+                }
+            }
         }
     }
 

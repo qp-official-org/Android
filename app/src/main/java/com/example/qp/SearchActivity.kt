@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.qp.databinding.ActivitySearchBinding
 import com.google.android.flexbox.FlexDirection
 import com.google.android.flexbox.FlexWrap
@@ -24,6 +25,25 @@ class SearchActivity : AppCompatActivity() {
     lateinit var binding: ActivitySearchBinding
     private var filtered = ArrayList<QuestionInfo>()
     private lateinit var adapter: WriteQuestionTagRVAdapter
+    private var page = 0
+    private var last = false
+    private var needMore = false
+    val textListner = object : SearchView.OnQueryTextListener {
+        override fun onQueryTextSubmit(query: String?): Boolean {
+            needMore = false
+            page = 0
+            getfilteredQuestions(page, query)
+            moreFiltered(query)
+            record(query)
+            binding.searchRecentWord.isVisible = false
+            binding.searchInputSv.clearFocus() // 키보드 숨기기
+            return true
+        }
+        override fun onQueryTextChange(newText: String?): Boolean {
+            //검색어 변경 시는 별다른 액션 X
+            return false
+        }
+    }
 
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -51,25 +71,10 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun searchResult(){
-        val textListner = object : SearchView.OnQueryTextListener {
-            override fun onQueryTextSubmit(query: String?): Boolean {
-                getfilteredQuestions(query)
-                record(query)
-                binding.searchRecentWord.isVisible = false
-                binding.searchInputSv.clearFocus() // 키보드 숨기기
-                return true
-            }
-            override fun onQueryTextChange(newText: String?): Boolean {
-                //검색어 변경 시는 별다른 액션 X
-                return false
-            }
-        }
-
         binding.searchInputSv.setOnQueryTextListener(textListner)
         binding.searchImageBt.setOnClickListener {
             textListner.onQueryTextSubmit(binding.searchInputSv.query.toString())
         }
-
     }
 
     private fun record(input: String?){
@@ -81,10 +86,10 @@ class SearchActivity : AppCompatActivity() {
         }
     }
 
-    private fun getfilteredQuestions(query: String?){
+    private fun getfilteredQuestions(p: Int, query: String?){
         val questionService = getRetrofit().create(QuestionInterface::class.java)
 
-        questionService.getQuestions(0, 10, query) //스크롤에 따라 추가 페이징 할 것!
+        questionService.getQuestions(p, 10, query)
             .enqueue(object: Callback<QuestionResponse> {
                 override fun onResponse(
                     call: Call<QuestionResponse>,
@@ -98,8 +103,9 @@ class SearchActivity : AppCompatActivity() {
                         when(questionResponse.code){
                             "QUESTION_2000" -> {
                                 Log.d("SUCCESS/DATA_LOAD", "리사이클러뷰의 데이터로 구성됩니다")
-                                filtered.clear()
+                                if(!needMore) { filtered.clear() }
                                 filtered.addAll(questionResponse.result.questions)
+                                last = questionResponse.result.last!!
                                 setQuestionRVAdapter(filtered)
                                 Log.d("getFdResp",filtered.toString())
                             }
@@ -115,6 +121,22 @@ class SearchActivity : AppCompatActivity() {
                 }
 
             })
+    }
+
+    private fun moreFiltered(sameInput: String?){
+        binding.searchMatchQuestionRv.addOnScrollListener(object: RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+
+                needMore = true
+                val rvPosition = (recyclerView.layoutManager as GridLayoutManager)?.findLastCompletelyVisibleItemPosition()
+                val totalCount = binding.searchMatchQuestionRv.adapter!!.itemCount - 1
+                if (rvPosition==totalCount && !last) {
+                    page++
+                    getfilteredQuestions(page, sameInput)
+                }
+            }
+        })
     }
 
     private fun setQuestionRVAdapter(filtered: ArrayList<QuestionInfo>){
@@ -133,8 +155,13 @@ class SearchActivity : AppCompatActivity() {
             binding.searchMatchQuestionRv.isVisible = true
 
             val questionRVAdapter = QuestionRVAdapter(filtered)
-            binding.searchMatchQuestionRv.adapter = questionRVAdapter
-            binding.searchMatchQuestionRv.layoutManager = GridLayoutManager(applicationContext, 2)
+            if(page == 0){
+                binding.searchMatchQuestionRv.adapter = questionRVAdapter
+                binding.searchMatchQuestionRv.layoutManager = GridLayoutManager(applicationContext, 2)
+            }
+            else{
+                binding.searchMatchQuestionRv.adapter!!.notifyDataSetChanged()
+            }
 
             questionRVAdapter.setMyItemClickListner(object : QuestionRVAdapter.MyItemClickListner{
                 @RequiresApi(Build.VERSION_CODES.TIRAMISU)
