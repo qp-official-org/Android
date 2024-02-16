@@ -31,7 +31,7 @@ class DetailedQuestionRVAdapter(context:Context,view:DetailedQView): RecyclerVie
 
 
     interface ItemClickListener{
-        fun onItemRemove(position:Int)
+        fun onItemRemove(position:Int,answerId:Long)
         fun onAnswerModify(position:Int,answerId:Long)
     }
 
@@ -231,7 +231,7 @@ class DetailedQuestionRVAdapter(context:Context,view:DetailedQView): RecyclerVie
                             }
                             1-> {
                                 //Toast.makeText(appContext, "삭제하기", Toast.LENGTH_SHORT).show()
-                                myItemClickListener.onItemRemove(position)    //임시로 구현
+                                myItemClickListener.onItemRemove(position,items[position].answerId!!)    //임시로 구현
                             }
                             2->Toast.makeText(appContext,"신고하기",Toast.LENGTH_SHORT).show()
                         }

@@ -141,13 +141,9 @@ class DetailedActivity : AppCompatActivity(),DetailedQView{
         answerAdapter.setMyItemClickListener(object :
             DetailedQuestionRVAdapter.ItemClickListener{
             //답변 삭제
-            override fun onItemRemove(position:Int) {
-                answerAdapter.removeItem(position)
-                updateExpertNum()
-                if(answerAdapter.isItemListEmpty()){
-                    binding.answerBtn.visibility=View.VISIBLE
-                    updateNotifyView()
-                }
+            override fun onItemRemove(position:Int,answerId: Long) {
+
+                deleteAnswer(answerId,position)
             }
             //답변 수정
             override fun onAnswerModify(position: Int,answerId:Long) {
@@ -184,15 +180,15 @@ class DetailedActivity : AppCompatActivity(),DetailedQView{
 
         val tagListSize = questionInfo.hashtags?.size
         when(tagListSize){
-            1->binding.hashtag1.text = questionInfo.hashtags!![0].hashtag
+            1->binding.hashtag1.text = "#".plus(questionInfo.hashtags!![0].hashtag)
             2->{
-                binding.hashtag1.text = questionInfo.hashtags!![0].hashtag
-                binding.hashtag2.text = questionInfo.hashtags!![1].hashtag
+                binding.hashtag1.text = "#".plus(questionInfo.hashtags!![0].hashtag)
+                binding.hashtag2.text = "#".plus(questionInfo.hashtags!![1].hashtag)
             }
             3->{
-                binding.hashtag1.text = questionInfo.hashtags!![0].hashtag
-                binding.hashtag2.text = questionInfo.hashtags!![1].hashtag
-                binding.hashtag3.text = questionInfo.hashtags!![2].hashtag
+                binding.hashtag1.text = "#".plus(questionInfo.hashtags!![0].hashtag)
+                binding.hashtag2.text = "#".plus(questionInfo.hashtags!![1].hashtag)
+                binding.hashtag3.text = "#".plus(questionInfo.hashtags!![2].hashtag)
             }
         }
 
@@ -519,6 +515,38 @@ class DetailedActivity : AppCompatActivity(),DetailedQView{
 
             override fun onFailure(call: Call<ModifyAnswerResponse>, t: Throwable) {
                 Log.d("modifyAnswerResp/FAIL",t.message.toString())
+            }
+
+        })
+    }
+
+    fun deleteAnswer(answerId:Long,position: Int){
+        val questionService= getRetrofit().create(QuestionInterface::class.java)
+
+        questionService.deleteAnswer(AppData.qpAccessToken,answerId,AppData.qpUserID.toLong()).enqueue(object:Callback<ModifyAnswerResponse>{
+            override fun onResponse(
+                call: Call<ModifyAnswerResponse>,
+                response: Response<ModifyAnswerResponse>
+            ) {
+                val resp=response.body()
+                when(resp?.code){
+                    "ANSWER_3000"->{
+                        answerAdapter.removeItem(position)
+                        updateExpertNum()
+                        if(answerAdapter.isItemListEmpty()){
+                            binding.answerBtn.visibility=View.VISIBLE
+                            updateNotifyView()
+                        }
+                    }
+                    else->{
+                        Toast.makeText(applicationContext,"답변 삭제 실패",Toast.LENGTH_SHORT).show()
+                        Log.d("deleteAnswer/FAIL",response.errorBody()?.string().toString())
+                    }
+                }
+            }
+
+            override fun onFailure(call: Call<ModifyAnswerResponse>, t: Throwable) {
+                Log.d("deleteAnswerResp/FAIL",t.message.toString())
             }
 
         })
