@@ -323,7 +323,6 @@ class DetailedActivity : AppCompatActivity(),DetailedQView{
 //                            val qJson=gson.toJson(questionInfo)
                             val intent=Intent(this@DetailedActivity,ModifyQuestionActivity::class.java)
                             intent.putExtra("modifyQuestion",questionInfo)
-                            intent.putExtra("data",qpUserData)
                             startActivity(intent)
                             Log.d("modifyLog",questionInfo.toString())
                             Toast.makeText(applicationContext, "수정하기", Toast.LENGTH_SHORT).show()

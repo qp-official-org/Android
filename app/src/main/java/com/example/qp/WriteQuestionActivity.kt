@@ -32,7 +32,6 @@ class WriteQuestionActivity: AppCompatActivity() {
     private var isContentValid=false
     private  var tagList = ArrayList<String>()
     private val newTagList = ArrayList<TagInfo>()
-    private var qpUserData=QpUserData("",0)
 
 
 
@@ -292,7 +291,6 @@ class WriteQuestionActivity: AppCompatActivity() {
                 }
               }
 
-        }
 
             override fun onFailure(call: Call<WriteQResponse>, t: Throwable) {
                 Log.d("writeQ Fail",t.message.toString())

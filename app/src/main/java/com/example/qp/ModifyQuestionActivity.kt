@@ -25,7 +25,6 @@ class ModifyQuestionActivity:AppCompatActivity() {
     private lateinit var binding:ActivityModifyQuestionBinding
     private var gson= Gson()
     private var questionInfo:QuestionInfo?=null
-    private var qpUserData:QpUserData?=null
     private var isTitleValid=true
     private var isContentValid=true
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
@@ -39,10 +38,7 @@ class ModifyQuestionActivity:AppCompatActivity() {
             questionInfo=intent.getSerializableExtra("modifyQuestion",QuestionInfo::class.java)
             Log.d("intentQ",questionInfo.toString())
         }
-        if(intent.hasExtra("data")){
-            qpUserData=intent.getSerializableExtra("data",QpUserData::class.java)
-            Log.d("intentUser",qpUserData.toString())
-        }
+
 
         binding.modifyBackBtn.setOnClickListener {
             finish()
@@ -141,15 +137,15 @@ class ModifyQuestionActivity:AppCompatActivity() {
     fun registerService(title:String, content:String){
         var modifyQInfo:ModifyQInfo?
 
-        modifyQInfo=ModifyQInfo(qpUserData!!.userId.toLong(),title,content)
+        modifyQInfo=ModifyQInfo(AppData.qpUserID.toLong(),title,content)
 
         val questionService= getRetrofit().create(QuestionInterface::class.java)
-        questionService.modifyQuestion(qpUserData!!.accessToken,questionInfo?.questionId!!,modifyQInfo!!).enqueue(object : Callback<ModifyQResponse>{
+        questionService.modifyQuestion(AppData.qpAccessToken,questionInfo?.questionId!!,modifyQInfo!!).enqueue(object : Callback<ModifyQResponse>{
             override fun onResponse(
                 call: Call<ModifyQResponse>,
                 response: Response<ModifyQResponse>
             ) {
-                Log.d("modifyQReq",questionInfo?.questionId.toString().plus(qpUserData!!.userId).plus(title))
+                Log.d("modifyQReq",questionInfo?.questionId.toString().plus(AppData.qpUserID).plus(title))
                 val resp=response.body()
                 when(resp?.code){
                     "QUESTION_2000"->{
@@ -158,7 +154,6 @@ class ModifyQuestionActivity:AppCompatActivity() {
                         questionInfo?.content=content
 
                         intent= Intent(this@ModifyQuestionActivity,DetailedActivity::class.java)
-                        intent.putExtra("data",qpUserData)
                         val gson = Gson()
                         val qJson = gson.toJson(questionInfo)
                         intent.putExtra("question", qJson)
