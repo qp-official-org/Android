@@ -73,4 +73,18 @@ interface QuestionInterface {
         @Path("answerId")answerId:Long,
         @Body answerInfo:ModifyQInfo
     ):Call<ModifyAnswerResponse>
+
+    @DELETE("/answers/{answerId}")
+    fun deleteAnswer(
+        @Header("accessToken")token:String,
+        @Path("answerId")answerId:Long,
+        @Query("userId")userId:Long
+    ):Call<ModifyAnswerResponse>
+
+    @POST("/answers/{answerId}/users/{userId}")
+    fun likeAnswer(
+        @Header("accessToken")token:String,
+        @Path("userId")userId:Int,
+        @Path("answerId")answerId:Long
+    ):Call<LikeAnswerResponse>
 }
