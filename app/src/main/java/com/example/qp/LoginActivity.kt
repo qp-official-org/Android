@@ -125,6 +125,7 @@ class LoginActivity : AppCompatActivity() {
                             Log.d("qpUserData2", qpUserData.userId.toString())
 
                             val intent = Intent(this@LoginActivity,SetNicknameActivity::class.java)
+                            AppData.qpUserData = qpUserData
                             intent.putExtra("data", qpUserData)
                             startActivity(intent)
                         }

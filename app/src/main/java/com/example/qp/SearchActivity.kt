@@ -28,6 +28,9 @@ class SearchActivity : AppCompatActivity() {
         binding = ActivitySearchBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        //로그인한 사용자 정보 조회
+        qpUserData = AppData.qpUserData
+
         binding.searchBackIv.setOnClickListener{
             val intent = Intent(this@SearchActivity, MainActivity::class.java)
             startActivity(intent)
@@ -116,12 +119,10 @@ class SearchActivity : AppCompatActivity() {
             questionRVAdapter.setMyItemClickListner(object : QuestionRVAdapter.MyItemClickListner{
                 @RequiresApi(Build.VERSION_CODES.TIRAMISU)
                 override fun onItemClick(questionInfo: QuestionInfo) {
-                    qpUserData = intent.getSerializableExtra("data", QpUserData::class.java)!!
                     val intent = Intent(this@SearchActivity, DetailedActivity::class.java)
                     val gson = Gson()
                     val qJson = gson.toJson(questionInfo)
                     intent.putExtra("question", qJson)
-                    intent.putExtra("data",qpUserData)
                     startActivity(intent)
                 }
             })
@@ -131,15 +132,14 @@ class SearchActivity : AppCompatActivity() {
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     private fun register(){
         binding.searchRegisterBt.setOnClickListener {
-            if(intent.hasExtra("data")){
-                val userData=intent.getSerializableExtra("data", QpUserData::class.java)
-                if(userData!=null)
-                    qpUserData=userData
+            if(qpUserData.userId != 0){
+                val intent = Intent(this@SearchActivity, WriteQuestionActivity::class.java)
+                startActivity(intent)
             }
-            Log.d("search_userIntent",qpUserData.toString())
-            val intent = Intent(this@SearchActivity, WriteQuestionActivity::class.java)
-            intent.putExtra("data",qpUserData)
-            startActivity(intent)
+            else{
+                val dialog = SimpleDialog()
+                dialog.show(supportFragmentManager,"dialog")
+            }
         }
     }
 

@@ -54,6 +54,7 @@ class MainActivity : AppCompatActivity() {
         //백엔드로부터 질문 정보를 가져와 리사이클러뷰를 구성하는 함수
         getQuestions()
 
+        Toast.makeText(applicationContext, "로그인한 유저 아이디: "+AppData.qpUserData.userId.toString(),Toast.LENGTH_SHORT).show()
 
         // 키 해시 확인용
         val keyHash = Utility.getKeyHash(this)
@@ -88,6 +89,8 @@ class MainActivity : AppCompatActivity() {
                     Toast.makeText(this, "로그아웃 실패 $error", Toast.LENGTH_SHORT).show()
                 }else {
                     Toast.makeText(this, "로그아웃 성공", Toast.LENGTH_SHORT).show()
+                    AppData.qpUserData.userId = 0
+                    AppData.qpUserData.accessToken = ""
                     binding.mainLoginBt.visibility = View.VISIBLE
                     binding.mainLoginSuccessBt.visibility = View.GONE
                 }
@@ -158,13 +161,11 @@ class MainActivity : AppCompatActivity() {
         questionRVAdapter.setMyItemClickListner(object : QuestionRVAdapter.MyItemClickListner{
             @RequiresApi(Build.VERSION_CODES.TIRAMISU)
             override fun onItemClick(questionInfo: QuestionInfo) {
-                val qpUserData = intent.getSerializableExtra("data", QpUserData::class.java)
                 val intent = Intent(this@MainActivity, DetailedActivity::class.java)
                 val gson = Gson()
                 val qJson = gson.toJson(questionInfo)
                 intent.putExtra("question", qJson)
                 intent.putExtra("qDatas", qDatas)
-                intent.putExtra("data",qpUserData)
                 startActivity(intent)
             }
         })

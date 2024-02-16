@@ -17,6 +17,13 @@ interface QuestionInterface {
         @Body question: QuestionPost
     ): Call<WriteQResponse>
 
+    @DELETE("/questions/{questionId}")
+    fun deleteQ(
+        @Header("accessToken") token: String,
+        @Path("questionId") questionId: Long?,
+        @Query("userId") userId: Int
+    ): Call<QuestionResponse>
+
     @GET("/questions/{questionId}")
     fun getQuestion(
         @Path("questionId") questionId:Long?
