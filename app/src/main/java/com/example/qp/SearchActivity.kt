@@ -89,7 +89,7 @@ class SearchActivity : AppCompatActivity() {
     private fun getfilteredQuestions(p: Int, query: String?){
         val questionService = getRetrofit().create(QuestionInterface::class.java)
 
-        questionService.getQuestions(p, 10, query) //스크롤에 따라 추가 페이징 할 것!
+        questionService.getQuestions(p, 10, query)
             .enqueue(object: Callback<QuestionResponse> {
                 override fun onResponse(
                     call: Call<QuestionResponse>,
