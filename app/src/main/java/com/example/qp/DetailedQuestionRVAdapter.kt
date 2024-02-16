@@ -28,10 +28,9 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class DetailedQuestionRVAdapter(context:Context,view:DetailedQView): RecyclerView.Adapter<DetailedQuestionRVAdapter.ViewHolder>() {
+class DetailedQuestionRVAdapter(context:Context): RecyclerView.Adapter<DetailedQuestionRVAdapter.ViewHolder>() {
     val items= ArrayList<AnswerInfo>()
     private var appContext=context
-    private var detailedQView=view
     private var commentAdapterList=ArrayList<DetailedAnswerCommentRVAdapter>()
 
     private var isLogin=false
@@ -89,12 +88,11 @@ class DetailedQuestionRVAdapter(context:Context,view:DetailedQView): RecyclerVie
                 commentAdapterList[position].setMyItemClickListener(object :
                     DetailedAnswerCommentRVAdapter.CommentClickListener{
 
-                    override fun onItemRemove(pos: Int) {   //댓글 삭제시
-                        commentAdapterList[position].removeItem(pos)
-                        commentNumberUpdate(position)
+                    override fun onItemRemove(pos: Int,answerId: Long) {   //댓글 삭제시
+                        deleteChildAnswerService(answerId,position,pos)
                     }
-                    override fun onCommentModify(position: Int) {   //댓글 수정 시
-                        var content=commentAdapterList[position].getContent(position)
+                    override fun onCommentModify(pos: Int,answerId: Long) {   //댓글 수정 시
+                        var content=commentAdapterList[position].getContent(pos)
 
                         //댓글 작성 레이아웃에 텍스트 삽입
                         val writeBtn=itemView.findViewById<TextView>(R.id.write_comment_btn)
@@ -104,8 +102,7 @@ class DetailedQuestionRVAdapter(context:Context,view:DetailedQView): RecyclerVie
                         //댓글 재등록
                         writeBtn.setOnClickListener {
                             val newContent=writeLayout.text.toString()
-                            commentAdapterList[position].modifyComment(position,newContent)
-                            writeLayout.text= Editable.Factory.getInstance().newEditable("")
+                            modifyChildAnswerService(answerId,"title",newContent,position,pos)
                         }
                     }
                 })
@@ -184,17 +181,12 @@ class DetailedQuestionRVAdapter(context:Context,view:DetailedQView): RecyclerVie
                 else{
                     Toast.makeText(appContext,"댓글을 작성하십시오",Toast.LENGTH_SHORT).show()
                 }
-                //writeComment(binding.writeCommentEdit.text.toString(),adapter,position)
             }
             //더보기 팝업 메뉴
             showAnswerMorePopup(position,adapter)
         }
 
 
-        //댓글 등록
-        private fun writeComment(content:String,adapter:DetailedAnswerCommentRVAdapter,position:Int){
-
-        }
         //댓글수 표시
        private fun commentNumberUpdate(position: Int){
             binding.answerCommentBtnTv.text=commentAdapterList[position].itemCount.toString()
@@ -303,6 +295,60 @@ class DetailedQuestionRVAdapter(context:Context,view:DetailedQView): RecyclerVie
             })
         }
 
+        fun modifyChildAnswerService(answerId:Long,title:String,content: String,parentPos: Int,childPos:Int){
+            val questionService= getRetrofit().create(QuestionInterface::class.java)
+            val modifyQInfo=ModifyQInfo(AppData.qpUserID.toLong(),title,content)
+
+            questionService.modifyAnswer(AppData.qpAccessToken,answerId,modifyQInfo).enqueue(object :Callback<ModifyAnswerResponse>{
+                override fun onResponse(
+                    call: Call<ModifyAnswerResponse>,
+                    response: Response<ModifyAnswerResponse>
+                ) {
+                    val resp=response.body()
+                    when(resp?.code){
+                        "ANSWER_3000"->{
+                            Log.d("modifyChild/SUCCESS",resp.toString())
+                            commentAdapterList[parentPos].modifyComment(childPos,content)
+                            binding.writeCommentEdit.text= Editable.Factory.getInstance().newEditable("")
+                        }
+                        else->{
+                            Log.d("modifyChild/FAIL",response.errorBody()?.string().toString())
+                        }
+                    }
+                }
+
+                override fun onFailure(call: Call<ModifyAnswerResponse>, t: Throwable) {
+                    Log.d("modifyChildResp/FAIL",t.message.toString())
+                }
+
+            })
+        }
+        fun deleteChildAnswerService(answerId:Long,parentPos: Int,childPos: Int){
+            val questionService= getRetrofit().create(QuestionInterface::class.java)
+            questionService.deleteAnswer(AppData.qpAccessToken,answerId,AppData.qpUserID.toLong()).enqueue(object :Callback<ModifyAnswerResponse>{
+                override fun onResponse(
+                    call: Call<ModifyAnswerResponse>,
+                    response: Response<ModifyAnswerResponse>
+                ) {
+                    val resp=response.body()
+                    when(resp?.code){
+                        "ANSWER_3000"->{
+                            Log.d("deleteChild/SUCCESS",resp.toString())
+                            commentAdapterList[parentPos].removeItem(childPos)
+                            commentNumberUpdate(parentPos)
+                        }
+                        else->{
+                            Log.d("deleteChild/FAIL",response.errorBody()?.string().toString())
+                        }
+                    }                }
+
+                override fun onFailure(call: Call<ModifyAnswerResponse>, t: Throwable) {
+                    Log.d("deleteChildResp/FAIL",t.message.toString())
+                }
+
+            })
+        }
+
 
     }
 
@@ -337,13 +383,6 @@ class DetailedQuestionRVAdapter(context:Context,view:DetailedQView): RecyclerVie
         this.notifyDataSetChanged()
     }
 
-    fun getChildAnswer(answerList:ArrayList<AnswerInfo>?,id:Long,position: Int){
-        commentAdapterList[position].addItems(answerList)
-    }
-
-    fun getChild(binding:ItemAnswerBinding,id:Long,position:Int){
-        detailedQView
-    }
 
 
 
@@ -416,10 +455,4 @@ class DetailedQuestionRVAdapter(context:Context,view:DetailedQView): RecyclerVie
 
         })
     }
-
-
-
-
-
-
 }

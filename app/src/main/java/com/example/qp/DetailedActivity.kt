@@ -11,6 +11,7 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
+import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -127,7 +128,7 @@ class DetailedActivity : AppCompatActivity(),DetailedQView{
         detailedQService.getQuestion(questionInfo.questionId?.toLong())
 
         //서버에서 답변 받아오기
-        answerAdapter=DetailedQuestionRVAdapter(applicationContext,this@DetailedActivity)
+        answerAdapter=DetailedQuestionRVAdapter(applicationContext)
         binding.answerRv.adapter=answerAdapter
 
         getParentAnswerService(questionInfo.questionId!!.toLong())
@@ -138,8 +139,6 @@ class DetailedActivity : AppCompatActivity(),DetailedQView{
     private fun setInit(){
         isNotified=isNotified()
         initView()
-
-        //initAnswerData()
 
         answerAdapter.setMyItemClickListener(object :
             DetailedQuestionRVAdapter.ItemClickListener{
@@ -180,6 +179,7 @@ class DetailedActivity : AppCompatActivity(),DetailedQView{
         binding.detailedQuestionTitleTv.text = questionInfo.title
         binding.detailedQuestionContentTv.text = questionInfo.content
         binding.detailedQuestionTimeTv.text = questionInfo.createdAt.toString()
+        //binding.questionUserImg.setImageResource()
 
         val tagListSize = questionInfo.hashtags?.size
         when(tagListSize){
@@ -245,7 +245,6 @@ class DetailedActivity : AppCompatActivity(),DetailedQView{
 
     }
     private fun updateExpertNum(){
-//        binding.answerCountTv.text=answerAdapter.itemCount.toString()+"명의 전문가가 답변을 했어요"
         binding.answerCountTv.text=questionInfo.expertCount.toString()+"명의 전문가가 답변을 했어요"
     }
 
@@ -549,6 +548,7 @@ class DetailedActivity : AppCompatActivity(),DetailedQView{
 
         })
     }
+
 
 
 
