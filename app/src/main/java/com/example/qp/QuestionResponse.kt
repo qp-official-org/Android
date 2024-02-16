@@ -17,8 +17,8 @@ data class QuestionChart(
     @SerializedName(value="listSize")val listSize: Int?,
     @SerializedName(value="totalPage")val totalPage: Int?,
     @SerializedName(value="totalElements")val totalElements: Long?,
-    @SerializedName(value="isFirst")val isFirst: Boolean?,
-    @SerializedName(value="isLast")val isLast: Boolean?
+    @SerializedName(value="first")val first: Boolean?,
+    @SerializedName(value="last")val last: Boolean?
 ):Serializable
 
 data class QuestionInfo(
