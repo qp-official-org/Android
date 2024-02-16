@@ -3,8 +3,6 @@ package com.example.qp
 import android.content.Context
 import android.content.Intent
 import android.graphics.Rect
-import android.nfc.Tag
-import android.os.Build
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -14,25 +12,19 @@ import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.Toast
-import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.example.qp.databinding.ActivityWriteQuestionBinding
 import com.google.gson.Gson
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
-import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.withContext
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import java.util.Date
 
-class WriteQuestionActivity: AppCompatActivity(),WriteQView {
+class WriteQuestionActivity: AppCompatActivity() {
     private lateinit var binding:ActivityWriteQuestionBinding
     private lateinit var adapter:WriteQuestionTagRVAdapter
     private var isChild=false
@@ -40,12 +32,9 @@ class WriteQuestionActivity: AppCompatActivity(),WriteQView {
     private var isContentValid=false
     private  var tagList = ArrayList<String>()
     private val newTagList = ArrayList<TagInfo>()
-    private var tagNum=0
-    private var tagPost=false
-    private var qpUserData=QpUserData("",0)
 
 
-    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityWriteQuestionBinding.inflate(layoutInflater)
@@ -187,15 +176,9 @@ class WriteQuestionActivity: AppCompatActivity(),WriteQView {
 
     }
 
-    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     private fun registerQuestion(){
-        val questionService=QuestionService()
-        questionService.setWriteQView(this)
 
-        // 유저 데이터가 담긴 객체를 받기 위함
-        qpUserData = AppData.qpUserData
-
-        Log.d("accessToken",qpUserData.toString())
+        Log.d("accessToken",AppData.qpAccessToken.toString())
 
         binding.registerBtn.setOnClickListener {
             val titleText=findViewById<EditText>(R.id.title_edit).text.toString()
@@ -205,57 +188,25 @@ class WriteQuestionActivity: AppCompatActivity(),WriteQView {
             if(isTitleValid &&isContentValid){
                 if(checkBox.isChecked){
 
-                    CoroutineScope(Dispatchers.Main).launch {
+                    tagList = adapter.getItems()
+                    for (i in 0 until tagList.size) {
+                        postHashtagService(tagList[i])
+                    }
 
-                        tagList = adapter.getItems()
-                        for (i in 0 until tagList.size) {
-                            postTag(tagList[i])
-                            delay(400)
-
-                            newTagList.add(TagInfo(tagNum, tagList[i]))
-                            Log.d("hashtagNum",tagNum.toString())
-
-                        }
-
-                        delay(1200)
-                        val job3= CoroutineScope(Dispatchers.Main).launch{
-
-                            var tagIds = ArrayList<Int>()
-                            for (i in 0 until newTagList.size) {
-                                tagIds.add(newTagList[i].hashtagId)
-                            }
-
-                            val questionPost = QuestionPost(
-                                userId = qpUserData?.userId?:0,
-                                title = titleText,
-                                content = contentText,
-                                hashtag = tagIds
-                            )
-
-                            writeQ(questionPost,qpUserData?.accessToken?:"")
-                            //questionService.writeQ(questionPost,qpUserData?.accessToken?:"")
-                            
-
-
-                            /*val questionInfo = QuestionInfo(
-                                title = titleText,
-                                content = contentText,
-                                hashtags = newTagList
-                            )
-
-                            val intent =
-                                Intent(this@WriteQuestionActivity, DetailedActivity::class.java)
-                            val gson = Gson()
-                            val qJson = gson.toJson(questionInfo)
-                            intent.putExtra("question", qJson)
-                            startActivity(intent)
-                            finish()
-                            Toast.makeText(applicationContext, "등록 완료", Toast.LENGTH_SHORT).show()*/
-                        }
-
+                    var tagIds = ArrayList<Int>()
+                    for (i in 0 until newTagList.size) {
+                        tagIds.add(newTagList[i].hashtagId)
                     }
 
 
+                    val questionPost = QuestionPost(
+                        userId = AppData.qpUserID,
+                        title = titleText,
+                        content = contentText,
+                        hashtag = tagIds
+                    )
+
+                    writeQ(questionPost,AppData.qpAccessToken)
 
                 }
                 else Toast.makeText(applicationContext,"동의가 체크되지 않음",Toast.LENGTH_SHORT).show()
@@ -285,42 +236,6 @@ class WriteQuestionActivity: AppCompatActivity(),WriteQView {
     }
 
 
-    suspend fun postTag(tag:String):Int{
-        val questionService=QuestionService()
-        questionService.setWriteQView(this)
-
-        questionService.postHashtag(tag)
-        return tagNum
-    }
-
-
-    override fun onWriteSuccess() {
-    }
-
-    override fun onWriteFailure() {
-    }
-
-    override fun onPostHashtagSuccess(response: HashtagResponse) {
-        tagPost=true
-        tagNum= response.result!!.hashtagId
-        Log.d("postHashtag/SUCCESS",response.toString().plus("tagNum="+tagNum))
-    }
-
-    override fun onPostHashtagFailure(tag: String, msg: String) {
-        tagPost=false
-        Log.d("postHashtag/FAIL",tag.plus(msg))
-    }
-
-    override fun onGetHashtagSuccess(response: HashtagResponse) {
-        tagNum=response.result?.hashtagId?:0
-        Log.d("getHashtag/SUCCESS",response.toString())
-    }
-
-    override fun onGetHashtagFailure(tag: String, msg: String) {
-        Log.d("getHashtag/FAIL",tag.plus(msg))
-    }
-
-
 
     fun writeQ(questionInfo :QuestionPost,token:String){
         val questionService= getRetrofit().create(QuestionInterface::class.java)
@@ -336,48 +251,46 @@ class WriteQuestionActivity: AppCompatActivity(),WriteQView {
                 Log.d("writeQ response","response:".plus(response.errorBody()?.string().toString()))
                 Log.d("writeQ token",token)
 
-                //if(resp!=null){
-                    when(resp?.code){
-                        "QUESTION_2000"-> {
-                            Log.d("writeQ success","success!")
+                when(resp?.code){
+                    "QUESTION_2000"-> {
+                        Log.d("writeQ success","success!")
 
-                            val question = QuestionInfo(
-                                user=UserInfo(qpUserData.userId,"","student"),
-                                title = questionInfo.title,
-                                content = questionInfo.content,
-                                hashtags = newTagList,
-                                questionId = resp.result.questionId,
-                            )
+                        val question = QuestionInfo(
+                            user=UserInfo(AppData.qpUserID,"","student"),
+                            title = questionInfo.title,
+                            content = questionInfo.content,
+                            hashtags = newTagList,
+                            questionId = resp.result.questionId,
+                        )
 
-                            val intent =
-                                Intent(this@WriteQuestionActivity, DetailedActivity::class.java)
-                            val gson = Gson()
-                            val qJson = gson.toJson(question)
-                            intent.putExtra("question", qJson)
-                            startActivity(intent)
-                            finish()
-                            Toast.makeText(applicationContext, "등록 완료", Toast.LENGTH_SHORT).show()
-                        }
-                        else-> {
-                            val question = QuestionInfo(
-                                title = questionInfo.title,
-                                content = questionInfo.content,
-                                hashtags = newTagList
-                            )
-
-                            val intent =
-                                Intent(this@WriteQuestionActivity, DetailedActivity::class.java)
-                            val gson = Gson()
-                            val qJson = gson.toJson(question)
-                            intent.putExtra("question", qJson)
-                            startActivity(intent)
-                            finish()
-                            Toast.makeText(applicationContext, "등록 완료", Toast.LENGTH_SHORT).show()
-                        }
+                        val intent =
+                            Intent(this@WriteQuestionActivity, DetailedActivity::class.java)
+                        val gson = Gson()
+                        val qJson = gson.toJson(question)
+                        intent.putExtra("question", qJson)
+                        startActivity(intent)
+                        finish()
+                        Toast.makeText(applicationContext, "등록 완료", Toast.LENGTH_SHORT).show()
                     }
-                //}
+                    else-> {
+                        val question = QuestionInfo(
+                            title = questionInfo.title,
+                            content = questionInfo.content,
+                            hashtags = newTagList
+                        )
 
-            }
+                        val intent =
+                            Intent(this@WriteQuestionActivity, DetailedActivity::class.java)
+                        val gson = Gson()
+                        val qJson = gson.toJson(question)
+                        intent.putExtra("question", qJson)
+                        startActivity(intent)
+                        finish()
+                        Toast.makeText(applicationContext, "등록 완료", Toast.LENGTH_SHORT).show()
+                    }
+                }
+              }
+
 
             override fun onFailure(call: Call<WriteQResponse>, t: Throwable) {
                 Log.d("writeQ Fail",t.message.toString())
@@ -389,7 +302,7 @@ class WriteQuestionActivity: AppCompatActivity(),WriteQView {
     }
 
 
-    fun postHashtag(hashtag:String){
+    fun postHashtagService(hashtag:String){
         val questionService= getRetrofit().create(QuestionInterface::class.java)
 
         questionService.postHashtag(hashtag).enqueue(object:Callback<HashtagResponse>{
@@ -402,7 +315,7 @@ class WriteQuestionActivity: AppCompatActivity(),WriteQView {
                 when(resp?.code){
                     "HASHTAG_6000"->{
                         newTagList.add(TagInfo(resp.result!!.hashtagId,hashtag))
-                        Log.d("postHashtag/SUCCESS",response.toString().plus("tagNum="+tagNum))
+                        Log.d("postHashtag/SUCCESS",response.toString())
                     }
                     else->{
 

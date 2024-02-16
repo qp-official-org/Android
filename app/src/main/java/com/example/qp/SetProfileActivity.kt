@@ -7,7 +7,6 @@ import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
-import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import com.example.qp.databinding.ActivitySetprofileBinding
 import retrofit2.Call
@@ -24,15 +23,10 @@ class SetProfileActivity : AppCompatActivity() {
         }
     }
 
-    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivitySetprofileBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
-        // SetNicknameActivity에서 넘겨준 객체를 받기 위함
-        val intent = intent
-        val qpUserData = intent.getSerializableExtra("data", QpUserData::class.java)
 
         // 프로필 설정 페이지와 회원가입절차 종료 페이지 구분
         onBackPressedDispatcher.addCallback(this, onBackPressedCallback)    // 종료함수
@@ -68,20 +62,13 @@ class SetProfileActivity : AppCompatActivity() {
         binding.profileExitBtnIv.setOnClickListener {
             Toast.makeText(this, "회원가입에 성공했습니다.", Toast.LENGTH_SHORT).show()
 
-            val intent = Intent(this, MainActivity::class.java)
-            intent.putExtra("data", qpUserData)
-            startActivity(intent)
+            startActivity(Intent(this, MainActivity::class.java))
             finishAffinity()    // 쌓인 모든 Activity 종료
         }
 
         // 임시 유저정보조회 설정
         binding.profileQpLogoTv.setOnClickListener {
-            if (qpUserData != null) {
-                searchUserInfo(qpUserData.accessToken,qpUserData.userId)
-            }
-            else {
-                Log.d("errorMessage", "search qpUserData is Null")
-            }
+            searchUserInfo(AppData.qpAccessToken, AppData.qpUserID)
         }
 
     }

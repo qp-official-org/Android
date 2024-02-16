@@ -10,7 +10,7 @@ data class AnswerInfo (
     @SerializedName(value="content")var content:String="",
     @SerializedName(value="category")var category:String,
     @SerializedName(value="answerGroup")var answerGroup:Long,
-    @SerializedName(value="likes")var likes:Long?
+    @SerializedName(value="likes")var likes:Long?=0
 ):Serializable
 
 data class ParentAnswerResponse(

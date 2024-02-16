@@ -1,8 +1,6 @@
 package com.example.qp
 
-import android.content.Context
 import android.content.Intent
-import android.os.Build
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -10,7 +8,6 @@ import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
-import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import com.example.qp.databinding.ActivitySetnicknameBinding
 import com.kakao.sdk.user.UserApiClient
@@ -28,15 +25,10 @@ class SetNicknameActivity : AppCompatActivity() {
         }
     }
 
-    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivitySetnicknameBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
-        // LoginActivity에서 넘겨준 객체를 받기 위함
-        val intent = intent
-        val qpUserData = intent.getSerializableExtra("data", QpUserData::class.java)
 
         // 이전버튼 누르면 로그인 취소되고 로그인 화면으로 돌아감
         onBackPressedDispatcher.addCallback(this, onBackPressedCallback)    // 종료함수
@@ -79,12 +71,7 @@ class SetNicknameActivity : AppCompatActivity() {
             Toast.makeText(this, userName, Toast.LENGTH_SHORT).show()
 
             val userModify = UserModify(userName, "")
-            if (qpUserData != null) {
-                modifyUserInfo(qpUserData.accessToken, qpUserData.userId, userModify)
-            }
-            else {
-                Log.d("errorMessage", "modify qpUserData is Null")
-            }
+            modifyUserInfo(AppData.qpAccessToken, AppData.qpUserID, userModify)
         }
 
         binding.nicknameNextInvalidBtn.setOnClickListener{
@@ -113,10 +100,10 @@ class SetNicknameActivity : AppCompatActivity() {
                             Log.d("modify data3", resp.result.profileImage)
                             Log.d("modify data4", resp.result.updatedAt)
 
-                            val qpUserData = QpUserData(token, userId)
-                            val intent = Intent(this@SetNicknameActivity, SetProfileActivity::class.java)
-                            intent.putExtra("data", qpUserData)
-                            startActivity(intent)
+                            AppData.qpNickname = resp.result.nickname
+                            AppData.qpProfileImage = resp.result.profileImage
+
+                            startActivity(Intent(this@SetNicknameActivity, SetProfileActivity::class.java))
                         }
                         else-> Log.d("modify Result2", resp.message)
                     }

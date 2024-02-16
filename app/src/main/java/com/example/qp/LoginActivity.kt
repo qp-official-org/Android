@@ -1,6 +1,5 @@
 package com.example.qp
 
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
@@ -119,15 +118,13 @@ class LoginActivity : AppCompatActivity() {
                         "USER_1000"-> {
                             Log.d("singUp Result", resp.message)
 
-                            // QpUserData 객체에 로그인한 유저의 토큰과 id를 넣고 옮기면서 사용함
-                            val qpUserData = QpUserData(resp.result.accessToken, resp.result.userId)
-                            Log.d("qpUserData1", qpUserData.accessToken)
-                            Log.d("qpUserData2", qpUserData.userId.toString())
+                            // 전역변수 사용
+                            AppData.qpAccessToken = resp.result.accessToken
+                            AppData.qpUserID = resp.result.userId
+                            Log.d("qpUserData1", AppData.qpAccessToken)
+                            Log.d("qpUserData2", AppData.qpUserID.toString())
 
-                            val intent = Intent(this@LoginActivity,SetNicknameActivity::class.java)
-                            AppData.qpUserData = qpUserData
-                            intent.putExtra("data", qpUserData)
-                            startActivity(intent)
+                            startActivity(Intent(this@LoginActivity, SetNicknameActivity::class.java))
                         }
                         else->Log.d("singUp Result", resp.message)
                     }
