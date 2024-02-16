@@ -13,7 +13,6 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import androidx.activity.OnBackPressedCallback
-import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatButton
@@ -35,7 +34,6 @@ class ProfileActivity : AppCompatActivity() {
         }
     }
 
-    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityProfileBinding.inflate(layoutInflater)
@@ -53,11 +51,14 @@ class ProfileActivity : AppCompatActivity() {
         }.attach()
 
         binding.mainSearchBt.setOnClickListener{
-            val intent = Intent(this, SearchActivity::class.java)
-            intent.putExtra("isLogin", 1)
-            startActivity(intent)
-            finish()
+            startActivity(Intent(this, SearchActivity::class.java))
         }
+
+        // 유저 데이터 반영
+        binding.profileMainTv.text = AppData.qpNickname
+        binding.profileMainCoinNumTv.text = AppData.qpPoint.toString()
+        binding.profileMainCoinTextTv.text = (AppData.qpPoint / 10).toString()
+        //binding.profileMainDateTv.text
 
         // 충전 버튼 색상 변경 및 Dialog 등장
         binding.profileChargekBtn.setOnClickListener {

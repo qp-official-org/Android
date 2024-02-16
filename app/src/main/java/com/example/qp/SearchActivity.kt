@@ -28,8 +28,7 @@ class SearchActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         binding.searchBackIv.setOnClickListener{
-            val intent = Intent(this@SearchActivity, MainActivity::class.java)
-            startActivity(intent)
+            finish()
         }
 
         searchResult()
