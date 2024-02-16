@@ -150,12 +150,14 @@ class DetailedActivity : AppCompatActivity(),DetailedQView{
                 }
             }
             //답변 수정
-            override fun onAnswerModify(position: Int) {
+            override fun onAnswerModify(position: Int,answerId:Long) {
                 val container=binding.writeAnswerContainer
                 var content=answerAdapter.getContent(position)
 
+                container.removeAllViews()
                 val inflater:LayoutInflater=getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
                 inflater.inflate(R.layout.item_write_answer,container,true)
+                binding.answerBtn.visibility=View.GONE
 
                 val writeBtn=findViewById<TextView>(R.id.write_answer_btn)
                 val writeLayout=findViewById<EditText>(R.id.write_answer_edit)
@@ -163,8 +165,7 @@ class DetailedActivity : AppCompatActivity(),DetailedQView{
 
                 writeBtn.setOnClickListener {
                     val newContent=writeLayout.text.toString()
-                    answerAdapter.modifyAnswer(position,newContent)
-                    container.removeAllViews()
+                    modifyAnswerService(answerId,"title",newContent,position)
                 }
 
             }
@@ -309,7 +310,8 @@ class DetailedActivity : AppCompatActivity(),DetailedQView{
 
     private fun setQuestionMorePopup(){
         lateinit var popupWindow: SimplePopup
-        if(answerAdapter.isItemListEmpty()){
+        var isMine=questionInfo.user?.userId==AppData.qpUserID
+        if(answerAdapter.isItemListEmpty()&&isMine){
             binding.questionMoreBtn.setOnClickListener {
                 val list= mutableListOf<String>().apply {
                     add("수정하기")
@@ -319,8 +321,6 @@ class DetailedActivity : AppCompatActivity(),DetailedQView{
                 popupWindow=SimplePopup(applicationContext,list){_,_,position->
                     when(position){
                         0-> {
-//                            val gson= Gson()
-//                            val qJson=gson.toJson(questionInfo)
                             val intent=Intent(this@DetailedActivity,ModifyQuestionActivity::class.java)
                             intent.putExtra("modifyQuestion",questionInfo)
                             startActivity(intent)
@@ -487,6 +487,38 @@ class DetailedActivity : AppCompatActivity(),DetailedQView{
 
             override fun onFailure(call: Call<ParentAnswerResponse>, t: Throwable) {
                 Log.d("getParentResp/FAIL",t.message.toString())
+            }
+
+        })
+    }
+
+    fun modifyAnswerService(answerId:Long,title:String,content:String,position:Int){
+        val questionService= getRetrofit().create(QuestionInterface::class.java)
+        var answerPost=ModifyQInfo(AppData.qpUserID.toLong(),title,content)
+
+        questionService.modifyAnswer(AppData.qpAccessToken,answerId,answerPost).enqueue(object :Callback<ModifyAnswerResponse>{
+            override fun onResponse(
+                call: Call<ModifyAnswerResponse>,
+                response: Response<ModifyAnswerResponse>
+            ) {
+                val resp=response.body()
+                when(resp?.code){
+                    "ANSWER_3000"->{
+                        val container=binding.writeAnswerContainer
+                        answerAdapter.modifyAnswer(position,content)
+                        container.removeAllViews()
+                        binding.answerBtn.visibility=View.VISIBLE
+                    }
+                    else->{
+                        Log.d("modifyAnswer/FAIL",response.errorBody()?.string().toString())
+                        Toast.makeText(applicationContext,"답변 수정 실패",Toast.LENGTH_SHORT).show()
+                    }
+                }
+
+            }
+
+            override fun onFailure(call: Call<ModifyAnswerResponse>, t: Throwable) {
+                Log.d("modifyAnswerResp/FAIL",t.message.toString())
             }
 
         })

@@ -66,4 +66,11 @@ interface QuestionInterface {
         @Path("questionId")questionId:Long,
         @Body questionInfo:ModifyQInfo
     ):Call<ModifyQResponse>
+
+    @PATCH("/answers/{answerId}")
+    fun modifyAnswer(
+        @Header("accessToken")token:String,
+        @Path("answerId")answerId:Long,
+        @Body answerInfo:ModifyQInfo
+    ):Call<ModifyAnswerResponse>
 }
