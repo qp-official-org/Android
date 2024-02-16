@@ -99,6 +99,7 @@ class MainActivity : AppCompatActivity() {
                     AppData.searchRecord.clear()
                     binding.mainLoginBt.visibility = View.VISIBLE
                     binding.mainLoginSuccessBt.visibility = View.GONE
+                    binding.mainLoginSuccessUserImg.visibility = View.GONE
                 }
             }
         }

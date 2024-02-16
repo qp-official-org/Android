@@ -28,6 +28,22 @@ class SearchActivity : AppCompatActivity() {
     private var page = 0
     private var last = false
     private var needMore = false
+    val textListner = object : SearchView.OnQueryTextListener {
+        override fun onQueryTextSubmit(query: String?): Boolean {
+            needMore = false
+            page = 0
+            getfilteredQuestions(page, query)
+            moreFiltered(query)
+            record(query)
+            binding.searchRecentWord.isVisible = false
+            binding.searchInputSv.clearFocus() // 키보드 숨기기
+            return true
+        }
+        override fun onQueryTextChange(newText: String?): Boolean {
+            //검색어 변경 시는 별다른 액션 X
+            return false
+        }
+    }
 
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -56,28 +72,10 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun searchResult(){
-        val textListner = object : SearchView.OnQueryTextListener {
-            override fun onQueryTextSubmit(query: String?): Boolean {
-                needMore = false
-                page = 0
-                getfilteredQuestions(page, query)
-                moreFiltered(query)
-                record(query)
-                binding.searchRecentWord.isVisible = false
-                binding.searchInputSv.clearFocus() // 키보드 숨기기
-                return true
-            }
-            override fun onQueryTextChange(newText: String?): Boolean {
-                //검색어 변경 시는 별다른 액션 X
-                return false
-            }
-        }
-
         binding.searchInputSv.setOnQueryTextListener(textListner)
         binding.searchImageBt.setOnClickListener {
             textListner.onQueryTextSubmit(binding.searchInputSv.query.toString())
         }
-
     }
 
     private fun record(input: String?){
