@@ -69,7 +69,7 @@
                 app:layout_constraintTop_toBottomOf="@id/detailed_top_menu"
                 app:layout_constraintLeft_toLeftOf="parent"
                 android:layout_marginTop="15dp"
-                android:layout_marginStart="5dp"
+                android:layout_marginStart="10dp"
                 >
                 <ImageView
                     android:layout_width="wrap_content"
@@ -89,7 +89,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/detailed_top_menu"
                 android:layout_marginTop="15dp"
-                android:layout_marginEnd="5dp">
+                android:layout_marginEnd="10dp">
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -132,8 +132,8 @@
                         android:layout_height="55dp"
                         app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        android:layout_marginHorizontal="15dp"
-                        android:layout_marginVertical="15dp"
+                        android:layout_marginHorizontal="10dp"
+                        android:layout_marginVertical="10dp"
                         android:src="@drawable/user" />
                     <LinearLayout
                         android:id="@+id/question_hashtag_layout"
@@ -169,7 +169,7 @@
                         app:layout_constraintTop_toTopOf="@+id/question_user_img"
                         app:layout_constraintBottom_toBottomOf="@id/question_user_img"
                         app:layout_constraintStart_toEndOf="@id/question_user_img"
-                        android:layout_marginHorizontal="15dp"
+                        android:layout_marginHorizontal="10dp"
                         android:text="질문 제목"
                         android:textStyle="bold"
                         android:textSize="15dp"/>
@@ -180,7 +180,7 @@
                         app:layout_constraintBottom_toBottomOf="@id/question_user_img"
                         app:layout_constraintStart_toStartOf="@+id/detailed_question_title_tv"
                         android:text="시간"
-                        android:textSize="7dp"/>
+                        android:textSize="10dp"/>
 
                     <TextView
                         android:id="@+id/detailed_question_content_tv"
@@ -188,7 +188,7 @@
                         android:layout_height="wrap_content"
                         app:layout_constraintTop_toBottomOf="@id/question_user_img"
                         app:layout_constraintStart_toStartOf="@id/question_user_img"
-                        android:layout_marginTop="15dp"
+                        android:layout_marginTop="10dp"
                         android:layout_marginHorizontal="15dp"
                         android:text="질문 내용"
                         android:textSize="12dp"/>
@@ -267,11 +267,11 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     android:background="@drawable/box_white_lined"
                     android:paddingHorizontal="20dp"
-                    android:paddingVertical="7dp"
+                    android:paddingVertical="5dp"
                     android:layout_marginVertical="10dp"
                     android:text="답변하기"
                     android:textColor="@color/qp"
-                    android:textSize="13dp"
+                    android:textSize="10dp"
                     />
 
 >
@@ -281,7 +281,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="10dp"
-                        android:layout_marginTop="10dp"
+                        android:layout_marginTop="5dp"
                         app:layout_constraintTop_toBottomOf="@+id/notice_container"
                         android:layout_marginHorizontal="15dp"
                         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"

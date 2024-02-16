@@ -46,6 +46,7 @@
         <activity android:name=".ModifyQuestionActivity"/>
         <activity android:name=".ProfileActivity"
             android:windowSoftInputMode="adjustPan"/>
+        <activity android:name=".ReportActivity"/>
     </application>
 
     <!--    인터넷 권한 허용   -->

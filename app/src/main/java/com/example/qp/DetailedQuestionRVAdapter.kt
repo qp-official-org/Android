@@ -39,6 +39,8 @@ class DetailedQuestionRVAdapter(context:Context): RecyclerView.Adapter<DetailedQ
     interface ItemClickListener{
         fun onItemRemove(position:Int,answerId:Long)
         fun onAnswerModify(position:Int,answerId:Long)
+
+        fun showLoginMsg()
     }
 
     private lateinit var myItemClickListener: ItemClickListener
@@ -79,12 +81,14 @@ class DetailedQuestionRVAdapter(context:Context): RecyclerView.Adapter<DetailedQ
             binding.answerCommentRv.adapter=commentAdapterList[position]
 
             CoroutineScope(Dispatchers.Main).launch{
+
+                //댓글(자식 답변) 받아오기
                 CoroutineScope(Dispatchers.IO).async {
                     getChildAnswerService(items[position].answerId!!,position)
                     delay(200)
                 }.await()
 
-                //댓글에 대한 동작
+                //댓글에 대한 동작(수정&삭제)
                 commentAdapterList[position].setMyItemClickListener(object :
                     DetailedAnswerCommentRVAdapter.CommentClickListener{
 
@@ -107,26 +111,18 @@ class DetailedQuestionRVAdapter(context:Context): RecyclerView.Adapter<DetailedQ
                     }
                 })
 
-                var likeNum=items[position].likes       //서버에서 받은 데이터
+                var likeNum=items[position].likes
                 var isLiked=false   //사용자가 좋아요 누른지 여부 (서버 데이터?)
                 var isCommentShown=false
 
                 var isExpert=false  //전문가 답변 여부(서버에서 받아오기?)
                 var isBought=false  //구매 여부(서버)
+                //binding.commentLayout.visibility=View.GONE
+
 
                 setOnclick(position, commentAdapterList[position])
 
-                //좋아요 누르기
-                binding.answerLikeBtn.setOnClickListener {
-                    if(isLiked){
-                        likeAnswerService(items[position].answerId!!.toLong(),binding)
-                        isLiked=false
-                    }
-                    else{
-                        likeAnswerService(items[position].answerId!!.toLong(),binding)
-                        isLiked=true
-                    }
-                }
+
                 //댓글 펼치기/접기
                 binding.answerCommentBtnLayout.setOnClickListener {
                     val commentRv=binding.commentLayout
@@ -142,18 +138,14 @@ class DetailedQuestionRVAdapter(context:Context): RecyclerView.Adapter<DetailedQ
 
                 setInit(position,likeNum?.toInt()?:0,isLiked,isExpert && !isBought)
 
-
             }
-
-
-
 
         }
 
 
 
         private fun setInit(position: Int,likeNum: Int,isLiked:Boolean,isBlur:Boolean){
-            //binding.answerUserNameTv.text=items[position]
+            binding.answerUserNameTv.text=items[position].nickname
             binding.answerContentTv.text=items[position].content     //답변 내용
             binding.commentLayout.visibility=View.GONE      //댓글 접은 상태
             commentNumberUpdate(position)    //댓글 수
@@ -170,6 +162,7 @@ class DetailedQuestionRVAdapter(context:Context): RecyclerView.Adapter<DetailedQ
                     val answerInfo=AnswerInfo(
                         0,
                         AppData.qpUserID.toLong(),
+                        AppData.qpNickname,
                         "title",
                         content,
                         "CHILD",
@@ -181,6 +174,11 @@ class DetailedQuestionRVAdapter(context:Context): RecyclerView.Adapter<DetailedQ
                 else{
                     Toast.makeText(appContext,"댓글을 작성하십시오",Toast.LENGTH_SHORT).show()
                 }
+            }
+
+            //좋아요 누르기
+            binding.answerLikeBtn.setOnClickListener {
+                likeAnswerService(items[position].answerId!!.toLong(),binding)
             }
             //더보기 팝업 메뉴
             showAnswerMorePopup(position,adapter)
@@ -214,8 +212,6 @@ class DetailedQuestionRVAdapter(context:Context): RecyclerView.Adapter<DetailedQ
                 binding.answerLikeBtn.isClickable=false
             }
 
-
-
         }
 
         //더보기 버튼 눌렀을 때 팝업 메뉴
@@ -240,7 +236,12 @@ class DetailedQuestionRVAdapter(context:Context): RecyclerView.Adapter<DetailedQ
                                 //Toast.makeText(appContext, "삭제하기", Toast.LENGTH_SHORT).show()
                                 myItemClickListener.onItemRemove(position,items[position].answerId!!)    //임시로 구현
                             }
-                            2->Toast.makeText(appContext,"신고하기",Toast.LENGTH_SHORT).show()
+                            2-> {
+                                if(!isLogin){
+                                    myItemClickListener.showLoginMsg()
+                                }
+                                Toast.makeText(appContext, "신고하기", Toast.LENGTH_SHORT).show()
+                            }
                         }
                     }
                     popupWindow.isOutsideTouchable=true
@@ -254,7 +255,12 @@ class DetailedQuestionRVAdapter(context:Context): RecyclerView.Adapter<DetailedQ
                     }
                     popupWindow=SimplePopup(appContext,list){_,_,position->
                         when(position){
-                            0->Toast.makeText(appContext,"신고하기",Toast.LENGTH_SHORT).show()
+                            0-> {
+                                if(!isLogin){
+                                    myItemClickListener.showLoginMsg()
+                                }
+                                Toast.makeText(appContext, "신고하기", Toast.LENGTH_SHORT).show()
+                            }
                         }
                     }
                     popupWindow.isOutsideTouchable=true

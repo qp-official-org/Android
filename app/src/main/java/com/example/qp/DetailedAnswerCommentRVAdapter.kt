@@ -35,45 +35,61 @@ class DetailedAnswerCommentRVAdapter(context: Context ):RecyclerView.Adapter<Det
 
 
     inner class ViewHolder(val binding:ItemAnswerCommentBinding) : RecyclerView.ViewHolder(binding.root) {
-        val content=binding.commentContentTv
 
         fun bind(position:Int){
-            var comment=items[position]
+            var answer=items[position]
+            binding.commentContentTv.text=answer.content
+            binding.commentUserNameTv.text=answer.nickname
 
-            content.text=comment.content
-
-            showCommentMorePopup(comment,position)
+            showCommentMorePopup(answer,position)
         }
 
 
-        private fun showCommentMorePopup(comment: AnswerInfo,position:Int){
+        private fun showCommentMorePopup(answer: AnswerInfo,position:Int){
             lateinit var popupWindow:SimplePopup
-            binding.commentMoreBtn.setOnClickListener {
-                val list= mutableListOf<String>().apply {
-                    add("수정하기")
-                    add("삭제하기")
-                    add("신고하기")
-                }
-                popupWindow=SimplePopup(appContext,list){_,_,menuPos->
-                    when(menuPos){
-                        0-> {
-                            Toast.makeText(appContext, "수정하기", Toast.LENGTH_SHORT).show()
-                            myItemClickListener.onCommentModify(position,items[position].answerId!!.toLong())
-                        }
-                        1-> {
-                            Toast.makeText(appContext, "삭제하기", Toast.LENGTH_SHORT).show()
-                            myItemClickListener.onItemRemove(position,items[position].answerId!!)
-                        }
-                        2-> Toast.makeText(appContext,"신고하기", Toast.LENGTH_SHORT).show()
+            if(AppData.qpUserID==answer.userId.toInt()){
+                binding.commentMoreBtn.setOnClickListener {
+                    val list= mutableListOf<String>().apply {
+                        add("수정하기")
+                        add("삭제하기")
+                        add("신고하기")
                     }
+                    popupWindow=SimplePopup(appContext,list){_,_,menuPos->
+                        when(menuPos){
+                            0-> {
+                                Toast.makeText(appContext, "수정하기", Toast.LENGTH_SHORT).show()
+                                myItemClickListener.onCommentModify(position,items[position].answerId!!.toLong())
+                            }
+                            1-> {
+                                Toast.makeText(appContext, "삭제하기", Toast.LENGTH_SHORT).show()
+                                myItemClickListener.onItemRemove(position,items[position].answerId!!)
+                            }
+                            2-> Toast.makeText(appContext,"신고하기", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                    popupWindow.isOutsideTouchable=true
+                    popupWindow.showAsDropDown(it,40,10)
                 }
-                popupWindow.isOutsideTouchable=true
-                popupWindow.showAsDropDown(it,40,10)
             }
+            else{
+                binding.commentMoreBtn.setOnClickListener {
+                    val list= mutableListOf<String>().apply {
+                        add("신고하기")
+                    }
+                    popupWindow=SimplePopup(appContext,list){_,_,menuPos->
+                        when(menuPos){
+                            0-> Toast.makeText(appContext,"신고하기", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                    popupWindow.isOutsideTouchable=true
+                    popupWindow.showAsDropDown(it,40,10)
+                }
             }
-
 
         }
+
+
+    }
 
 
     fun getContent(position: Int):String{
@@ -84,10 +100,9 @@ class DetailedAnswerCommentRVAdapter(context: Context ):RecyclerView.Adapter<Det
         this.notifyDataSetChanged()
     }
     fun isCommentListEmpty():Boolean{
-        return items.isEmpty()||items==null
+        return items.isEmpty()
     }
     fun addItem(position:Int,answer:AnswerInfo){
-        //items.add(AnswerInfo(answerId = 0, userId = 0, title = "title1", content=content,category = "CHILD", answerGroup = 0, likes = 0))
         items.add(position,answer)
         notifyDataSetChanged()
     }
