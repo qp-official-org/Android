@@ -3,8 +3,6 @@ package com.example.qp
 import android.content.Context
 import android.content.Intent
 import android.graphics.Rect
-import android.nfc.Tag
-import android.os.Build
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -14,23 +12,17 @@ import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.Toast
-import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.example.qp.databinding.ActivityWriteQuestionBinding
 import com.google.gson.Gson
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
-import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.withContext
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import java.util.Date
 
 class WriteQuestionActivity: AppCompatActivity(),WriteQView {
     private lateinit var binding:ActivityWriteQuestionBinding
@@ -42,10 +34,8 @@ class WriteQuestionActivity: AppCompatActivity(),WriteQView {
     private val newTagList = ArrayList<TagInfo>()
     private var tagNum=0
     private var tagPost=false
-    private var qpUserData=QpUserData("",0)
 
 
-    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityWriteQuestionBinding.inflate(layoutInflater)
@@ -187,20 +177,11 @@ class WriteQuestionActivity: AppCompatActivity(),WriteQView {
 
     }
 
-    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     private fun registerQuestion(){
         val questionService=QuestionService()
         questionService.setWriteQView(this)
 
-        // 유저 데이터가 담긴 객체를 받기 위함
-        val intent = intent
-        if(intent.hasExtra("data")){
-            val userData=intent.getSerializableExtra("data", QpUserData::class.java)
-            if(userData!=null)
-                qpUserData=userData
-        }
-
-        Log.d("accessToken",qpUserData.toString())
+        Log.d("accessToken",AppData.qpAccessToken.toString())
 
         binding.registerBtn.setOnClickListener {
             val titleText=findViewById<EditText>(R.id.title_edit).text.toString()
@@ -231,13 +212,13 @@ class WriteQuestionActivity: AppCompatActivity(),WriteQView {
                             }
 
                             val questionPost = QuestionPost(
-                                userId = qpUserData?.userId?:0,
+                                userId = AppData.qpUserID,
                                 title = titleText,
                                 content = contentText,
                                 hashtag = tagIds
                             )
 
-                            writeQ(questionPost,qpUserData?.accessToken?:"")
+                            writeQ(questionPost,AppData.qpAccessToken)
                             //questionService.writeQ(questionPost,qpUserData?.accessToken?:"")
                             
 
@@ -347,7 +328,7 @@ class WriteQuestionActivity: AppCompatActivity(),WriteQView {
                             Log.d("writeQ success","success!")
 
                             val question = QuestionInfo(
-                                user=UserInfo(qpUserData.userId.toLong(),"","student"),
+                                user=UserInfo(AppData.qpUserID,"","student"),
                                 title = questionInfo.title,
                                 content = questionInfo.content,
                                 hashtags = newTagList,
