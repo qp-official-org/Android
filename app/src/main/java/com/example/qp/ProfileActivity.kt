@@ -56,6 +56,7 @@ class ProfileActivity : AppCompatActivity() {
 
         // 유저 데이터 반영
         binding.profileMainTv.text = AppData.qpNickname
+        binding.profileEditNicknameEt.hint = AppData.qpNickname
         binding.profileMainCoinNumTv.text = AppData.qpPoint.toString()
         binding.profileMainCoinTextTv.text = (AppData.qpPoint / 10).toString()
         //binding.profileMainDateTv.text
@@ -138,10 +139,10 @@ class ProfileActivity : AppCompatActivity() {
         }
         binding.profileEditYesBtn.setOnClickListener {
             val editname : String = binding.profileEditNicknameEt.text.toString()
-            if(editname == null || editname.isEmpty())
-            else {
-                binding.profileMainTv.text = editname
-                binding.profileEditNicknameEt.hint = editname
+            if(1 <= editname.length && editname.length <= 6) {
+                AppData.qpNickname = editname
+                binding.profileMainTv.text = AppData.qpNickname
+                binding.profileEditNicknameEt.hint = AppData.qpNickname
             }
             binding.profileEditSettingIv.visibility = View.GONE
             binding.profileMainTv.visibility = View.VISIBLE
@@ -162,6 +163,7 @@ class ProfileActivity : AppCompatActivity() {
         }
 
 
+        // 임시 데이터 확인
         binding.profileQpLogo.setOnClickListener {
             Log.d("proffile Data1", AppData.qpAccessToken)
             Log.d("proffile Data2", AppData.qpUserID.toString())

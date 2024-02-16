@@ -116,6 +116,15 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    // 다른 페이지로 갔다가 돌아올 때 동작
+    override fun onStart() {
+        super.onStart()
+
+        // 하단 바에 사용자 닉네임과 포인트 데이터 반영
+        binding.mainBarNicknameTv.text = AppData.qpNickname
+        binding.mainBarCoinTv.text = AppData.qpPoint.toString()
+    }
+
     private fun getQuestions() {
         val questionService = getRetrofit().create(QuestionInterface::class.java)
 

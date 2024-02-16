@@ -52,7 +52,6 @@ class AppData : Application() {
                 override fun onFailure(call: Call<UserResponse<UserModifyResult>>, t: Throwable) {
                     Log.d("modify Fail", t.message.toString())
                 }
-
             })
         }
 
@@ -73,6 +72,8 @@ class AppData : Application() {
                                 Log.d("ssearch Data3", resp.result.email)
                                 Log.d("ssearch Data4", resp.result.gender)
                                 Log.d("ssearch Data5", resp.result.point.toString())
+
+                                AppData.qpEmail = resp.result.email
                             }
                             else-> Log.d("ssearch Result2", resp.message)
                         }
