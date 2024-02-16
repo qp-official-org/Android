@@ -18,6 +18,7 @@ import com.example.qp.databinding.ActivityWriteQuestionBinding
 import com.google.gson.Gson
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import retrofit2.Call
@@ -188,25 +189,31 @@ class WriteQuestionActivity: AppCompatActivity() {
             if(isTitleValid &&isContentValid){
                 if(checkBox.isChecked){
 
-                    tagList = adapter.getItems()
-                    for (i in 0 until tagList.size) {
-                        postHashtagService(tagList[i])
+                    CoroutineScope(Dispatchers.Main).launch{
+
+                        tagList = adapter.getItems()
+                        CoroutineScope(Dispatchers.IO).async {
+                            for (i in 0 until tagList.size) {
+                                postHashtagService(tagList[i])
+                            }
+                            delay(200)
+                        }.await()
+
+                        var tagIds = ArrayList<Int>()
+                        for (i in 0 until newTagList.size) {
+                            tagIds.add(newTagList[i].hashtagId)
+                        }
+
+                        val questionPost = QuestionPost(
+                            userId = AppData.qpUserID,
+                            title = titleText,
+                            content = contentText,
+                            hashtag = tagIds
+                        )
+
+                        writeQ(questionPost,AppData.qpAccessToken)
                     }
 
-                    var tagIds = ArrayList<Int>()
-                    for (i in 0 until newTagList.size) {
-                        tagIds.add(newTagList[i].hashtagId)
-                    }
-
-
-                    val questionPost = QuestionPost(
-                        userId = AppData.qpUserID,
-                        title = titleText,
-                        content = contentText,
-                        hashtag = tagIds
-                    )
-
-                    writeQ(questionPost,AppData.qpAccessToken)
 
                 }
                 else Toast.makeText(applicationContext,"동의가 체크되지 않음",Toast.LENGTH_SHORT).show()
