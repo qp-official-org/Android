@@ -14,5 +14,7 @@ class AppData : Application() {
         var qpEmail = ""
         var qpGender = ""
         var qpPoint = 0
+
+        var searchRecord = ArrayList<String>()
     }
 }

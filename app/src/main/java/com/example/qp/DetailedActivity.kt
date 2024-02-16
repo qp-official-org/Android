@@ -77,6 +77,7 @@ class DetailedActivity : AppCompatActivity(),DetailedQView{
                     Toast.makeText(this, "로그아웃 성공", Toast.LENGTH_SHORT).show()
                     AppData.qpUserID = 0
                     AppData.qpAccessToken = ""
+                    AppData.searchRecord.clear()
                     binding.detailedLoginBtn.visibility = View.VISIBLE
                     binding.detailedProfileBtn.visibility = View.GONE
                 }

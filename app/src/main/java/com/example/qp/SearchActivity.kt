@@ -11,6 +11,9 @@ import androidx.appcompat.widget.SearchView
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.qp.databinding.ActivitySearchBinding
+import com.google.android.flexbox.FlexDirection
+import com.google.android.flexbox.FlexWrap
+import com.google.android.flexbox.FlexboxLayoutManager
 import com.google.gson.Gson
 import retrofit2.Call
 import retrofit2.Callback
@@ -20,12 +23,24 @@ class SearchActivity : AppCompatActivity() {
 
     lateinit var binding: ActivitySearchBinding
     private var filtered = ArrayList<QuestionInfo>()
+    private lateinit var adapter: WriteQuestionTagRVAdapter
 
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivitySearchBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        //최근 검색어 리사이클러뷰 설정
+        val layoutManager = FlexboxLayoutManager(this)
+        layoutManager.flexDirection = FlexDirection.ROW    //아이템 가로 나열
+        layoutManager.flexWrap = FlexWrap.WRAP             //필요에 따라 다음 줄 이동
+        binding.searchRecentRecordRv.layoutManager = layoutManager
+        Log.d("최근 검색어 개수", AppData.searchRecord.size.toString())
+        adapter = WriteQuestionTagRVAdapter(this@SearchActivity, AppData.searchRecord)
+        binding.searchRecentRecordRv.adapter = adapter
+        //검색기록 없을 때 안내 멘트
+        binding.searchNoRecordTv.isVisible = AppData.searchRecord.size == 0
 
         binding.searchBackIv.setOnClickListener{
             val intent = Intent(this@SearchActivity, MainActivity::class.java)
@@ -40,6 +55,7 @@ class SearchActivity : AppCompatActivity() {
         val textListner = object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 getfilteredQuestions(query)
+                record(query)
                 binding.searchRecentWord.isVisible = false
                 binding.searchInputSv.clearFocus() // 키보드 숨기기
                 return true
@@ -55,6 +71,15 @@ class SearchActivity : AppCompatActivity() {
             textListner.onQueryTextSubmit(binding.searchInputSv.query.toString())
         }
 
+    }
+
+    private fun record(input: String?){
+        if(!input.isNullOrEmpty()){
+            if(adapter.dupCheck(input.trim())){
+                AppData.searchRecord.add(input.trim())
+                adapter.addItem(input.trim())
+            }
+        }
     }
 
     private fun getfilteredQuestions(query: String?){

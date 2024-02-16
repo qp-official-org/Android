@@ -43,7 +43,7 @@ class WriteQuestionActivity: AppCompatActivity() {
 
         binding.titleEdit.text.clear()
         binding.contentEdit.text.clear()
-        adapter=WriteQuestionTagRVAdapter(applicationContext)
+        adapter=WriteQuestionTagRVAdapter(this@WriteQuestionActivity, null)
         binding.hashtagRv.adapter=adapter
 
         binding.levelBtnOrange.visibility=View.GONE
