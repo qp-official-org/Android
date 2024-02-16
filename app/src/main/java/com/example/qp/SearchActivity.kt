@@ -43,8 +43,7 @@ class SearchActivity : AppCompatActivity() {
         binding.searchNoRecordTv.isVisible = AppData.searchRecord.size == 0
 
         binding.searchBackIv.setOnClickListener{
-            val intent = Intent(this@SearchActivity, MainActivity::class.java)
-            startActivity(intent)
+            finish()
         }
 
         searchResult()

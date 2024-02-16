@@ -84,6 +84,7 @@
             android:layout_marginTop="10dp"
             android:layout_marginStart="15dp"/>
         <TextView
+            android:id="@+id/profile_main_date_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="2024년 01월 01일 가입"

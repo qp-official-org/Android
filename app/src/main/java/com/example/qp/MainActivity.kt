@@ -41,7 +41,11 @@ class MainActivity : AppCompatActivity() {
 
             Handler(Looper.getMainLooper()).postDelayed(Runnable {
                 isExit = true
-            }, 1000)
+            }, 500)
+
+            Handler(Looper.getMainLooper()).postDelayed(Runnable {
+                isExit = false
+            }, 4000)
         }
     }
 
@@ -77,10 +81,9 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        // 사용자명 불러오기 (유저 닉네임으로 수정 필요)
-        UserApiClient.instance.me { user, error ->
-            binding.mainBarNicknameTv.text = "${user?.kakaoAccount?.profile?.nickname}"
-        }
+        // 하단 바에 사용자 닉네임과 포인트 데이터 반영
+        binding.mainBarNicknameTv.text = AppData.qpNickname
+        binding.mainBarCoinTv.text = AppData.qpPoint.toString()
 
         // 임시 로그아웃 (로고 클릭시)
         binding.mainLogoIv.setOnClickListener {
@@ -112,6 +115,15 @@ class MainActivity : AppCompatActivity() {
         binding.mainLoginSuccessBt.setOnClickListener{
             startActivity(Intent(this@MainActivity, ProfileActivity::class.java))
         }
+    }
+
+    // 다른 페이지로 갔다가 돌아올 때 동작
+    override fun onStart() {
+        super.onStart()
+
+        // 하단 바에 사용자 닉네임과 포인트 데이터 반영
+        binding.mainBarNicknameTv.text = AppData.qpNickname
+        binding.mainBarCoinTv.text = AppData.qpPoint.toString()
     }
 
     private fun getQuestions() {

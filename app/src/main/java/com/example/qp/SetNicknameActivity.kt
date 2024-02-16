@@ -4,16 +4,12 @@ import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import com.example.qp.databinding.ActivitySetnicknameBinding
 import com.kakao.sdk.user.UserApiClient
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 
 class SetNicknameActivity : AppCompatActivity() {
     lateinit var binding: ActivitySetnicknameBinding
@@ -71,49 +67,12 @@ class SetNicknameActivity : AppCompatActivity() {
             Toast.makeText(this, userName, Toast.LENGTH_SHORT).show()
 
             val userModify = UserModify(userName, "")
-            modifyUserInfo(AppData.qpAccessToken, AppData.qpUserID, userModify)
+            AppData.modifyUserInfo(AppData.qpAccessToken, AppData.qpUserID, userModify)
+            startActivity(Intent(this, SetProfileActivity::class.java))
         }
 
         binding.nicknameNextInvalidBtn.setOnClickListener{
             binding.nicknameInvalidTv.visibility = View.VISIBLE
         }
-    }
-
-
-    private fun modifyUserInfo(token: String, userId: Int, userModify: UserModify) {
-        val userService = getRetrofit().create(UserInterface::class.java)
-
-        userService.modifyUserInfo(token, userId, userModify).enqueue(object:
-            Callback<UserResponse<UserModifyResult>> {
-            override fun onResponse(
-                call: Call<UserResponse<UserModifyResult>>,
-                response: Response<UserResponse<UserModifyResult>>
-            ) {
-                Log.d("modify Success", response.toString())
-                val resp = response.body()
-                if(resp!=null) {
-                    when(resp.code) {
-                        "USER_1000"-> {
-                            Log.d("modify Result1", resp.message)
-                            Log.d("modify data1", resp.result.userId.toString())
-                            Log.d("modify data2", resp.result.nickname)
-                            Log.d("modify data3", resp.result.profileImage)
-                            Log.d("modify data4", resp.result.updatedAt)
-
-                            AppData.qpNickname = resp.result.nickname
-                            AppData.qpProfileImage = resp.result.profileImage
-
-                            startActivity(Intent(this@SetNicknameActivity, SetProfileActivity::class.java))
-                        }
-                        else-> Log.d("modify Result2", resp.message)
-                    }
-                }
-            }
-
-            override fun onFailure(call: Call<UserResponse<UserModifyResult>>, t: Throwable) {
-                Log.d("modify Fail", t.message.toString())
-            }
-
-        })
     }
 }
