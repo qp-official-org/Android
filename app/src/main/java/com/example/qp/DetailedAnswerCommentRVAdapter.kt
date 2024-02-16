@@ -86,8 +86,9 @@ class DetailedAnswerCommentRVAdapter(context: Context ):RecyclerView.Adapter<Det
     fun isCommentListEmpty():Boolean{
         return items.isEmpty()||items==null
     }
-    fun addItem(content:String){
-        items.add(AnswerInfo(answerId = 0, userId = 0, title = "title1", content=content,category = "CHILD", answerGroup = 0, likes = 0))
+    fun addItem(position:Int,answer:AnswerInfo){
+        //items.add(AnswerInfo(answerId = 0, userId = 0, title = "title1", content=content,category = "CHILD", answerGroup = 0, likes = 0))
+        items.add(position,answer)
         notifyDataSetChanged()
     }
     fun addItems(answerList:ArrayList<AnswerInfo>?){
