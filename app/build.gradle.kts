@@ -62,6 +62,9 @@ dependencies {
     implementation ("com.github.bumptech.glide:glide:4.11.0")
     annotationProcessor ("com.github.bumptech.glide:compiler:4.11.0")
 
+    //Flexbox
+    implementation ("com.google.android.flexbox:flexbox:3.0.0")
+
     // Kakao
     implementation("com.kakao.sdk:v2-user:2.19.0") // 카카오 로그인
 }
