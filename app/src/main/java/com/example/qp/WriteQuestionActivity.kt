@@ -3,8 +3,6 @@ package com.example.qp
 import android.content.Context
 import android.content.Intent
 import android.graphics.Rect
-import android.nfc.Tag
-import android.os.Build
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -14,23 +12,17 @@ import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.Toast
-import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.example.qp.databinding.ActivityWriteQuestionBinding
 import com.google.gson.Gson
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
-import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.withContext
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import java.util.Date
 
 class WriteQuestionActivity: AppCompatActivity() {
     private lateinit var binding:ActivityWriteQuestionBinding
@@ -43,7 +35,7 @@ class WriteQuestionActivity: AppCompatActivity() {
     private var qpUserData=QpUserData("",0)
 
 
-    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityWriteQuestionBinding.inflate(layoutInflater)
@@ -185,18 +177,9 @@ class WriteQuestionActivity: AppCompatActivity() {
 
     }
 
-    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     private fun registerQuestion(){
 
-        // 유저 데이터가 담긴 객체를 받기 위함
-        val intent = intent
-        if(intent.hasExtra("data")){
-            val userData=intent.getSerializableExtra("data", QpUserData::class.java)
-            if(userData!=null)
-                qpUserData=userData
-        }
-
-        Log.d("accessToken",qpUserData.toString())
+        Log.d("accessToken",AppData.qpAccessToken.toString())
 
         binding.registerBtn.setOnClickListener {
             val titleText=findViewById<EditText>(R.id.title_edit).text.toString()
@@ -216,17 +199,15 @@ class WriteQuestionActivity: AppCompatActivity() {
                         tagIds.add(newTagList[i].hashtagId)
                     }
 
+
                     val questionPost = QuestionPost(
-                        userId = qpUserData?.userId?:0,
+                        userId = AppData.qpUserID,
                         title = titleText,
                         content = contentText,
                         hashtag = tagIds
                     )
 
-                    writeQ(questionPost,qpUserData?.accessToken?:"")
-
-
-
+                    writeQ(questionPost,AppData.qpAccessToken)
 
                 }
                 else Toast.makeText(applicationContext,"동의가 체크되지 않음",Toast.LENGTH_SHORT).show()
@@ -276,7 +257,7 @@ class WriteQuestionActivity: AppCompatActivity() {
                         Log.d("writeQ success","success!")
 
                         val question = QuestionInfo(
-                            user=UserInfo(qpUserData.userId.toLong(),"","student"),
+                            user=UserInfo(AppData.qpUserID,"","student"),
                             title = questionInfo.title,
                             content = questionInfo.content,
                             hashtags = newTagList,
@@ -288,7 +269,6 @@ class WriteQuestionActivity: AppCompatActivity() {
                         val gson = Gson()
                         val qJson = gson.toJson(question)
                         intent.putExtra("question", qJson)
-                        intent.putExtra("data",qpUserData)
                         startActivity(intent)
                         finish()
                         Toast.makeText(applicationContext, "등록 완료", Toast.LENGTH_SHORT).show()
@@ -310,8 +290,9 @@ class WriteQuestionActivity: AppCompatActivity() {
                         Toast.makeText(applicationContext, "등록 완료", Toast.LENGTH_SHORT).show()
                     }
                 }
+              }
 
-            }
+        }
 
             override fun onFailure(call: Call<WriteQResponse>, t: Throwable) {
                 Log.d("writeQ Fail",t.message.toString())

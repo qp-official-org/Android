@@ -65,10 +65,4 @@ class QuestionRVAdapter(private val qList: ArrayList<QuestionInfo>)
         }
     }
 
-    fun setData(filtered: ArrayList<QuestionInfo>){
-        qList.clear()
-        qList.addAll(filtered)
-        Log.d("filtered 개수", qList.size.toString())
-    }
-
 }

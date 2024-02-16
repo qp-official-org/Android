@@ -1,7 +1,6 @@
 package com.example.qp
 
 import android.content.Intent
-import android.content.Intent.FLAG_ACTIVITY_CLEAR_TOP
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -12,6 +11,7 @@ import android.view.View
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.annotation.RequiresApi
+import androidx.core.app.ActivityCompat
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.qp.databinding.ActivityMainBinding
 import com.google.gson.Gson
@@ -31,7 +31,9 @@ class MainActivity : AppCompatActivity() {
         var isExit : Boolean = false
         override fun handleOnBackPressed() {
             if(isExit) {
-                finish()
+                ActivityCompat.finishAffinity(this@MainActivity)
+                System.runFinalization()
+                System.exit(0)
             }
             else {
                 Toast.makeText(this@MainActivity, "종료하려면 뒤로가기를 한 번 더 누르세요.", Toast.LENGTH_SHORT).show()
@@ -54,6 +56,7 @@ class MainActivity : AppCompatActivity() {
         //백엔드로부터 질문 정보를 가져와 리사이클러뷰를 구성하는 함수
         getQuestions()
 
+        Toast.makeText(applicationContext, "로그인한 유저 아이디: "+AppData.qpUserID.toString(),Toast.LENGTH_SHORT).show()
 
         // 키 해시 확인용
         val keyHash = Utility.getKeyHash(this)
@@ -69,12 +72,10 @@ class MainActivity : AppCompatActivity() {
                 Log.i("TAG", "로그인 성공 $token")
                 binding.mainLoginBt.visibility = View.GONE
                 binding.mainLoginSuccessBt.visibility = View.VISIBLE
+
+                Log.d("DData", token.toString())
             }
         }
-
-        // 유저 데이터가 담긴 객체를 받기 위함
-        val intent = intent
-        val qpUserData = intent.getSerializableExtra("data", QpUserData::class.java)
 
         // 사용자명 불러오기 (유저 닉네임으로 수정 필요)
         UserApiClient.instance.me { user, error ->
@@ -88,6 +89,8 @@ class MainActivity : AppCompatActivity() {
                     Toast.makeText(this, "로그아웃 실패 $error", Toast.LENGTH_SHORT).show()
                 }else {
                     Toast.makeText(this, "로그아웃 성공", Toast.LENGTH_SHORT).show()
+                    AppData.qpUserID = 0
+                    AppData.qpAccessToken = ""
                     binding.mainLoginBt.visibility = View.VISIBLE
                     binding.mainLoginSuccessBt.visibility = View.GONE
                 }
@@ -96,9 +99,7 @@ class MainActivity : AppCompatActivity() {
 
         //상단 검색바 클릭 시 검색화면으로 화면 전환
         binding.mainSearchBt.setOnClickListener {
-            val intent = Intent(this@MainActivity, SearchActivity::class.java)
-            intent.putExtra("data",qpUserData)
-            startActivity(intent)
+            startActivity(Intent(this@MainActivity, SearchActivity::class.java))
         }
 
         // 로그인 화면으로 이동
@@ -108,9 +109,7 @@ class MainActivity : AppCompatActivity() {
 
         // 프로필 화면으로 이동
         binding.mainLoginSuccessBt.setOnClickListener{
-            val intent = Intent(this, ProfileActivity::class.java)
-            intent.putExtra("data", qpUserData)
-            startActivity(intent)
+            startActivity(Intent(this@MainActivity, ProfileActivity::class.java))
         }
     }
 
@@ -156,14 +155,12 @@ class MainActivity : AppCompatActivity() {
 
         //특정 질문 클릭 시 질문상세화면으로 전환
         questionRVAdapter.setMyItemClickListner(object : QuestionRVAdapter.MyItemClickListner{
-            @RequiresApi(Build.VERSION_CODES.TIRAMISU)
             override fun onItemClick(questionInfo: QuestionInfo) {
-                val qpUserData = intent.getSerializableExtra("data", QpUserData::class.java)
                 val intent = Intent(this@MainActivity, DetailedActivity::class.java)
                 val gson = Gson()
                 val qJson = gson.toJson(questionInfo)
                 intent.putExtra("question", qJson)
-                intent.putExtra("data",qpUserData)
+
                 startActivity(intent)
             }
         })
