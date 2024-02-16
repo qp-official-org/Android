@@ -34,6 +34,7 @@ class DetailedActivity : AppCompatActivity(),DetailedQView{
     private lateinit var answerAdapter:DetailedQuestionRVAdapter
     private lateinit var questionInfo:QuestionInfo
     private var isNotified:Boolean=false
+    private var isLogin:Boolean=false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,6 +57,7 @@ class DetailedActivity : AppCompatActivity(),DetailedQView{
                 binding.detailedLoginBtn.visibility = View.VISIBLE
                 binding.detailedProfileBtn.visibility = View.GONE
             } else if (token != null) {
+                isLogin=true
                 Log.i("TAG", "로그인 성공 $token")
                 binding.detailedLoginBtn.visibility = View.GONE
                 binding.detailedProfileBtn.visibility = View.VISIBLE
@@ -75,6 +77,7 @@ class DetailedActivity : AppCompatActivity(),DetailedQView{
                     Toast.makeText(this, "로그아웃 실패 $error", Toast.LENGTH_SHORT).show()
                 }else {
                     Toast.makeText(this, "로그아웃 성공", Toast.LENGTH_SHORT).show()
+                    isLogin=false
                     AppData.qpUserID = 0
                     AppData.qpAccessToken = ""
                     binding.detailedLoginBtn.visibility = View.VISIBLE
@@ -193,13 +196,7 @@ class DetailedActivity : AppCompatActivity(),DetailedQView{
         }
 
     }
-//    private fun initAnswerData(){
-//        val answerList =ArrayList<AnswerInfo>()
-//
-//        answerAdapter.addItemList(answerList)
-//        updateExpertNum()
-//
-//    }
+
     private fun isNotified(): Boolean {
         return false     //서버에서 정보 받아와 설정
     }
@@ -248,7 +245,8 @@ class DetailedActivity : AppCompatActivity(),DetailedQView{
 
     }
     private fun updateExpertNum(){
-        binding.answerCountTv.text=answerAdapter.itemCount.toString()+"명의 전문가가 답변을 했어요"
+//        binding.answerCountTv.text=answerAdapter.itemCount.toString()+"명의 전문가가 답변을 했어요"
+        binding.answerCountTv.text=questionInfo.expertCount.toString()+"명의 전문가가 답변을 했어요"
     }
 
     private fun notifyQuestion(toNotify:Boolean){
@@ -442,7 +440,7 @@ class DetailedActivity : AppCompatActivity(),DetailedQView{
                         answerAdapter.addItem(answer)
                         Log.d("writeAnswer/answer",answer.toString())
                         showWriteAnswerEdit(false)
-                        updateNotifyView()
+                        //updateNotifyView()
                         updateExpertNum()
                         Toast.makeText(applicationContext,"답변이 등록되었습니다.",Toast.LENGTH_SHORT).show()
                     }
@@ -535,7 +533,7 @@ class DetailedActivity : AppCompatActivity(),DetailedQView{
                         updateExpertNum()
                         if(answerAdapter.isItemListEmpty()){
                             binding.answerBtn.visibility=View.VISIBLE
-                            updateNotifyView()
+                            //updateNotifyView()
                         }
                     }
                     else->{

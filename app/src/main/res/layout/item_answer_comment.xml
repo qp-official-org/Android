@@ -30,7 +30,13 @@
             app:layout_constraintStart_toEndOf="@id/comment_user_iv"
             android:layout_marginHorizontal="15dp"
             android:text="교수명"
-            android:textSize="17dp"/>
+            android:textSize="15dp"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/comment_user_name_tv"
+            app:layout_constraintStart_toStartOf="@id/comment_user_name_tv"
+            android:textSize="7dp"/>
         <TextView
             android:id="@+id/comment_content_tv"
             android:layout_width="match_parent"
@@ -39,6 +45,7 @@
             app:layout_constraintStart_toStartOf="@id/comment_user_iv"
             android:layout_marginTop="15dp"
             android:layout_marginHorizontal="15dp"
+            android:layout_marginBottom="15dp"
             android:text="답변 내용"
             android:textSize="12dp"/>
         <ImageButton

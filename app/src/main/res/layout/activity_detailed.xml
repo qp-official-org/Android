@@ -172,7 +172,7 @@
                         android:layout_marginHorizontal="15dp"
                         android:text="질문 제목"
                         android:textStyle="bold"
-                        android:textSize="17dp"/>
+                        android:textSize="15dp"/>
                     <TextView
                         android:id="@+id/detailed_question_time_tv"
                         android:layout_width="wrap_content"
@@ -180,7 +180,7 @@
                         app:layout_constraintBottom_toBottomOf="@id/question_user_img"
                         app:layout_constraintStart_toStartOf="@+id/detailed_question_title_tv"
                         android:text="시간"
-                        android:textSize="10dp"/>
+                        android:textSize="7dp"/>
 
                     <TextView
                         android:id="@+id/detailed_question_content_tv"
