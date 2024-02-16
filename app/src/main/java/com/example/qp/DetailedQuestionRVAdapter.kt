@@ -32,7 +32,7 @@ class DetailedQuestionRVAdapter(context:Context,view:DetailedQView): RecyclerVie
 
     interface ItemClickListener{
         fun onItemRemove(position:Int)
-        fun onAnswerModify(position:Int)
+        fun onAnswerModify(position:Int,answerId:Long)
     }
 
     private lateinit var myItemClickListener: ItemClickListener
@@ -214,7 +214,8 @@ class DetailedQuestionRVAdapter(context:Context,view:DetailedQView): RecyclerVie
         //더보기 버튼 눌렀을 때 팝업 메뉴
         private fun showAnswerMorePopup(position: Int,adapter: DetailedAnswerCommentRVAdapter){
             lateinit var popupWindow:SimplePopup
-            if(adapter.isCommentListEmpty()){
+            var isMine=items[position].userId.toInt()==AppData.qpUserID
+            if(adapter.isCommentListEmpty()&&isMine){
                 binding.answerMoreBtn.setOnClickListener {
                     Log.d("binding_content",position.toString())
                     val list= mutableListOf<String>().apply {
@@ -226,7 +227,7 @@ class DetailedQuestionRVAdapter(context:Context,view:DetailedQView): RecyclerVie
                         when(menuPos){
                             0-> {
                                 Toast.makeText(appContext, "수정하기", Toast.LENGTH_SHORT).show()
-                                myItemClickListener.onAnswerModify(position)
+                                myItemClickListener.onAnswerModify(position,items[position].answerId!!)
                             }
                             1-> {
                                 //Toast.makeText(appContext, "삭제하기", Toast.LENGTH_SHORT).show()

@@ -98,3 +98,17 @@ data class ModifyQInfo(
     @SerializedName(value="title")var title:String,
     @SerializedName(value="content")var content:String
 )
+
+data class ModifyAnswerResponse(
+    @SerializedName(value="isSuccess")val isSuccess: Boolean?,
+    @SerializedName(value="code")val code: String,
+    @SerializedName(value="message")val message: String,
+    @SerializedName(value="result")val result:ModifyAnswerResult
+)
+data class ModifyAnswerResult(
+    @SerializedName(value="answerId")var answerId:Long,
+    @SerializedName(value="title")var title:String,
+    @SerializedName(value="content")var content:String,
+    @SerializedName(value="likeCount")var likeCount:Int,
+    @SerializedName(value="updatedAt")var updatedAt:String
+)
