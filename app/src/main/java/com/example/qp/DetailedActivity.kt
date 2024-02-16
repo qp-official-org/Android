@@ -62,6 +62,7 @@ class DetailedActivity : AppCompatActivity(),DetailedQView{
             }
         }
 
+
         // 사용자명 불러오기 (유저 닉네임으로 수정 필요)
         UserApiClient.instance.me { user, error ->
             binding.detailedProfileName.text = "${user?.kakaoAccount?.profile?.nickname}"
@@ -318,10 +319,10 @@ class DetailedActivity : AppCompatActivity(),DetailedQView{
                 popupWindow=SimplePopup(applicationContext,list){_,_,position->
                     when(position){
                         0-> {
-                            val gson= Gson()
-                            val qJson=gson.toJson(questionInfo)
+//                            val gson= Gson()
+//                            val qJson=gson.toJson(questionInfo)
                             val intent=Intent(this@DetailedActivity,ModifyQuestionActivity::class.java)
-                            intent.putExtra("modifyQuestion",qJson)
+                            intent.putExtra("modifyQuestion",questionInfo)
                             startActivity(intent)
                             Log.d("modifyLog",questionInfo.toString())
                             Toast.makeText(applicationContext, "수정하기", Toast.LENGTH_SHORT).show()
@@ -424,24 +425,6 @@ class DetailedActivity : AppCompatActivity(),DetailedQView{
 
     override fun onGetQFailure(msg:String) {
         Log.d("getQ/FAIL",msg)
-    }
-
-    override fun onGetParentSuccess(answerList:ArrayList<AnswerInfo>?) {
-        Log.d("getParent/SUCCESS",answerList.toString())
-        answerAdapter.addItemList(answerList)
-    }
-
-    override fun onGetaParentFailure(msg:String) {
-        Log.d("getParent/FAIL",msg)
-    }
-
-    override fun onGetChildSuccess(answerList: ArrayList<AnswerInfo>?, id: Long, position: Int) {
-        answerAdapter.getChildAnswer(answerList,id,position)
-        Log.d("getChild/SUCCESS",answerList.toString())
-    }
-
-    override fun onGetChildFailure(msg:String) {
-        Log.d("getChild/FAIL",msg)
     }
 
 
