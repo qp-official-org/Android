@@ -3,7 +3,6 @@ package com.example.qp
 import android.content.Context
 import android.graphics.Rect
 import android.content.Intent
-import android.os.Build
 import android.os.Bundle
 import android.text.Editable
 import android.util.Log
@@ -14,11 +13,8 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
-import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
-import androidx.constraintlayout.widget.ConstraintLayout
 import com.example.qp.databinding.ActivityDetailedBinding
-import com.example.qp.databinding.ItemAnswerBinding
 import com.google.gson.Gson
 import com.kakao.sdk.user.UserApiClient
 import kotlinx.coroutines.CoroutineScope
@@ -26,11 +22,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import java.io.Serializable
 
 
 class DetailedActivity : AppCompatActivity(),DetailedQView{
@@ -40,9 +34,7 @@ class DetailedActivity : AppCompatActivity(),DetailedQView{
     private lateinit var answerAdapter:DetailedQuestionRVAdapter
     private lateinit var questionInfo:QuestionInfo
     private var isNotified:Boolean=false
-    private  var qpUserData=QpUserData("",0)
 
-    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityDetailedBinding.inflate(layoutInflater)
@@ -70,9 +62,6 @@ class DetailedActivity : AppCompatActivity(),DetailedQView{
             }
         }
 
-        // 유저 데이터가 담긴 객체를 받기 위함
-        qpUserData = AppData.qpUserData
-
         // 사용자명 불러오기 (유저 닉네임으로 수정 필요)
         UserApiClient.instance.me { user, error ->
             binding.detailedProfileName.text = "${user?.kakaoAccount?.profile?.nickname}"
@@ -85,8 +74,8 @@ class DetailedActivity : AppCompatActivity(),DetailedQView{
                     Toast.makeText(this, "로그아웃 실패 $error", Toast.LENGTH_SHORT).show()
                 }else {
                     Toast.makeText(this, "로그아웃 성공", Toast.LENGTH_SHORT).show()
-                    AppData.qpUserData.userId = 0
-                    AppData.qpUserData.accessToken = ""
+                    AppData.qpUserID = 0
+                    AppData.qpAccessToken = ""
                     binding.detailedLoginBtn.visibility = View.VISIBLE
                     binding.detailedProfileBtn.visibility = View.GONE
                 }
@@ -119,8 +108,7 @@ class DetailedActivity : AppCompatActivity(),DetailedQView{
 
             //검색으로 화면전환
             binding.detailedSearchBt.setOnClickListener {
-                val intent = Intent(this@DetailedActivity, SearchActivity::class.java)
-                startActivity(intent)
+                startActivity(Intent(this@DetailedActivity, SearchActivity::class.java))
             }
         }
 
@@ -290,14 +278,14 @@ class DetailedActivity : AppCompatActivity(),DetailedQView{
             var content=editText.text.toString()
             var answer=AnswerInfo(
                 0,
-                qpUserData.userId.toLong(),
+                AppData.qpUserID.toLong(),
                 "title11",
                  content,
                 "PARENT",
                 0,
                 0
             )
-            writeAnswerService(answer,qpUserData.accessToken)
+            writeAnswerService(answer,AppData.qpAccessToken)
 
         }
     }
@@ -340,11 +328,11 @@ class DetailedActivity : AppCompatActivity(),DetailedQView{
                         }
                         1-> {
                             val check = "질문 작성자 아이디: " + questionInfo.user?.userId.toString() +
-                                    "\n로그인 유저 아이디: " + qpUserData.userId
+                                    "\n로그인 유저 아이디: " + AppData.qpUserID
                             Toast.makeText(applicationContext, check,Toast.LENGTH_SHORT).show()
-                            if(questionInfo.user?.userId == AppData.qpUserData.userId){
+                            if(questionInfo.user?.userId == AppData.qpUserID){
                                 Toast.makeText(applicationContext, "질문 삭제",Toast.LENGTH_SHORT).show()
-                                deleteQ(qpUserData.accessToken, questionInfo.questionId, qpUserData.userId)
+                                deleteQ(AppData.qpAccessToken, questionInfo.questionId, AppData.qpUserID)
                             }
                             else{
                                 Toast.makeText(applicationContext,"자신이 작성한 질문만 삭제가능",Toast.LENGTH_SHORT).show()

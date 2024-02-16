@@ -20,16 +20,12 @@ class SearchActivity : AppCompatActivity() {
 
     lateinit var binding: ActivitySearchBinding
     private var filtered = ArrayList<QuestionInfo>()
-    private  var qpUserData=QpUserData("",0)
 
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivitySearchBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
-        //로그인한 사용자 정보 조회
-        qpUserData = AppData.qpUserData
 
         binding.searchBackIv.setOnClickListener{
             val intent = Intent(this@SearchActivity, MainActivity::class.java)
@@ -129,10 +125,9 @@ class SearchActivity : AppCompatActivity() {
         }
     }
 
-    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     private fun register(){
         binding.searchRegisterBt.setOnClickListener {
-            if(qpUserData.userId != 0){
+            if(AppData.qpUserID != 0){
                 val intent = Intent(this@SearchActivity, WriteQuestionActivity::class.java)
                 startActivity(intent)
             }

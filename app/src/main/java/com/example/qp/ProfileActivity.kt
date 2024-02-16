@@ -44,10 +44,6 @@ class ProfileActivity : AppCompatActivity() {
 
         onBackPressedDispatcher.addCallback(this, onBackPressedCallback)    // 종료함수
 
-        // MainActivity에서 넘겨준 UserData 객체를 받기 위함
-        val intent = intent
-        val qpUserData = intent.getSerializableExtra("data", QpUserData::class.java)
-
         val profileVPAdapter = ProfileVPAdapter(this)
         binding.profileQuestionVp.adapter = profileVPAdapter
 
@@ -166,13 +162,8 @@ class ProfileActivity : AppCompatActivity() {
 
 
         binding.profileQpLogo.setOnClickListener {
-            if (qpUserData != null) {
-                Log.d("proffile Data1", qpUserData.accessToken)
-                Log.d("proffile Data2", qpUserData.userId.toString())
-            }
-            else {
-                Log.d("errorMessage", "main error")
-            }
+            Log.d("proffile Data1", AppData.qpAccessToken)
+            Log.d("proffile Data2", AppData.qpUserID.toString())
         }
     }
 

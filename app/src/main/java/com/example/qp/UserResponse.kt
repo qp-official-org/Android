@@ -40,11 +40,6 @@ data class User(
     var point: Long
 )
 
-data class QpUserData(
-    var accessToken: String,
-    var userId: Int
-) : Serializable
-
 data class UserModify(
     var nickname: String?,
     var profileImage: String
