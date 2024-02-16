@@ -56,20 +56,18 @@ class DetailedActivity : AppCompatActivity(),DetailedQView{
             if (error != null) {
                 Log.e("TAG", "로그인 실패", error)
                 binding.detailedLoginBtn.visibility = View.VISIBLE
-                binding.detailedProfileBtn.visibility = View.GONE
+                binding.detailedLoginSuccessBt.visibility = View.GONE
             } else if (token != null) {
                 isLogin=true
                 Log.i("TAG", "로그인 성공 $token")
                 binding.detailedLoginBtn.visibility = View.GONE
-                binding.detailedProfileBtn.visibility = View.VISIBLE
+                binding.detailedLoginSuccessBt.visibility = View.VISIBLE
             }
         }
 
-
-        // 사용자명 불러오기 (유저 닉네임으로 수정 필요)
-        UserApiClient.instance.me { user, error ->
-            binding.detailedProfileName.text = "${user?.kakaoAccount?.profile?.nickname}"
-        }
+        // 하단 바에 사용자 닉네임과 포인트 데이터 반영
+        binding.detailedBarNicknameTv.text = AppData.qpNickname
+        binding.detailedBarCoinTv.text = AppData.qpPoint.toString()
 
         // 임시 로그아웃 (로고 클릭시)
         binding.detailedLogoIv.setOnClickListener {
@@ -83,7 +81,7 @@ class DetailedActivity : AppCompatActivity(),DetailedQView{
                     AppData.qpAccessToken = ""
                     AppData.searchRecord.clear()
                     binding.detailedLoginBtn.visibility = View.VISIBLE
-                    binding.detailedProfileBtn.visibility = View.GONE
+                    binding.detailedLoginSuccessBt.visibility = View.GONE
                 }
             }
         }
@@ -105,9 +103,8 @@ class DetailedActivity : AppCompatActivity(),DetailedQView{
             setQuestionMorePopup()
 
             //프로필로 화면 전환
-            binding.detailedProfileBtn.setOnClickListener {
+            binding.detailedLoginSuccessBt.setOnClickListener {
                 startActivity(Intent(this@DetailedActivity, ProfileActivity::class.java))
-                finish()
             }
 
             Log.d("detailedQOncreate", questionInfo.toString())
@@ -220,9 +217,8 @@ class DetailedActivity : AppCompatActivity(),DetailedQView{
         binding.detailedLoginBtn.setOnClickListener {
             startActivity(Intent(this@DetailedActivity, LoginActivity::class.java))
         }
-        binding.detailedProfileBtn.setOnClickListener {
+        binding.detailedLoginSuccessBt.setOnClickListener {
             startActivity(Intent(this, ProfileActivity::class.java))
-
         }
     }
 

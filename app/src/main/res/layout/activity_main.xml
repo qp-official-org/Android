@@ -97,22 +97,35 @@
                 android:id="@+id/main_bar_nickname_tv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="큐피님"
+                android:text="큐피"
                 android:textColor="@color/white"
                 android:textStyle="bold"
                 android:textSize="18sp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                android:layout_marginStart="50dp"
+                android:layout_marginStart="40dp"
+                android:layout_marginTop="25dp"/>
+            <TextView
+                android:id="@+id/main_bar_nickname2_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="님"
+                android:textColor="@color/white"
+                android:textStyle="bold"
+                android:textSize="18sp"
+                app:layout_constraintStart_toEndOf="@id/main_bar_nickname_tv"
+                app:layout_constraintTop_toTopOf="parent"
+                android:layout_marginStart="5dp"
                 android:layout_marginTop="25dp"/>
             <ImageView
+                android:id="@+id/main_bar_coin_iv"
                 android:layout_width="18dp"
                 android:layout_height="18dp"
                 android:src="@drawable/coin"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                android:layout_marginStart="25dp"
-                android:layout_marginBottom="10dp"/>
+                android:layout_marginStart="20dp"
+                android:layout_marginBottom="11dp"/>
             <TextView
                 android:id="@+id/main_bar_coin_tv"
                 android:layout_width="wrap_content"
@@ -122,8 +135,8 @@
                 android:textSize="15sp"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                android:layout_marginStart="50dp"
+                app:layout_constraintStart_toEndOf="@id/main_bar_coin_iv"
+                android:layout_marginStart="7dp"
                 android:layout_marginBottom="10dp"/>
             <TextView
                 android:layout_width="wrap_content"
@@ -133,8 +146,8 @@
                 android:textSize="15sp"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                android:layout_marginStart="80dp"
+                app:layout_constraintStart_toEndOf="@id/main_bar_coin_tv"
+                android:layout_marginStart="5dp"
                 android:layout_marginBottom="10dp"/>
             <TextView
                 android:layout_width="wrap_content"

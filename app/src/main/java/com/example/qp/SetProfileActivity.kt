@@ -1,17 +1,12 @@
 package com.example.qp
 
 import android.content.Intent
-import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import com.example.qp.databinding.ActivitySetprofileBinding
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 
 class SetProfileActivity : AppCompatActivity() {
     lateinit var binding: ActivitySetprofileBinding
@@ -68,36 +63,7 @@ class SetProfileActivity : AppCompatActivity() {
 
         // 임시 유저정보조회 설정
         binding.profileQpLogoTv.setOnClickListener {
-            searchUserInfo(AppData.qpAccessToken, AppData.qpUserID)
+            AppData.searchUserInfo(AppData.qpAccessToken, AppData.qpUserID)
         }
-
-    }
-
-    private fun searchUserInfo(token: String, userId: Int) {
-        val userService = getRetrofit().create(UserInterface::class.java)
-
-        userService.searchUserInfo(token, userId).enqueue(object :Callback<UserResponse<User>> {
-            override fun onResponse(call: Call<UserResponse<User>>, response: Response<UserResponse<User>>) {
-                Log.d("ssearch Success", response.toString())
-                val resp = response.body()
-                if(resp!=null) {
-                    when(resp.code) {
-                        "USER_1000"-> {
-                            Log.d("ssearch Result1", resp.message)
-                            Log.d("ssearch Data1", resp.result.nickname)
-                            Log.d("ssearch Data2", resp.result.profileImage)
-                            Log.d("ssearch Data3", resp.result.email)
-                            Log.d("ssearch Data4", resp.result.gender)
-                            Log.d("ssearch Data5", resp.result.point.toString())
-                        }
-                        else-> Log.d("ssearch Result2", resp.message)
-                    }
-                }
-            }
-
-            override fun onFailure(call: Call<UserResponse<User>>, t: Throwable) {
-                Log.d("ssearch Fail", t.message.toString())
-            }
-        })
     }
 }
