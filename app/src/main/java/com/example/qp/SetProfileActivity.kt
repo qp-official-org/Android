@@ -60,10 +60,5 @@ class SetProfileActivity : AppCompatActivity() {
             startActivity(Intent(this, MainActivity::class.java))
             finishAffinity()    // 쌓인 모든 Activity 종료
         }
-
-        // 임시 유저정보조회 설정
-        binding.profileQpLogoTv.setOnClickListener {
-            AppData.searchUserInfo(AppData.qpAccessToken, AppData.qpUserID)
-        }
     }
 }

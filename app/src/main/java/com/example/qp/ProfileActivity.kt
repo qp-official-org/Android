@@ -12,6 +12,7 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -143,14 +144,18 @@ class ProfileActivity : AppCompatActivity() {
                 AppData.qpNickname = editname
                 binding.profileMainTv.text = AppData.qpNickname
                 binding.profileEditNicknameEt.hint = AppData.qpNickname
+
+                binding.profileEditSettingIv.visibility = View.GONE
+                binding.profileMainTv.visibility = View.VISIBLE
+                binding.profileEditNicknameEt.visibility = View.GONE
+                binding.profileMainEditBtn.visibility = View.VISIBLE
+                binding.profileEditYesBtn.visibility = View.GONE
+                binding.profileEditNoBtn.visibility = View.GONE
+                binding.profileMainImageIv.setAlpha(1f)
             }
-            binding.profileEditSettingIv.visibility = View.GONE
-            binding.profileMainTv.visibility = View.VISIBLE
-            binding.profileEditNicknameEt.visibility = View.GONE
-            binding.profileMainEditBtn.visibility = View.VISIBLE
-            binding.profileEditYesBtn.visibility = View.GONE
-            binding.profileEditNoBtn.visibility = View.GONE
-            binding.profileMainImageIv.setAlpha(1f)
+            else {
+                Toast.makeText(this, "닉네임은 1 ~ 6자로 제한됩니다.",Toast.LENGTH_SHORT).show()
+            }
         }
         binding.profileEditNoBtn.setOnClickListener {
             binding.profileEditSettingIv.visibility = View.GONE

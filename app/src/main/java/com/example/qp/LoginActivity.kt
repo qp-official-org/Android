@@ -125,7 +125,14 @@ class LoginActivity : AppCompatActivity() {
                             Log.d("qpUserData1", AppData.qpAccessToken)
                             Log.d("qpUserData2", AppData.qpUserID.toString())
 
-                            startActivity(Intent(this@LoginActivity, SetNicknameActivity::class.java))
+                            Log.d("qpUserData3", resp.result.isNew.toString())
+                            if(resp.result.isNew) {     // 새로 가입한 계정
+                                startActivity(Intent(this@LoginActivity, SetNicknameActivity::class.java))
+                            }
+                            else {      // 기존에 존재하던 계정
+                                Toast.makeText(this@LoginActivity, "로그인에 성공했습니다.", Toast.LENGTH_SHORT).show()
+                                finish()
+                            }
                         }
                         else->Log.d("singUp Result", resp.message)
                     }

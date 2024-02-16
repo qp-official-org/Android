@@ -1,7 +1,5 @@
 package com.example.qp
 
-import java.io.Serializable
-
 data class UserResponse<T>(
     val isSuccess: Boolean,
     val code: String,
@@ -11,6 +9,7 @@ data class UserResponse<T>(
 
 data class UserToken(
     val userId: Int,
+    val isNew: Boolean,
     val accessToken: String,
     val refreshToken: String
 )
@@ -36,6 +35,7 @@ data class User(
     var nickname: String,
     var profileImage: String,
     var email: String,
+    var role: String,
     var gender: String,
     var point: Long
 )

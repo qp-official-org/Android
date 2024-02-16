@@ -121,6 +121,23 @@ class MainActivity : AppCompatActivity() {
     override fun onStart() {
         super.onStart()
 
+        AppData.searchUserInfo(AppData.qpAccessToken, AppData.qpUserID)
+
+        // 로그인 여부 확인
+        UserApiClient.instance.accessTokenInfo { token, error ->
+            if (error != null) {
+                Log.e("TAG", "로그인 실패", error)
+                binding.mainLoginBt.visibility = View.VISIBLE
+                binding.mainLoginSuccessBt.visibility = View.GONE
+            } else if (token != null) {
+                Log.i("TAG", "로그인 성공 $token")
+                binding.mainLoginBt.visibility = View.GONE
+                binding.mainLoginSuccessBt.visibility = View.VISIBLE
+
+                Log.d("DData", token.toString())
+            }
+        }
+
         // 하단 바에 사용자 닉네임과 포인트 데이터 반영
         binding.mainBarNicknameTv.text = AppData.qpNickname
         binding.mainBarCoinTv.text = AppData.qpPoint.toString()
