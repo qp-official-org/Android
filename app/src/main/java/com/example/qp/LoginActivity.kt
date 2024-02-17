@@ -99,7 +99,6 @@ class LoginActivity : AppCompatActivity() {
             Toast.makeText(this, "카카오계정으로 로그인 실패 $error", Toast.LENGTH_SHORT).show()
         } else if (token != null) {
             Log.i("Login TAG", "카카오계정으로 로그인 성공 ${token.accessToken}")
-            Toast.makeText(this, "카카오계정으로 로그인 성공 ${token.accessToken}", Toast.LENGTH_SHORT).show()
 
             signUp(token.accessToken)
         }
@@ -117,6 +116,15 @@ class LoginActivity : AppCompatActivity() {
                     when(resp.code){
                         "USER_1000"-> {
                             Log.d("singUp Result", resp.message)
+
+                            // accessToken, refreshToken, userID 데이터를 로컬에 저장
+                            GlobalApplication.preferences.setString("accessToken", resp.result.accessToken)
+                            GlobalApplication.preferences.setString("refreshToken", resp.result.refreshToken)
+                            GlobalApplication.preferences.setInt("userID", resp.result.userId)
+
+                            Log.d("sharedpp5", GlobalApplication.preferences.getString("accessToken", ""))
+                            Log.d("sharedpp6", GlobalApplication.preferences.getString("refreshToken", ""))
+                            Log.d("sharedpp7", GlobalApplication.preferences.getInt("userID", 0).toString())
 
                             // 전역변수 사용
                             AppData.qpAccessToken = resp.result.accessToken

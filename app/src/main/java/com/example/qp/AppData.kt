@@ -1,9 +1,7 @@
 package com.example.qp
 
 import android.app.Application
-import android.content.Intent
 import android.util.Log
-import androidx.core.content.ContextCompat.startActivity
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -21,6 +19,8 @@ class AppData : Application() {
         var qpRole = ""
         var qpPoint : Long = 0
         var qpCreatedAt = ""
+
+        var searchRecord = ArrayList<String>()
 
         // 유저 정보 수정 함수
         fun modifyUserInfo(token: String, userId: Int, userModify: UserModify) {
@@ -94,7 +94,5 @@ class AppData : Application() {
                 }
             })
         }
-
-        var searchRecord = ArrayList<String>()
     }
 }

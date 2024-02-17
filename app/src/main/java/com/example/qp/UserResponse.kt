@@ -13,6 +13,11 @@ data class UserToken(
     val accessToken: String,
     val refreshToken: String
 )
+data class AutoSignIn(
+    val userId: Int,
+    val accessToken: String,
+    val refreshToken: String
+)
 data class UserTestResult(
     val userId: Int,
     val createdAt: String
@@ -44,4 +49,8 @@ data class User(
 data class UserModify(
     var nickname: String?,
     var profileImage: String
+)
+
+data class UserAuto(
+    var userId: Int
 )
