@@ -130,6 +130,9 @@ class ProfileActivity : AppCompatActivity() {
             //madeDialog(10000, "카카오 페이")
         }
 
+        if(AppData.qpRole == "EXPERT") {        // 전문가일 경우 프로필 수정 불가
+            binding.profileMainEditBtn.visibility = View.GONE
+        }
 
         // 프로필 수정버튼
         binding.profileMainEditBtn.setOnClickListener {
