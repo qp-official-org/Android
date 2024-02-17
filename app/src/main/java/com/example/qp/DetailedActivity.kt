@@ -26,6 +26,9 @@ import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.CircleCrop
+import com.bumptech.glide.request.RequestOptions
 
 
 class DetailedActivity : AppCompatActivity(),DetailedQView{
@@ -42,6 +45,7 @@ class DetailedActivity : AppCompatActivity(),DetailedQView{
         binding = ActivityDetailedBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        //질문 정보 넘겨받기
         if(intent.hasExtra("question")){
             val qJson = intent.getStringExtra("question")
             questionInfo = gson.fromJson(qJson, QuestionInfo::class.java)
@@ -51,23 +55,6 @@ class DetailedActivity : AppCompatActivity(),DetailedQView{
             questionInfo= QuestionInfo(title="",content="")
         }
 
-        // 로그인 여부 확인
-        UserApiClient.instance.accessTokenInfo { token, error ->
-            if (error != null) {
-                Log.e("TAG", "로그인 실패", error)
-                binding.detailedLoginBtn.visibility = View.VISIBLE
-                binding.detailedLoginSuccessBt.visibility = View.GONE
-            } else if (token != null) {
-                isLogin=true
-                Log.i("TAG", "로그인 성공 $token")
-                binding.detailedLoginBtn.visibility = View.GONE
-                binding.detailedLoginSuccessBt.visibility = View.VISIBLE
-            }
-        }
-
-        // 하단 바에 사용자 닉네임과 포인트 데이터 반영
-        binding.detailedBarNicknameTv.text = AppData.qpNickname
-        binding.detailedBarCoinTv.text = AppData.qpPoint.toString()
 
         // 임시 로그아웃 (로고 클릭시)
         binding.detailedLogoIv.setOnClickListener {
@@ -88,17 +75,15 @@ class DetailedActivity : AppCompatActivity(),DetailedQView{
 
 
         CoroutineScope(Dispatchers.Main).launch {
-            val server = CoroutineScope(Dispatchers.IO).async {
+            //서버에서 질문 & 답변 정보 받아오기
+            CoroutineScope(Dispatchers.IO).async {
                 getQ()
                 Log.d("getServer","server")
                 delay(200)
             }.await()
-
             Log.d("view","view")
 
-
             setInit()
-            setOnClickListeners()
 
             setQuestionMorePopup()
 
@@ -107,25 +92,28 @@ class DetailedActivity : AppCompatActivity(),DetailedQView{
                 startActivity(Intent(this@DetailedActivity, ProfileActivity::class.java))
             }
 
-            Log.d("detailedQOncreate", questionInfo.toString())
-
             //검색으로 화면전환
             binding.detailedSearchBt.setOnClickListener {
                 startActivity(Intent(this@DetailedActivity, SearchActivity::class.java))
             }
         }
 
+        Log.d("detailedQOncreate", questionInfo.toString())
     }
 
 
+    //서버에서 질문, 답변 정보 응답 받아오기
     fun getQ()= CoroutineScope(Dispatchers.IO).launch{
-        //서버에서 질문 조회 응답
-        val detailedQService=QuestionService()
-        detailedQService.setDetailedQView(this@DetailedActivity)
+        CoroutineScope(Dispatchers.IO).async {
+            //서버에서 질문 조회 응답
+            val detailedQService=QuestionService()
+            detailedQService.setDetailedQView(this@DetailedActivity)
 
-        detailedQService.getQuestion(questionInfo.questionId?.toLong())
+            detailedQService.getQuestion(questionInfo.questionId?.toLong())
+        }.await()
 
         //서버에서 답변 받아오기
+        //답변 리사이클러뷰 어댑터 설정
         answerAdapter=DetailedQuestionRVAdapter(applicationContext)
         binding.answerRv.adapter=answerAdapter
 
@@ -135,14 +123,30 @@ class DetailedActivity : AppCompatActivity(),DetailedQView{
 
 
     private fun setInit(){
+
+        // 로그인 여부 확인
+        UserApiClient.instance.accessTokenInfo { token, error ->
+            if (error != null) {
+                Log.e("TAG", "로그인 실패", error)
+                binding.detailedLoginBtn.visibility = View.VISIBLE
+                binding.detailedLoginSuccessBt.visibility = View.GONE
+            } else if (token != null) {
+                isLogin=true
+                Log.i("TAG", "로그인 성공 $token")
+                binding.detailedLoginBtn.visibility = View.GONE
+                binding.detailedLoginSuccessBt.visibility = View.VISIBLE
+            }
+        }
+
         isNotified=isNotified()
+
+        //뷰 초기화
         initView()
 
         answerAdapter.setMyItemClickListener(object :
             DetailedQuestionRVAdapter.ItemClickListener{
             //답변 삭제
             override fun onItemRemove(position:Int,answerId: Long) {
-
                 deleteAnswer(answerId,position)
             }
             //답변 수정
@@ -163,21 +167,53 @@ class DetailedActivity : AppCompatActivity(),DetailedQView{
                     val newContent=writeLayout.text.toString()
                     modifyAnswerService(answerId,"title",newContent,position)
                 }
-
             }
 
+            override fun showLoginMsg() {
+                val dialog=SimpleDialog()
+                dialog.show(supportFragmentManager,"dialog")
+            }
         })
 
+        //답변 공간 펼치기
+        binding.answerBtn.setOnClickListener {
+            showWriteAnswerEdit(true)
+        }
+        //질문 알림 설정
+        binding.answerNoticeBtn.setOnClickListener {
+            Log.d("isLogin",isLogin.toString())
+            if(!isLogin){
+                val dialog=SimpleDialog()
+                dialog.show(supportFragmentManager,"dialog")
+            }
+            else{
+                if(!isNotified){
+                    notifyQuestion(true)
+                }
+                else{
+                    notifyQuestion(false)
+                }
+            }
+
+        }
+        //로그인 버튼
+        binding.detailedLoginBtn.setOnClickListener {
+            startActivity(Intent(this@DetailedActivity, LoginActivity::class.java))
+        }
+        //프로필 화면으로
+        binding.detailedLoginSuccessBt.setOnClickListener {
+            startActivity(Intent(this, ProfileActivity::class.java))
+        }
         //updateNotifyView()
-
-
     }
 
     private fun initView(){
         binding.detailedQuestionTitleTv.text = questionInfo.title
         binding.detailedQuestionContentTv.text = questionInfo.content
-        binding.detailedQuestionTimeTv.text = questionInfo.createdAt.toString()
-        //binding.questionUserImg.setImageResource()
+        binding.detailedQuestionTimeTv.text =getTime(questionInfo.createdAt.toString())
+        setStringImage(questionInfo.user!!.profileImage,binding.questionUserImg,applicationContext)
+
+        updateExpertNum()
 
         val tagListSize = questionInfo.hashtags?.size
         when(tagListSize){
@@ -192,34 +228,16 @@ class DetailedActivity : AppCompatActivity(),DetailedQView{
                 binding.hashtag3.text = "#".plus(questionInfo.hashtags!![2].hashtag)
             }
         }
+        // 하단 바에 사용자 닉네임과 포인트 데이터 반영
+        binding.detailedBarNicknameTv.text = AppData.qpNickname
+        binding.detailedBarCoinTv.text = AppData.qpPoint.toString()
 
     }
+
+
 
     private fun isNotified(): Boolean {
         return false     //서버에서 정보 받아와 설정
-    }
-
-    private fun setOnClickListeners(){
-        binding.answerBtn.setOnClickListener {
-            showWriteAnswerEdit(true)
-        }
-        binding.answerNoticeBtn.setOnClickListener {
-            if(!isNotified){
-                notifyQuestion(true)
-                val dialog=SimpleDialog()
-                dialog.show(supportFragmentManager,"dialog")
-            }
-            else{
-                notifyQuestion(false)
-            }
-        }
-
-        binding.detailedLoginBtn.setOnClickListener {
-            startActivity(Intent(this@DetailedActivity, LoginActivity::class.java))
-        }
-        binding.detailedLoginSuccessBt.setOnClickListener {
-            startActivity(Intent(this, ProfileActivity::class.java))
-        }
     }
 
 
@@ -238,11 +256,13 @@ class DetailedActivity : AppCompatActivity(),DetailedQView{
         else{
             container.removeAllViews()
         }
-
-
     }
     private fun updateExpertNum(){
-        binding.answerCountTv.text=questionInfo.expertCount.toString()+"명의 전문가가 답변을 했어요"
+        binding.answerCountTv.text=
+            when(questionInfo.expertCount){
+                0->"전문가의 답변이 필요합니다"
+                else->questionInfo.expertCount.toString()+"명의 전문가가 답변을 했어요"
+            }
     }
 
     private fun notifyQuestion(toNotify:Boolean){
@@ -258,10 +278,6 @@ class DetailedActivity : AppCompatActivity(),DetailedQView{
         }
     }
 
-
-
-
-
     private fun writeAnswer(){
         val btn=findViewById<TextView>(R.id.write_answer_btn)
         val editText=findViewById<EditText>(R.id.write_answer_edit)
@@ -271,6 +287,7 @@ class DetailedActivity : AppCompatActivity(),DetailedQView{
             var answer=AnswerInfo(
                 0,
                 AppData.qpUserID.toLong(),
+                AppData.qpNickname,
                 "title11",
                  content,
                 "PARENT",
@@ -278,10 +295,10 @@ class DetailedActivity : AppCompatActivity(),DetailedQView{
                 0
             )
             writeAnswerService(answer,AppData.qpAccessToken)
-
         }
     }
 
+    //답변 작성 공간 펼치기
     private fun showWriteAnswerEdit(toShow:Boolean){
         val container=binding.writeAnswerContainer
         if(toShow){
@@ -292,16 +309,17 @@ class DetailedActivity : AppCompatActivity(),DetailedQView{
         }
         else{
             container.removeAllViews()
+            binding.answerBtn.visibility=View.VISIBLE
         }
-
     }
 
 
-
+    //더보기 버튼
     private fun setQuestionMorePopup(){
         lateinit var popupWindow: SimplePopup
-        var isMine=questionInfo.user?.userId==AppData.qpUserID
-        if(answerAdapter.isItemListEmpty()&&isMine){
+        var isMine=questionInfo.user?.userId==AppData.qpUserID  //본인이 작성한 질문인지 여부
+
+        if(answerAdapter.isItemListEmpty()&&isMine){            //답변이 한개라도 있으면 수정&삭제 불가
             binding.questionMoreBtn.setOnClickListener {
                 val list= mutableListOf<String>().apply {
                     add("수정하기")
@@ -310,14 +328,14 @@ class DetailedActivity : AppCompatActivity(),DetailedQView{
                 }
                 popupWindow=SimplePopup(applicationContext,list){_,_,position->
                     when(position){
-                        0-> {
+                        0-> {   //수정하기
                             val intent=Intent(this@DetailedActivity,ModifyQuestionActivity::class.java)
                             intent.putExtra("modifyQuestion",questionInfo)
                             startActivity(intent)
                             Log.d("modifyLog",questionInfo.toString())
                             Toast.makeText(applicationContext, "수정하기", Toast.LENGTH_SHORT).show()
                         }
-                        1-> {
+                        1-> {   //삭제하기
                             val check = "질문 작성자 아이디: " + questionInfo.user?.userId.toString() +
                                     "\n로그인 유저 아이디: " + AppData.qpUserID
                             Toast.makeText(applicationContext, check,Toast.LENGTH_SHORT).show()
@@ -329,10 +347,12 @@ class DetailedActivity : AppCompatActivity(),DetailedQView{
                                 Toast.makeText(applicationContext,"자신이 작성한 질문만 삭제가능",Toast.LENGTH_SHORT).show()
                             }
                         }
-                        2-> {
+                        2-> {   //신고하기
                             Toast.makeText(applicationContext, "신고하기", Toast.LENGTH_SHORT).show()
-                            val dialog=SimpleDialog()
-                            dialog.show(supportFragmentManager,"dialog")
+                            if(!isLogin){
+                                val dialog=SimpleDialog()
+                                dialog.show(supportFragmentManager,"dialog")
+                            }
                         }
                     }
                 }
@@ -342,7 +362,6 @@ class DetailedActivity : AppCompatActivity(),DetailedQView{
             }
         else{
             binding.questionMoreBtn.setOnClickListener {
-
                 val list= mutableListOf<String>().apply {
                         add("신고하기")
                 }
@@ -350,8 +369,10 @@ class DetailedActivity : AppCompatActivity(),DetailedQView{
                     when(position){
                         0-> {
                             Toast.makeText(applicationContext, "신고하기", Toast.LENGTH_SHORT).show()
-                            val dialog=SimpleDialog()
-                            dialog.show(supportFragmentManager,"dialog")
+                            if(!isLogin){
+                                val dialog=SimpleDialog()
+                                dialog.show(supportFragmentManager,"dialog")
+                            }
                         }
                     }
                 }
@@ -361,6 +382,14 @@ class DetailedActivity : AppCompatActivity(),DetailedQView{
 
         }
 
+    }
+
+    override fun onGetQSuccess(questionResp:QuestionInfo?) {
+        questionInfo.content=(questionResp?.content.toString())
+        Log.d("getQ/SUCCESS",questionResp?.content.toString()+"questionInfo: ".plus(questionInfo.content))
+    }
+    override fun onGetQFailure(msg:String) {
+        Log.d("getQ/FAIL",msg)
     }
 
     fun deleteQ(accessToken: String, qId: Long?, userId: Int){
@@ -390,33 +419,6 @@ class DetailedActivity : AppCompatActivity(),DetailedQView{
         })
     }
 
-    //editText 밖을 터치하면 키보드 내려감
-    override fun dispatchTouchEvent(event: MotionEvent?): Boolean {
-        if (event?.action === MotionEvent.ACTION_DOWN) {
-            val v = currentFocus
-            if (v is EditText) {
-                val outRect = Rect()
-                v.getGlobalVisibleRect(outRect)
-                if (!outRect.contains(event.rawX.toInt(), event.rawY.toInt())) {
-                    v.clearFocus()
-                    val imm: InputMethodManager =
-                        getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-                    imm.hideSoftInputFromWindow(v.getWindowToken(), 0)
-                }
-            }
-        }
-        return super.dispatchTouchEvent(event)
-    }
-
-    override fun onGetQSuccess(questionResp:QuestionInfo?) {
-        questionInfo.content=(questionResp?.content.toString())
-        Log.d("getQ/SUCCESS",questionResp?.content.toString()+"questionInfo: ".plus(questionInfo.content))
-    }
-
-    override fun onGetQFailure(msg:String) {
-        Log.d("getQ/FAIL",msg)
-    }
-
 
 
     fun writeAnswerService(answer:AnswerInfo,token:String){
@@ -432,12 +434,13 @@ class DetailedActivity : AppCompatActivity(),DetailedQView{
                 when(resp?.code){
                     "ANSWER_3000"->{
                         Log.d("writeAnswer/SUCCESS",resp.toString())
-                        answer.answerId=resp.result.answerId
+                        answer.answerId=resp.result.answerId    //답변 번호 부여
                         answerAdapter.addItem(answer)
                         Log.d("writeAnswer/answer",answer.toString())
-                        showWriteAnswerEdit(false)
+
+                        showWriteAnswerEdit(false)  //답변 작성 공간 접기
                         //updateNotifyView()
-                        updateExpertNum()
+                        updateExpertNum()   //전문가 수 갱신
                         Toast.makeText(applicationContext,"답변이 등록되었습니다.",Toast.LENGTH_SHORT).show()
                     }
                     else->{
@@ -449,8 +452,6 @@ class DetailedActivity : AppCompatActivity(),DetailedQView{
             override fun onFailure(call: Call<WriteAnswerResponse>, t: Throwable) {
                 Log.d("writeAnswerResp/FAIL",t.message.toString())
             }
-
-
         })
     }
 
@@ -546,8 +547,36 @@ class DetailedActivity : AppCompatActivity(),DetailedQView{
         })
     }
 
+    // 이미지뷰에 문자열 형태의 이미지를 설정
+    fun setStringImage(imageUrl: String, imageView: ImageView, con: Context) {
+        Glide.with(con)
+            .load(imageUrl)
+            .apply(RequestOptions().transform(CircleCrop()))
+            .into(imageView)
+    }
 
+    //editText 밖을 터치하면 키보드 내려감
+    override fun dispatchTouchEvent(event: MotionEvent?): Boolean {
+        if (event?.action === MotionEvent.ACTION_DOWN) {
+            val v = currentFocus
+            if (v is EditText) {
+                val outRect = Rect()
+                v.getGlobalVisibleRect(outRect)
+                if (!outRect.contains(event.rawX.toInt(), event.rawY.toInt())) {
+                    v.clearFocus()
+                    val imm: InputMethodManager =
+                        getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                    imm.hideSoftInputFromWindow(v.getWindowToken(), 0)
+                }
+            }
+        }
+        return super.dispatchTouchEvent(event)
+    }
 
+}
 
-
+//시간 표기 자르기
+fun getTime(time:String):String{
+    val newTime=time.substring(0,10)+" "+time.substring(11,19)
+    return newTime
 }
