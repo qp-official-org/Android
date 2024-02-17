@@ -1,9 +1,7 @@
 package com.example.qp
 
 import android.app.Application
-import android.content.Intent
 import android.util.Log
-import androidx.core.content.ContextCompat.startActivity
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -18,7 +16,11 @@ class AppData : Application() {
         var qpProfileImage = ""
         var qpEmail = ""
         var qpGender = ""
-        var qpPoint = 0
+        var qpRole = ""
+        var qpPoint : Long = 0
+        var qpCreatedAt = ""
+
+        var searchRecord = ArrayList<String>()
 
         // 유저 정보 수정 함수
         fun modifyUserInfo(token: String, userId: Int, userModify: UserModify) {
@@ -70,10 +72,17 @@ class AppData : Application() {
                                 Log.d("ssearch Data1", resp.result.nickname)
                                 Log.d("ssearch Data2", resp.result.profileImage)
                                 Log.d("ssearch Data3", resp.result.email)
-                                Log.d("ssearch Data4", resp.result.gender)
-                                Log.d("ssearch Data5", resp.result.point.toString())
+                                Log.d("ssearch Data4", resp.result.role)
+                                Log.d("ssearch Data5", resp.result.gender)
+                                Log.d("ssearch Data6", resp.result.point.toString())
 
+                                AppData.qpNickname = resp.result.nickname
+                                AppData.qpProfileImage = resp.result.profileImage
                                 AppData.qpEmail = resp.result.email
+                                AppData.qpGender = resp.result.gender
+                                AppData.qpRole = resp.result.role
+                                AppData.qpPoint = resp.result.point
+                                AppData.qpCreatedAt = resp.result.createdAt
                             }
                             else-> Log.d("ssearch Result2", resp.message)
                         }
@@ -85,7 +94,5 @@ class AppData : Application() {
                 }
             })
         }
-
-        var searchRecord = ArrayList<String>()
     }
 }

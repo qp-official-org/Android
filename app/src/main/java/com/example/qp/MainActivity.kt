@@ -58,16 +58,12 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        onBackPressedDispatcher.addCallback(this, onBackPressedCallback)    // 종료함수
-        
-        //백엔드로부터 질문 정보를 가져와 리사이클러뷰를 구성하는 함수
-        getQuestions(page)
-
-        Toast.makeText(applicationContext, "로그인한 유저 아이디: "+AppData.qpUserID.toString(),Toast.LENGTH_SHORT).show()
-
-        // 키 해시 확인용
-        val keyHash = Utility.getKeyHash(this)
-        Log.d("Hash", keyHash)
+        // sharedPreference에 저장된 로컬 데이터 불러오기
+        AppData.qpAccessToken = GlobalApplication.preferences.getString("accessToken", "")
+        AppData.qpUserID = GlobalApplication.preferences.getInt("userID", 0)
+        AppData.searchUserInfo(AppData.qpAccessToken, AppData.qpUserID)
+        Log.d("sharedpp1", AppData.qpAccessToken)
+        Log.d("sharedpp2", AppData.qpUserID.toString())
 
         // 로그인 여부 확인
         UserApiClient.instance.accessTokenInfo { token, error ->
@@ -78,17 +74,31 @@ class MainActivity : AppCompatActivity() {
                 binding.mainLoginSuccessUserImg.visibility = View.GONE
             } else if (token != null) {
                 Log.i("TAG", "로그인 성공 $token")
+
+                var refreshToken: String = GlobalApplication.preferences.getString("refreshToken", "")
+                autoSignIn(AppData.qpAccessToken, refreshToken, AppData.qpUserID)
+
+                Toast.makeText(this, "로그인 성공", Toast.LENGTH_SHORT).show()
                 binding.mainLoginBt.visibility = View.GONE
                 binding.mainLoginSuccessBt.visibility = View.VISIBLE
                 binding.mainLoginSuccessUserImg.visibility = View.VISIBLE
 
-                Log.d("DData", token.toString())
+                // 하단 바에 사용자 닉네임과 포인트 데이터 반영
+                binding.mainBarNicknameTv.text = AppData.qpNickname
+                binding.mainBarCoinTv.text = AppData.qpPoint.toString()
             }
         }
 
-        // 하단 바에 사용자 닉네임과 포인트 데이터 반영
-        binding.mainBarNicknameTv.text = AppData.qpNickname
-        binding.mainBarCoinTv.text = AppData.qpPoint.toString()
+        onBackPressedDispatcher.addCallback(this, onBackPressedCallback)    // 종료함수
+        
+        //백엔드로부터 질문 정보를 가져와 리사이클러뷰를 구성하는 함수
+        getQuestions(page)
+
+        //Toast.makeText(applicationContext, "로그인한 유저 아이디: "+AppData.qpUserID.toString(),Toast.LENGTH_SHORT).show()
+
+        // 키 해시 확인용
+        val keyHash = Utility.getKeyHash(this)
+        Log.d("Hash", keyHash)
 
         // 임시 로그아웃 (로고 클릭시)
         binding.mainLogoIv.setOnClickListener {
@@ -127,6 +137,23 @@ class MainActivity : AppCompatActivity() {
     // 다른 페이지로 갔다가 돌아올 때 동작
     override fun onStart() {
         super.onStart()
+
+        AppData.searchUserInfo(AppData.qpAccessToken, AppData.qpUserID)
+
+        // 로그인 여부 확인
+        UserApiClient.instance.accessTokenInfo { token, error ->
+            if (error != null) {
+                Log.e("TAG", "로그인 실패", error)
+                binding.mainLoginBt.visibility = View.VISIBLE
+                binding.mainLoginSuccessBt.visibility = View.GONE
+            } else if (token != null) {
+                Log.i("TAG", "로그인 성공 $token")
+                binding.mainLoginBt.visibility = View.GONE
+                binding.mainLoginSuccessBt.visibility = View.VISIBLE
+
+                Log.d("DData", token.toString())
+            }
+        }
 
         // 하단 바에 사용자 닉네임과 포인트 데이터 반영
         binding.mainBarNicknameTv.text = AppData.qpNickname
@@ -207,4 +234,35 @@ class MainActivity : AppCompatActivity() {
         })
     }
 
+    // 자동로그인 함수
+    private fun autoSignIn(accessToken: String, refreshToken: String, userID: Int) {
+        val userService = getRetrofit().create(UserInterface::class.java)
+
+        var userAuto = UserAuto(userID)
+
+        userService.autoSignIn(accessToken, refreshToken, userAuto).enqueue(object: Callback<UserResponse<AutoSignIn>>{
+            override fun onResponse(
+                call: Call<UserResponse<AutoSignIn>>,
+                response: Response<UserResponse<AutoSignIn>>
+            ) {
+                Log.d("autosingUp Success", response.toString())
+                val resp = response.body()
+                if(resp!=null){
+                    when(resp.code){
+                        "USER_1000"-> {
+                            Log.d("autoSingUp Result1", resp.message)
+                        }
+                        "TOKEN_8001"-> {
+                            Toast.makeText(this@MainActivity, "토큰이 만료되었습니다. 다시 로그인하기 바랍니다.", Toast.LENGTH_SHORT).show()
+                        }
+                        else->Log.d("autoSingUp Result2", resp.message)
+                    }
+                }
+            }
+
+            override fun onFailure(call: Call<UserResponse<AutoSignIn>>, t: Throwable) {
+                Log.d("autosingUp Fail", t.message.toString())
+            }
+        })
+    }
 }
