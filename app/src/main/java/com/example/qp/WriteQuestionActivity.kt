@@ -276,7 +276,7 @@ class WriteQuestionActivity: AppCompatActivity() {
                             }
 
                         val question = QuestionInfo(
-                            user=UserInfo(AppData.qpUserID,AppData.qpProfileImage,"USER"),
+                            user=UserInfo(AppData.qpUserID,AppData.qpProfileImage,"User"),
                             questionId = resp.result.questionId,
                             title = questionInfo.title,
                             content = questionInfo.content,
@@ -296,7 +296,7 @@ class WriteQuestionActivity: AppCompatActivity() {
                         Toast.makeText(applicationContext, "등록 완료", Toast.LENGTH_SHORT).show()
                     }
                     else-> {
-                        val question = QuestionInfo(
+                        /*val question = QuestionInfo(
                             title = questionInfo.title,
                             content = questionInfo.content,
                             hashtags = newTagList
@@ -309,7 +309,9 @@ class WriteQuestionActivity: AppCompatActivity() {
                         intent.putExtra("question", qJson)
                         startActivity(intent)
                         finish()
-                        Toast.makeText(applicationContext, "등록 완료", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(applicationContext, "등록 완료", Toast.LENGTH_SHORT).show()*/
+                        Log.d("writeQ/FAIL",response.errorBody()?.string().toString())
+                        Toast.makeText(applicationContext,"등록 실패",Toast.LENGTH_SHORT).show()
                     }
                 }
               }

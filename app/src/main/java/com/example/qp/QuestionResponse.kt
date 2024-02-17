@@ -45,7 +45,7 @@ data class QuestionPost(
 
 data class UserInfo(
     @SerializedName(value="userId")val userId: Int,
-    @SerializedName(value="profileImage")val profileImage: String,
+    @SerializedName(value="profileImage")val profileImage: String="",
     @SerializedName(value="role")val role: String
 ):Serializable
 
