@@ -12,6 +12,7 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -59,7 +60,10 @@ class ProfileActivity : AppCompatActivity() {
         binding.profileEditNicknameEt.hint = AppData.qpNickname
         binding.profileMainCoinNumTv.text = AppData.qpPoint.toString()
         binding.profileMainCoinTextTv.text = (AppData.qpPoint / 10).toString()
-        //binding.profileMainDateTv.text
+        var year = AppData.qpCreatedAt.substring(0 until 4)
+        var month = AppData.qpCreatedAt.substring(5 until 7)
+        var day = AppData.qpCreatedAt.substring(8 until 10)
+        binding.profileMainDateTv.text = "${year}년 ${month}월 ${day}일 가입"
 
         // 충전 버튼 색상 변경 및 Dialog 등장
         binding.profileChargekBtn.setOnClickListener {
@@ -126,6 +130,9 @@ class ProfileActivity : AppCompatActivity() {
             //madeDialog(10000, "카카오 페이")
         }
 
+        if(AppData.qpRole == "EXPERT") {        // 전문가일 경우 프로필 수정 불가
+            binding.profileMainEditBtn.visibility = View.GONE
+        }
 
         // 프로필 수정버튼
         binding.profileMainEditBtn.setOnClickListener {
@@ -143,14 +150,18 @@ class ProfileActivity : AppCompatActivity() {
                 AppData.qpNickname = editname
                 binding.profileMainTv.text = AppData.qpNickname
                 binding.profileEditNicknameEt.hint = AppData.qpNickname
+
+                binding.profileEditSettingIv.visibility = View.GONE
+                binding.profileMainTv.visibility = View.VISIBLE
+                binding.profileEditNicknameEt.visibility = View.GONE
+                binding.profileMainEditBtn.visibility = View.VISIBLE
+                binding.profileEditYesBtn.visibility = View.GONE
+                binding.profileEditNoBtn.visibility = View.GONE
+                binding.profileMainImageIv.setAlpha(1f)
             }
-            binding.profileEditSettingIv.visibility = View.GONE
-            binding.profileMainTv.visibility = View.VISIBLE
-            binding.profileEditNicknameEt.visibility = View.GONE
-            binding.profileMainEditBtn.visibility = View.VISIBLE
-            binding.profileEditYesBtn.visibility = View.GONE
-            binding.profileEditNoBtn.visibility = View.GONE
-            binding.profileMainImageIv.setAlpha(1f)
+            else {
+                Toast.makeText(this, "닉네임은 1 ~ 6자로 제한됩니다.",Toast.LENGTH_SHORT).show()
+            }
         }
         binding.profileEditNoBtn.setOnClickListener {
             binding.profileEditSettingIv.visibility = View.GONE
@@ -160,13 +171,6 @@ class ProfileActivity : AppCompatActivity() {
             binding.profileEditYesBtn.visibility = View.GONE
             binding.profileEditNoBtn.visibility = View.GONE
             binding.profileMainImageIv.setAlpha(1f)
-        }
-
-
-        // 임시 데이터 확인
-        binding.profileQpLogo.setOnClickListener {
-            Log.d("proffile Data1", AppData.qpAccessToken)
-            Log.d("proffile Data2", AppData.qpUserID.toString())
         }
     }
 

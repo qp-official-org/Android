@@ -47,16 +47,17 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/profile_main_box"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="130dp"
         app:layout_constraintTop_toBottomOf="@id/main_top_menu"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginHorizontal="15dp"
         android:layout_marginTop="20dp">
 
         <ImageView
-            android:layout_width="370dp"
-            android:layout_height="130dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:src="@drawable/box_orange"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -179,7 +180,7 @@
             android:visibility="gone"/>
         <EditText
             android:id="@+id/profile_edit_nickname_et"
-            android:layout_width="120dp"
+            android:layout_width="110dp"
             android:layout_height="25dp"
             android:hint="큐피"
             android:paddingStart="5dp"
@@ -224,12 +225,13 @@
     
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/profile_chargek_btn"
-        android:layout_width="175dp"
+        android:layout_width="0dp"
         android:layout_height="80dp"
         android:background="@drawable/box_white_lined"
         android:layout_marginTop="20dp"
+        android:layout_marginEnd="5dp"
         app:layout_constraintTop_toBottomOf="@id/profile_main_box"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toStartOf="@id/profile_main_box"
         app:layout_constraintEnd_toStartOf="@id/profile_charge10k_btn">
         <ImageView
             android:id="@+id/profile_chargek_coin_iv"
@@ -270,7 +272,7 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/profile_chargek_naver_btn"
-        android:layout_width="80dp"
+        android:layout_width="78dp"
         android:layout_height="30dp"
         android:background="@drawable/box_white_lined"
         app:layout_constraintStart_toStartOf="@id/profile_chargek_btn"
@@ -301,7 +303,7 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/profile_chargek_kakao_btn"
-        android:layout_width="80dp"
+        android:layout_width="78dp"
         android:layout_height="30dp"
         android:background="@drawable/box_white_lined"
         app:layout_constraintEnd_toEndOf="@id/profile_chargek_btn"
@@ -333,13 +335,14 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/profile_charge10k_btn"
-        android:layout_width="175dp"
+        android:layout_width="0dp"
         android:layout_height="80dp"
         android:background="@drawable/box_white_lined"
         android:layout_marginTop="20dp"
+        android:layout_marginStart="5dp"
         app:layout_constraintTop_toBottomOf="@id/profile_main_box"
         app:layout_constraintStart_toEndOf="@id/profile_chargek_btn"
-        app:layout_constraintEnd_toEndOf="parent">
+        app:layout_constraintEnd_toEndOf="@id/profile_main_box">
         <ImageView
             android:id="@+id/profile_charge10k_coin_iv"
             android:layout_width="20dp"
@@ -379,7 +382,7 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/profile_charge10k_naver_btn"
-        android:layout_width="80dp"
+        android:layout_width="78dp"
         android:layout_height="30dp"
         android:background="@drawable/box_white_lined"
         app:layout_constraintStart_toStartOf="@id/profile_charge10k_btn"
@@ -410,7 +413,7 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/profile_charge10k_kakao_btn"
-        android:layout_width="80dp"
+        android:layout_width="78dp"
         android:layout_height="30dp"
         android:background="@drawable/box_white_lined"
         app:layout_constraintEnd_toEndOf="@id/profile_charge10k_btn"

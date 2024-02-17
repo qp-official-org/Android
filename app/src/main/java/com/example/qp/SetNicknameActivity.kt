@@ -32,8 +32,6 @@ class SetNicknameActivity : AppCompatActivity() {
             UserApiClient.instance.logout { error ->
                 if (error != null) {
                     Toast.makeText(this, "로그아웃 실패 $error", Toast.LENGTH_SHORT).show()
-                }else {
-                    Toast.makeText(this, "로그아웃 성공", Toast.LENGTH_SHORT).show()
                 }
             }
 
@@ -64,7 +62,6 @@ class SetNicknameActivity : AppCompatActivity() {
         // 닉네임 입력 완료 후 다음버튼 누르면 데이터 수정됨
         binding.nicknameNextBtn.setOnClickListener {
             var userName : String = binding.nicknameInputEt.text.toString()
-            Toast.makeText(this, userName, Toast.LENGTH_SHORT).show()
 
             val userModify = UserModify(userName, "")
             AppData.modifyUserInfo(AppData.qpAccessToken, AppData.qpUserID, userModify)

@@ -2,7 +2,6 @@ package com.example.qp
 
 import retrofit2.Call
 import retrofit2.http.Body
-import retrofit2.http.Field
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.PATCH
@@ -20,8 +19,8 @@ interface UserInterface {
     fun autoSignIn(
         @Header("accessToken") accessToken: String,
         @Header("refreshToken") refreshToken: String,
-        @Field("userId") userId: Int
-    ): Call<UserResponse<UserToken>>
+        @Body userAuto: UserAuto
+    ): Call<UserResponse<AutoSignIn>>
 
     @PATCH("/users/{userId}")     // 유저 정보 수정
     fun modifyUserInfo(
