@@ -41,7 +41,7 @@ class QuestionRVAdapter(private val qList: ArrayList<QuestionInfo>)
 
     inner class ViewHolder(val binding: ItemQuestionBinding, val con: Context) : RecyclerView.ViewHolder(binding.root){
         fun bind(questionInfo: QuestionInfo){
-            binding.itemTimeTv.text = questionInfo.createdAt.toString()
+            binding.itemTimeTv.text = getTime(questionInfo.createdAt.toString())
             binding.itemQuestionTv.text = questionInfo.title
             setStringImage(questionInfo.user!!.profileImage, binding.itemUserIv, con)
             val tagList=questionInfo.hashtags

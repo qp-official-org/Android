@@ -6,6 +6,7 @@ import java.io.Serializable
 data class AnswerInfo (
     @SerializedName(value="answerId")var answerId:Long?,
     @SerializedName(value="userId")var userId:Long,
+    @SerializedName(value="nickname")var nickname:String?="",
     @SerializedName(value="title")var title:String,
     @SerializedName(value="content")var content:String="",
     @SerializedName(value="category")var category:String,

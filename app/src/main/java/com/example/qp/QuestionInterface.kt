@@ -87,4 +87,10 @@ interface QuestionInterface {
         @Path("userId")userId:Int,
         @Path("answerId")answerId:Long
     ):Call<LikeAnswerResponse>
+
+    @POST("/report/question/{questionId}")
+    fun reportQ(
+        @Path("questionId")questionId:Int,
+        @Body report:ReportQ
+    ):Call<ReportQResponse>
 }

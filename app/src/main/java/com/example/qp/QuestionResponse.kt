@@ -17,8 +17,8 @@ data class QuestionChart(
     @SerializedName(value="listSize")val listSize: Int?,
     @SerializedName(value="totalPage")val totalPage: Int?,
     @SerializedName(value="totalElements")val totalElements: Long?,
-    @SerializedName(value="isFirst")val isFirst: Boolean?,
-    @SerializedName(value="isLast")val isLast: Boolean?
+    @SerializedName(value="first")val first: Boolean?,
+    @SerializedName(value="last")val last: Boolean?
 ):Serializable
 
 data class QuestionInfo(
@@ -122,4 +122,24 @@ data class LikeAnswerResponse(
 
 data class LikeAnswerResult(
     @SerializedName(value="answerLikeStatus")val answerLikeStatus:String?
+):Serializable
+
+data class ReportQ(
+    @SerializedName(value="userId")var userId:Long,
+    @SerializedName(value="content")var content:String
+):Serializable
+
+data class ReportQResponse(
+    @SerializedName(value="isSuccess")val isSuccess: Boolean?,
+    @SerializedName(value="code")val code: String,
+    @SerializedName(value="message")val message: String,
+    @SerializedName(value="result")val result:LikeAnswerResult
+):Serializable
+
+data class ReportQResult(
+    @SerializedName(value="questionId")var questionId:Long,
+    @SerializedName(value="userId")var userId:Long,
+    @SerializedName(value="questionReportId")var questionReportId:Int,
+    @SerializedName(value="content")var content:String,
+    @SerializedName(value="createdAt")var createdAt:String
 ):Serializable

@@ -13,6 +13,7 @@ import androidx.activity.OnBackPressedCallback
 import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.qp.databinding.ActivityMainBinding
 import com.google.gson.Gson
 import retrofit2.Call
@@ -25,6 +26,8 @@ class MainActivity : AppCompatActivity() {
 
     lateinit var binding: ActivityMainBinding
     private var qDatas = ArrayList<QuestionInfo>()
+    private var page = 0
+    private var last = false
 
     // 뒤로가기 버튼 눌렀을 때 발동되는 함수 (두번 눌러야 종료)
     private val onBackPressedCallback = object : OnBackPressedCallback(true) {
@@ -58,7 +61,7 @@ class MainActivity : AppCompatActivity() {
         onBackPressedDispatcher.addCallback(this, onBackPressedCallback)    // 종료함수
         
         //백엔드로부터 질문 정보를 가져와 리사이클러뷰를 구성하는 함수
-        getQuestions()
+        getQuestions(page)
 
         Toast.makeText(applicationContext, "로그인한 유저 아이디: "+AppData.qpUserID.toString(),Toast.LENGTH_SHORT).show()
 
@@ -72,10 +75,12 @@ class MainActivity : AppCompatActivity() {
                 Log.e("TAG", "로그인 실패", error)
                 binding.mainLoginBt.visibility = View.VISIBLE
                 binding.mainLoginSuccessBt.visibility = View.GONE
+                binding.mainLoginSuccessUserImg.visibility = View.GONE
             } else if (token != null) {
                 Log.i("TAG", "로그인 성공 $token")
                 binding.mainLoginBt.visibility = View.GONE
                 binding.mainLoginSuccessBt.visibility = View.VISIBLE
+                binding.mainLoginSuccessUserImg.visibility = View.VISIBLE
 
                 Log.d("DData", token.toString())
             }
@@ -97,6 +102,7 @@ class MainActivity : AppCompatActivity() {
                     AppData.searchRecord.clear()
                     binding.mainLoginBt.visibility = View.VISIBLE
                     binding.mainLoginSuccessBt.visibility = View.GONE
+                    binding.mainLoginSuccessUserImg.visibility = View.GONE
                 }
             }
         }
@@ -115,6 +121,7 @@ class MainActivity : AppCompatActivity() {
         binding.mainLoginSuccessBt.setOnClickListener{
             startActivity(Intent(this@MainActivity, ProfileActivity::class.java))
         }
+        moreQuestion()
     }
 
     // 다른 페이지로 갔다가 돌아올 때 동작
@@ -143,10 +150,10 @@ class MainActivity : AppCompatActivity() {
         binding.mainBarCoinTv.text = AppData.qpPoint.toString()
     }
 
-    private fun getQuestions() {
+    private fun getQuestions(p: Int) {
         val questionService = getRetrofit().create(QuestionInterface::class.java)
 
-        questionService.getQuestions(0, 10, null) //스크롤에 따라 추가 페이징 할 것!
+        questionService.getQuestions(p, 10, null)
             .enqueue(object: Callback<QuestionResponse>{
                 override fun onResponse(
                     call: Call<QuestionResponse>,
@@ -161,6 +168,7 @@ class MainActivity : AppCompatActivity() {
                             "QUESTION_2000" -> {
                                 Log.d("SUCCESS/DATA_LOAD", "리사이클러뷰의 데이터로 구성됩니다")
                                 qDatas.addAll(questionResponse.result.questions)
+                                last = questionResponse.result.last!!
                                 setQuestionRVAdapter()
                                 Log.d("getQsResp",qDatas.toString())
                             }
@@ -178,10 +186,31 @@ class MainActivity : AppCompatActivity() {
             })
     }
 
+    //마지막 질문일 때 추가 데이터 조회
+    private fun moreQuestion(){
+        binding.mainQuestionRv.addOnScrollListener(object: RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+
+                val rvPosition = (recyclerView.layoutManager as GridLayoutManager)?.findLastCompletelyVisibleItemPosition()
+                val totalCount = binding.mainQuestionRv.adapter!!.itemCount - 1
+                if (rvPosition==totalCount && !last) {
+                    page++
+                    getQuestions(page)
+                }
+            }
+        })
+    }
+
     private fun setQuestionRVAdapter(){
         val questionRVAdapter = QuestionRVAdapter(qDatas)
-        binding.mainQuestionRv.adapter = questionRVAdapter
-        binding.mainQuestionRv.layoutManager = GridLayoutManager(applicationContext, 2)
+        if(page == 0){
+            binding.mainQuestionRv.adapter = questionRVAdapter
+            binding.mainQuestionRv.layoutManager = GridLayoutManager(applicationContext, 2)
+        }
+        else{
+            binding.mainQuestionRv.adapter!!.notifyDataSetChanged()
+        }
 
         //특정 질문 클릭 시 질문상세화면으로 전환
         questionRVAdapter.setMyItemClickListner(object : QuestionRVAdapter.MyItemClickListner{
@@ -190,7 +219,6 @@ class MainActivity : AppCompatActivity() {
                 val gson = Gson()
                 val qJson = gson.toJson(questionInfo)
                 intent.putExtra("question", qJson)
-
                 startActivity(intent)
             }
         })
