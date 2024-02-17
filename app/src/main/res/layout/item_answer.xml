@@ -9,7 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent"
-        android:paddingBottom="15dp"
+        android:paddingBottom="10dp"
         android:layout_marginVertical="15dp"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:background="@drawable/box_white">
@@ -19,8 +19,8 @@
             android:layout_height="55dp"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            android:layout_marginHorizontal="15dp"
-            android:layout_marginVertical="15dp"
+            android:layout_marginHorizontal="10dp"
+            android:layout_marginVertical="10dp"
             android:src="@drawable/user" />
         <TextView
             android:id="@+id/answer_user_name_tv"
@@ -32,14 +32,21 @@
             android:layout_marginHorizontal="15dp"
             android:text="교수명"
             android:textStyle="bold"
-            android:textSize="17dp"/>
+            android:textSize="15dp"/>
+        <TextView
+            android:id="@+id/answer_update_time_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/answer_user_name_tv"
+            app:layout_constraintStart_toStartOf="@id/answer_user_name_tv"
+            android:textSize="7dp"/>
         <TextView
             android:id="@+id/answer_content_tv"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:layout_constraintTop_toBottomOf="@id/answer_user_img"
             app:layout_constraintStart_toStartOf="@id/answer_user_img"
-            android:layout_marginTop="15dp"
+            android:layout_marginTop="5dp"
             android:layout_marginHorizontal="15dp"
             android:text="답변 내용"
             android:textSize="12dp"/>
@@ -130,8 +137,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:layout_constraintTop_toBottomOf="@id/answer_comment_like_layout"
-            android:layout_marginTop="5dp"
-            android:layout_marginHorizontal="10dp">
+            android:layout_marginTop="0dp"
+            android:layout_marginHorizontal="10dp"
+            android:visibility="gone">
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/answer_comment_rv"
                 android:layout_width="match_parent"
@@ -182,7 +190,7 @@
                         app:layout_constraintTop_toBottomOf="@id/write_comment_user_img"
                         app:layout_constraintStart_toStartOf="@+id/write_comment_user_img"
                         android:layout_marginHorizontal="15dp"
-                        android:layout_marginTop="15dp"
+                        android:layout_marginTop="5dp"
                         android:padding="10dp"
                         android:background="@color/border"
                         android:hint="답변을 입력해주세요"

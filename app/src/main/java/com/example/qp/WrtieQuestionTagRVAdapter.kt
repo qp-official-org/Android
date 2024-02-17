@@ -1,13 +1,19 @@
 package com.example.qp
 
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.example.qp.databinding.ItemHashtagBinding
 
-class WriteQuestionTagRVAdapter(context: Context):RecyclerView.Adapter<WriteQuestionTagRVAdapter.ViewHolder>() {
+class WriteQuestionTagRVAdapter(val activity: AppCompatActivity, val text: ArrayList<String>?):RecyclerView.Adapter<WriteQuestionTagRVAdapter.ViewHolder>() {
     private  var items=ArrayList<String>()
+    init {
+        if (text != null) {
+            items.addAll(text)
+        }
+    }
+
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
@@ -28,6 +34,14 @@ class WriteQuestionTagRVAdapter(context: Context):RecyclerView.Adapter<WriteQues
 
             binding.hashtagRemoveBtn.setOnClickListener {
                 removeItem(position)
+                if(activity is SearchActivity){
+                    AppData.searchRecord.removeAt(position)
+                }
+            }
+            binding.hashtagText.setOnClickListener{
+                if(activity is SearchActivity){
+                    activity.textListner.onQueryTextSubmit(items[position])
+                }
             }
         }
     }

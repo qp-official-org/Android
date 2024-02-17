@@ -30,6 +30,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
                 <ImageView
+                    android:id="@+id/detailed_logo_iv"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
                     android:src="@drawable/app_logo"
@@ -68,7 +69,7 @@
                 app:layout_constraintTop_toBottomOf="@id/detailed_top_menu"
                 app:layout_constraintLeft_toLeftOf="parent"
                 android:layout_marginTop="15dp"
-                android:layout_marginStart="5dp"
+                android:layout_marginStart="10dp"
                 >
                 <ImageView
                     android:layout_width="wrap_content"
@@ -88,7 +89,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/detailed_top_menu"
                 android:layout_marginTop="15dp"
-                android:layout_marginEnd="5dp">
+                android:layout_marginEnd="10dp">
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -125,20 +126,30 @@
                     android:paddingBottom="15dp"
                     android:background="@drawable/box_white">
 
-                    <ImageView
-                        android:id="@+id/question_user_img"
+                    <LinearLayout
+                        android:id="@+id/question_user_border"
                         android:layout_width="55dp"
                         android:layout_height="55dp"
+                        android:gravity="center"
+                        android:padding="1dp"
+                        android:layout_marginHorizontal="10dp"
+                        android:layout_marginVertical="10dp"
+                        android:orientation="vertical"
+                        android:background="@drawable/border_profile_img"
                         app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        android:layout_marginHorizontal="15dp"
-                        android:layout_marginVertical="15dp"
-                        android:src="@drawable/user" />
+                        app:layout_constraintStart_toStartOf="parent">
+                        <ImageView
+                            android:id="@+id/question_user_img"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:src="@drawable/user" />
+                    </LinearLayout>
+
                     <LinearLayout
                         android:id="@+id/question_hashtag_layout"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        app:layout_constraintTop_toTopOf="@id/question_user_img"
+                        app:layout_constraintTop_toTopOf="@id/question_user_border"
                         app:layout_constraintStart_toStartOf="@id/detailed_question_title_tv"
                         android:orientation="horizontal">
                         <TextView
@@ -146,40 +157,37 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginHorizontal="5dp"
-                            android:text="#해시태그1"
                             android:textSize="10dp"/>
                         <TextView
                             android:id="@+id/hashtag_2"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginHorizontal="5dp"
-                            android:text="#해시태그1"
                             android:textSize="10dp"/>
                         <TextView
                             android:id="@+id/hashtag_3"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginHorizontal="5dp"
-                            android:text="#해시태그1"
                             android:textSize="10dp"/>
 
                     </LinearLayout>
                     <TextView
                         android:id="@+id/detailed_question_title_tv"
-                        android:layout_width="wrap_content"
+                        android:layout_width="200dp"
                         android:layout_height="wrap_content"
-                        app:layout_constraintTop_toTopOf="@+id/question_user_img"
-                        app:layout_constraintBottom_toBottomOf="@id/question_user_img"
-                        app:layout_constraintStart_toEndOf="@id/question_user_img"
-                        android:layout_marginHorizontal="15dp"
+                        app:layout_constraintTop_toTopOf="@+id/question_user_border"
+                        app:layout_constraintBottom_toBottomOf="@id/question_user_border"
+                        app:layout_constraintStart_toEndOf="@id/question_user_border"
+                        android:layout_marginHorizontal="10dp"
                         android:text="질문 제목"
                         android:textStyle="bold"
-                        android:textSize="17dp"/>
+                        android:textSize="15dp"/>
                     <TextView
                         android:id="@+id/detailed_question_time_tv"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        app:layout_constraintBottom_toBottomOf="@id/question_user_img"
+                        app:layout_constraintBottom_toBottomOf="@id/question_user_border"
                         app:layout_constraintStart_toStartOf="@+id/detailed_question_title_tv"
                         android:text="시간"
                         android:textSize="10dp"/>
@@ -188,9 +196,9 @@
                         android:id="@+id/detailed_question_content_tv"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        app:layout_constraintTop_toBottomOf="@id/question_user_img"
-                        app:layout_constraintStart_toStartOf="@id/question_user_img"
-                        android:layout_marginTop="15dp"
+                        app:layout_constraintTop_toBottomOf="@id/question_user_border"
+                        app:layout_constraintStart_toStartOf="@id/question_user_border"
+                        android:layout_marginTop="10dp"
                         android:layout_marginHorizontal="15dp"
                         android:text="질문 내용"
                         android:textSize="12dp"/>
@@ -234,6 +242,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     app:layout_constraintTop_toBottomOf="@id/answer_border_line"
+                    android:layout_marginTop="10dp"
                      />
 
                 <TextView
@@ -268,11 +277,11 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     android:background="@drawable/box_white_lined"
                     android:paddingHorizontal="20dp"
-                    android:paddingVertical="7dp"
+                    android:paddingVertical="5dp"
                     android:layout_marginVertical="10dp"
                     android:text="답변하기"
                     android:textColor="@color/qp"
-                    android:textSize="13dp"
+                    android:textSize="10dp"
                     />
 
 >
@@ -282,6 +291,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="10dp"
+                        android:layout_marginTop="5dp"
                         app:layout_constraintTop_toBottomOf="@+id/notice_container"
                         android:layout_marginHorizontal="15dp"
                         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
@@ -308,18 +318,105 @@
 
     </androidx.core.widget.NestedScrollView>
 
-
-
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/profile_bar"
+    <Button
+        android:id="@+id/detailed_login_btn"
         android:layout_width="match_parent"
         android:layout_height="70dp"
-        android:background="@drawable/box_orange"
-        >
+        android:text="로그인 하기"
+        android:textStyle="bold"
+        android:textSize="20dp"
+        android:textColor="@color/qp"
+        android:background="@drawable/login_button_design"
+        app:backgroundTint="@null"
+        app:layout_constraintBottom_toBottomOf="parent" />
 
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/detailed_login_success_bt"
+        android:layout_width="match_parent"
+        android:layout_height="85dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:visibility="gone">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="70dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:src="@drawable/login_orange_button_design"/>
+        <ImageView
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:src="@drawable/profile"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginBottom="-15dp"/>
+        <TextView
+            android:id="@+id/detailed_bar_nickname_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="큐피"
+            android:textColor="@color/white"
+            android:textStyle="bold"
+            android:textSize="18sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginStart="40dp"
+            android:layout_marginTop="25dp"/>
+        <TextView
+            android:id="@+id/detailed_bar_nickname2_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="님"
+            android:textColor="@color/white"
+            android:textStyle="bold"
+            android:textSize="18sp"
+            app:layout_constraintStart_toEndOf="@id/detailed_bar_nickname_tv"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="25dp"/>
+        <ImageView
+            android:id="@+id/detailed_bar_coin_iv"
+            android:layout_width="18dp"
+            android:layout_height="18dp"
+            android:src="@drawable/coin"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginStart="20dp"
+            android:layout_marginBottom="11dp"/>
+        <TextView
+            android:id="@+id/detailed_bar_coin_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="800"
+            android:textColor="@color/white"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@id/detailed_bar_coin_iv"
+            android:layout_marginStart="7dp"
+            android:layout_marginBottom="10dp"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="point"
+            android:textColor="@color/white"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@id/detailed_bar_coin_tv"
+            android:layout_marginStart="5dp"
+            android:layout_marginBottom="10dp"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="충전하러 가기 >"
+            android:textColor="@color/white"
+            android:textSize="10sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginEnd="20dp"
+            android:layout_marginBottom="10dp"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
-
-
-
 
 </LinearLayout>

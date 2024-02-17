@@ -81,12 +81,25 @@
             android:layout_marginTop="5dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/search_recent_title_tv" />
+        <TextView
+            android:id="@+id/search_no_record_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="검색 기록이 없습니다"
+            android:textSize="20dp"
+            android:visibility="gone"
+            android:layout_marginTop="40dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/search_recent_line_iv" />
         <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/search_recent_record_rv"
             android:layout_width="match_parent"
-            android:layout_height="200dp"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            android:layout_height="wrap_content"
+            app:layoutManager="com.google.android.flexbox.FlexboxLayoutManager"
             android:orientation="horizontal"
-            tools:listitem="@layout/item_recent_word"
+            android:layout_marginTop="10dp"
+            tools:listitem="@layout/item_hashtag"
             app:layout_constraintTop_toBottomOf="@id/search_recent_line_iv"
             app:layout_constraintStart_toStartOf="@id/search_recent_line_iv" />
 

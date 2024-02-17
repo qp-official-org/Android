@@ -1,30 +1,69 @@
 package com.example.qp
 
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
+import androidx.annotation.RequiresApi
+
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.qp.databinding.ActivitySearchBinding
+import com.google.android.flexbox.FlexDirection
+import com.google.android.flexbox.FlexWrap
+import com.google.android.flexbox.FlexboxLayoutManager
 import com.google.gson.Gson
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class SearchActivity : AppCompatActivity() {
 
     lateinit var binding: ActivitySearchBinding
-    private var original = ArrayList<Question>()
-    private var filtered = ArrayList<Question>()
+    private var filtered = ArrayList<QuestionInfo>()
+    private lateinit var adapter: WriteQuestionTagRVAdapter
+    private var page = 0
+    private var last = false
+    private var needMore = false
+    val textListner = object : SearchView.OnQueryTextListener {
+        override fun onQueryTextSubmit(query: String?): Boolean {
+            needMore = false
+            page = 0
+            getfilteredQuestions(page, query)
+            moreFiltered(query)
+            record(query)
+            binding.searchRecentWord.isVisible = false
+            binding.searchInputSv.clearFocus() // 키보드 숨기기
+            return true
+        }
+        override fun onQueryTextChange(newText: String?): Boolean {
+            //검색어 변경 시는 별다른 액션 X
+            return false
+        }
+    }
 
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivitySearchBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        //최근 검색어 리사이클러뷰 설정
+        val layoutManager = FlexboxLayoutManager(this)
+        layoutManager.flexDirection = FlexDirection.ROW    //아이템 가로 나열
+        layoutManager.flexWrap = FlexWrap.WRAP             //필요에 따라 다음 줄 이동
+        binding.searchRecentRecordRv.layoutManager = layoutManager
+        Log.d("최근 검색어 개수", AppData.searchRecord.size.toString())
+        adapter = WriteQuestionTagRVAdapter(this@SearchActivity, AppData.searchRecord)
+        binding.searchRecentRecordRv.adapter = adapter
+        //검색기록 없을 때 안내 멘트
+        binding.searchNoRecordTv.isVisible = AppData.searchRecord.size == 0
+
         binding.searchBackIv.setOnClickListener{
-            val intent = Intent(this@SearchActivity, MainActivity::class.java)
-            intent.putExtra("isLogin", 1)
-            startActivity(intent)
+            finish()
         }
 
         searchResult()
@@ -32,70 +71,121 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun searchResult(){
-        original = intent.getSerializableExtra("qDatas") as ArrayList<Question>
-        filtered.addAll(original)
-
-        val questionRVAdapter = QuestionRVAdapter(filtered)
-        binding.searchMatchQuestionRv.adapter = questionRVAdapter
-        binding.searchMatchQuestionRv.layoutManager = GridLayoutManager(applicationContext, 2)
-
-        val textListner = object : SearchView.OnQueryTextListener {
-            override fun onQueryTextSubmit(query: String?): Boolean {
-                Log.d("qDatas 개수", original.size.toString())
-                val selected = ArrayList<Question>()
-                for(i in original){
-                    val temp = i.title
-                    if( temp?.contains(query.toString()) == true){
-                        selected.add(i)
-                    }
-                }
-                binding.searchRecentWord.isVisible = false
-                if(selected.size == 0){
-                    //이전 결과
-                    binding.searchMatchQuestionRv.isVisible = false
-                    //검색 결과 X
-                    binding.searchRegisterInfo.isVisible = true
-                    binding.searhNoResultTv.isVisible = true
-                }
-                else{
-                    //이전 결과
-                    binding.searchRegisterInfo.isVisible = false
-                    binding.searhNoResultTv.isVisible = false
-                    //검색 결과 O
-                    filtered = selected
-                    questionRVAdapter.setData(filtered)
-                    questionRVAdapter.notifyDataSetChanged()
-                    binding.searchMatchQuestionRv.isVisible = true
-                }
-                // 키보드 숨기기
-                binding.searchInputSv.clearFocus();
-                return true
-            }
-            override fun onQueryTextChange(newText: String?): Boolean {
-                //검색어 변경 시는 별다른 액션 X
-                return false
-            }
-        }
-
         binding.searchInputSv.setOnQueryTextListener(textListner)
         binding.searchImageBt.setOnClickListener {
             textListner.onQueryTextSubmit(binding.searchInputSv.query.toString())
         }
+    }
 
-        questionRVAdapter.setMyItemClickListner(object : QuestionRVAdapter.MyItemClickListner{
-            override fun onItemClick(question: Question) {
-                val intent = Intent(this@SearchActivity, DetailedActivity::class.java)
-                val gson = Gson()
-                val qJson = gson.toJson(question)
-                intent.putExtra("question", qJson)
-                startActivity(intent)
+    private fun record(input: String?){
+        if(!input.isNullOrEmpty()){
+            if(adapter.dupCheck(input.trim())){
+                AppData.searchRecord.add(input.trim())
+                adapter.addItem(input.trim())
+            }
+        }
+    }
+
+    private fun getfilteredQuestions(p: Int, query: String?){
+        val questionService = getRetrofit().create(QuestionInterface::class.java)
+
+        questionService.getQuestions(p, 10, query)
+            .enqueue(object: Callback<QuestionResponse> {
+                override fun onResponse(
+                    call: Call<QuestionResponse>,
+                    response: Response<QuestionResponse>
+                ) {
+                    if(response.isSuccessful && response.code() == 200){
+                        val questionResponse: QuestionResponse = response.body()!!
+
+                        Log.d("Q-RESPONSE/SUCCESS", questionResponse.toString())
+
+                        when(questionResponse.code){
+                            "QUESTION_2000" -> {
+                                Log.d("SUCCESS/DATA_LOAD", "리사이클러뷰의 데이터로 구성됩니다")
+                                if(!needMore) { filtered.clear() }
+                                filtered.addAll(questionResponse.result.questions)
+                                last = questionResponse.result.last!!
+                                setQuestionRVAdapter(filtered)
+                                Log.d("getFdResp",filtered.toString())
+                            }
+                            else -> {
+                                Log.d("SUCCESS/DATA_FAILURE", "응답 코드 오류입니다")
+                            }
+                        }
+                    }
+                }
+
+                override fun onFailure(call: Call<QuestionResponse>, t: Throwable) {
+                    Log.d("Q-RESPONSE/FAILURE", t.message.toString())
+                }
+
+            })
+    }
+
+    private fun moreFiltered(sameInput: String?){
+        binding.searchMatchQuestionRv.addOnScrollListener(object: RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+
+                needMore = true
+                val rvPosition = (recyclerView.layoutManager as GridLayoutManager)?.findLastCompletelyVisibleItemPosition()
+                val totalCount = binding.searchMatchQuestionRv.adapter!!.itemCount - 1
+                if (rvPosition==totalCount && !last) {
+                    page++
+                    getfilteredQuestions(page, sameInput)
+                }
             }
         })
     }
 
+    private fun setQuestionRVAdapter(filtered: ArrayList<QuestionInfo>){
+        if(filtered.size == 0){
+            //이전 결과
+            binding.searchMatchQuestionRv.isVisible = false
+            //검색 결과 X
+            binding.searchRegisterInfo.isVisible = true
+            binding.searhNoResultTv.isVisible = true
+        }
+        else{
+            //이전 결과
+            binding.searchRegisterInfo.isVisible = false
+            binding.searhNoResultTv.isVisible = false
+            //검색 결과 O
+            binding.searchMatchQuestionRv.isVisible = true
+
+            val questionRVAdapter = QuestionRVAdapter(filtered)
+            if(page == 0){
+                binding.searchMatchQuestionRv.adapter = questionRVAdapter
+                binding.searchMatchQuestionRv.layoutManager = GridLayoutManager(applicationContext, 2)
+            }
+            else{
+                binding.searchMatchQuestionRv.adapter!!.notifyDataSetChanged()
+            }
+
+            questionRVAdapter.setMyItemClickListner(object : QuestionRVAdapter.MyItemClickListner{
+                @RequiresApi(Build.VERSION_CODES.TIRAMISU)
+                override fun onItemClick(questionInfo: QuestionInfo) {
+                    val intent = Intent(this@SearchActivity, DetailedActivity::class.java)
+                    val gson = Gson()
+                    val qJson = gson.toJson(questionInfo)
+                    intent.putExtra("question", qJson)
+                    startActivity(intent)
+                }
+            })
+        }
+    }
+
     private fun register(){
         binding.searchRegisterBt.setOnClickListener {
-            startActivity(Intent(this@SearchActivity, WriteQuestionActivity::class.java))
+            if(AppData.qpUserID != 0){
+                val intent = Intent(this@SearchActivity, WriteQuestionActivity::class.java)
+                startActivity(intent)
+            }
+            else{
+                val dialog = SimpleDialog()
+                dialog.show(supportFragmentManager,"dialog")
+            }
         }
     }
 

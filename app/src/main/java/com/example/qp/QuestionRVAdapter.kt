@@ -1,16 +1,20 @@
 package com.example.qp
 
-import android.util.Log
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.CircleCrop
+import com.bumptech.glide.request.RequestOptions
 import com.example.qp.databinding.ItemQuestionBinding
 
-class QuestionRVAdapter(private val qList: ArrayList<Question>)
+class QuestionRVAdapter(private val qList: ArrayList<QuestionInfo>)
     : RecyclerView.Adapter<QuestionRVAdapter.ViewHolder>() {
 
     interface MyItemClickListner{
-        fun onItemClick(question: Question)
+        fun onItemClick(questionInfo: QuestionInfo)
     }
     private lateinit var myItemClickListner: MyItemClickListner
     fun setMyItemClickListner(itemClickListner: MyItemClickListner){
@@ -20,13 +24,13 @@ class QuestionRVAdapter(private val qList: ArrayList<Question>)
     override fun onCreateViewHolder(
         viewGroup: ViewGroup,
         viewType: Int
-    ): QuestionRVAdapter.ViewHolder {
+    ): ViewHolder {
         val binding: ItemQuestionBinding =ItemQuestionBinding.inflate(LayoutInflater.from(viewGroup.context), viewGroup, false)
 
-        return ViewHolder(binding)
+        return ViewHolder(binding, viewGroup.context)
     }
 
-    override fun onBindViewHolder(holder: QuestionRVAdapter.ViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.bind(qList[position])
         holder.itemView.setOnClickListener{
             myItemClickListner.onItemClick(qList[position])
@@ -35,20 +39,41 @@ class QuestionRVAdapter(private val qList: ArrayList<Question>)
 
     override fun getItemCount(): Int = qList.size
 
-    inner class ViewHolder(val binding: ItemQuestionBinding) : RecyclerView.ViewHolder(binding.root){
-        fun bind(question: Question){
-            binding.itemTimeTv.text = question.time
-            binding.itemQuestionTv.text = question.title
-            binding.itemCategory1Tv.text = question.tag1
-            binding.itemCategory2Tv.text = question.tag2
-            binding.itemCategory3Tv.text = question.tag3
+    inner class ViewHolder(val binding: ItemQuestionBinding, val con: Context) : RecyclerView.ViewHolder(binding.root){
+        fun bind(questionInfo: QuestionInfo){
+            binding.itemTimeTv.text = getTime(questionInfo.createdAt.toString())
+            binding.itemQuestionTv.text = questionInfo.title
+            setStringImage(questionInfo.user!!.profileImage, binding.itemUserIv, con)
+            val tagList=questionInfo.hashtags
+            if(tagList?.size==1){
+                binding.itemCategory1Tv.text = "#"+tagList[0].hashtag
+                binding.itemCategory2Tv.text = ""
+                binding.itemCategory3Tv.text = ""
+            }
+            else if(tagList?.size==2){
+                binding.itemCategory1Tv.text = "#"+tagList[0].hashtag
+                binding.itemCategory2Tv.text = "#"+tagList[1].hashtag
+                binding.itemCategory3Tv.text = ""
+            }
+            else if(tagList?.size==3){
+                binding.itemCategory1Tv.text = "#"+tagList[0].hashtag
+                binding.itemCategory2Tv.text = "#"+tagList[1].hashtag
+                binding.itemCategory3Tv.text = "#"+tagList[2].hashtag
+            }
+            else{ //해시태그 X
+                binding.itemCategory1Tv.text = ""
+                binding.itemCategory2Tv.text = ""
+                binding.itemCategory3Tv.text = ""
+            }
         }
     }
 
-    fun setData(filtered: ArrayList<Question>){
-        qList.clear()
-        qList.addAll(filtered)
-        Log.d("filtered 개수", qList.size.toString())
+    // 이미지뷰에 문자열 형태의 이미지를 설정
+    fun setStringImage(imageUrl: String, imageView: ImageView, con: Context) {
+        Glide.with(con)
+            .load(imageUrl)
+            .apply(RequestOptions().transform(CircleCrop()))
+            .into(imageView)
     }
 
 }

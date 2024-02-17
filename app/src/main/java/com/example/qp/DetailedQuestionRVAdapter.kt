@@ -18,16 +18,29 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.qp.databinding.ItemAnswerBinding
 import com.example.qp.databinding.ItemWriteAnswerBinding
+import com.kakao.sdk.user.UserApiClient
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class DetailedQuestionRVAdapter(context:Context): RecyclerView.Adapter<DetailedQuestionRVAdapter.ViewHolder>() {
-    val items= ArrayList<Answer>()
-    private var isCommentShown=false
+    val items= ArrayList<AnswerInfo>()
     private var appContext=context
+    private var commentAdapterList=ArrayList<DetailedAnswerCommentRVAdapter>()
+
+    private var isLogin=false
 
 
     interface ItemClickListener{
-        fun onItemRemove(position:Int)
-        fun onAnswerModify(position:Int)
+        fun onItemRemove(position:Int,answerId:Long)
+        fun onAnswerModify(position:Int,answerId:Long)
+
+        fun showLoginMsg()
     }
 
     private lateinit var myItemClickListener: ItemClickListener
@@ -40,173 +53,172 @@ class DetailedQuestionRVAdapter(context:Context): RecyclerView.Adapter<DetailedQ
         return ViewHolder(binding)
     }
     override fun onBindViewHolder(holder: DetailedQuestionRVAdapter.ViewHolder, position: Int) {
+        checkLogin()
         holder.bind(position)
-
     }
     override fun getItemCount(): Int =items.size
+
+
+    fun checkLogin(){
+        UserApiClient.instance.accessTokenInfo { token, error ->
+            if (error != null) {
+                Log.e("TAG", "로그인 실패", error)
+            } else if (token != null) {
+                isLogin=true
+                Log.i("TAG", "로그인 성공 $token")
+            }
+        }
+    }
+
 
     inner class ViewHolder(val binding:ItemAnswerBinding) : RecyclerView.ViewHolder(binding.root) {
         private val answerContentView=binding.answerContentTv
         private val profileView=itemView.findViewById<ImageView>(R.id.question_user_img)
         fun bind(position: Int) {
 
-            lateinit var commentAdapter:DetailedAnswerCommentRVAdapter
-            if(items[position].commentList!=null){
-                commentAdapter=DetailedAnswerCommentRVAdapter(appContext,items[position].commentList!!)
-                binding.answerCommentRv.adapter=commentAdapter
-            }
-            commentAdapter.setMyItemClickListener(object :
-                DetailedAnswerCommentRVAdapter.CommentClickListener{
-                override fun onItemRemove(pos: Int) {
-                    commentAdapter.removeItem(pos)
-                    commentNumberUpdate(items[position])
-                }
+            commentAdapterList.add(position,DetailedAnswerCommentRVAdapter(appContext))
+            commentAdapterList[position].addItems(ArrayList<AnswerInfo>())
+            binding.answerCommentRv.adapter=commentAdapterList[position]
 
-                override fun onCommentModify(position: Int) {
-                    var content=commentAdapter.getContent(position)
+            CoroutineScope(Dispatchers.Main).launch{
 
-                    val writeBtn=itemView.findViewById<TextView>(R.id.write_comment_btn)
-                    val writeLayout=binding.writeCommentEdit
-                    writeLayout.text= Editable.Factory.getInstance().newEditable(content)
+                //댓글(자식 답변) 받아오기
+                CoroutineScope(Dispatchers.IO).async {
+                    getChildAnswerService(items[position].answerId!!,position)
+                    delay(200)
+                }.await()
 
-                    writeBtn.setOnClickListener {
-                        val newContent=writeLayout.text.toString()
-                        commentAdapter.modifyComment(position,newContent)
-                        writeLayout.text= Editable.Factory.getInstance().newEditable("")
+                //댓글에 대한 동작(수정&삭제)
+                commentAdapterList[position].setMyItemClickListener(object :
+                    DetailedAnswerCommentRVAdapter.CommentClickListener{
+
+                    override fun onItemRemove(pos: Int,answerId: Long) {   //댓글 삭제시
+                        deleteChildAnswerService(answerId,position,pos)
+                    }
+                    override fun onCommentModify(pos: Int,answerId: Long) {   //댓글 수정 시
+                        var content=commentAdapterList[position].getContent(pos)
+
+                        //댓글 작성 레이아웃에 텍스트 삽입
+                        val writeBtn=itemView.findViewById<TextView>(R.id.write_comment_btn)
+                        val writeLayout=binding.writeCommentEdit
+                        writeLayout.text= Editable.Factory.getInstance().newEditable(content)
+
+                        //댓글 재등록
+                        writeBtn.setOnClickListener {
+                            val newContent=writeLayout.text.toString()
+                            modifyChildAnswerService(answerId,"title",newContent,position,pos)
+                        }
+                    }
+                })
+
+                var likeNum=items[position].likes
+                var isLiked=false   //사용자가 좋아요 누른지 여부 (서버 데이터?)
+                var isCommentShown=false
+
+                var isExpert=false  //전문가 답변 여부(서버에서 받아오기?)
+                var isBought=false  //구매 여부(서버)
+                //binding.commentLayout.visibility=View.GONE
+
+
+                setOnclick(position, commentAdapterList[position])
+
+
+                //댓글 펼치기/접기
+                binding.answerCommentBtnLayout.setOnClickListener {
+                    val commentRv=binding.commentLayout
+                    if(isCommentShown){
+                        commentRv.visibility=View.GONE
+                        isCommentShown=false
+                    }
+                    else{
+                        commentRv.visibility=View.VISIBLE
+                        isCommentShown=true
                     }
                 }
-            })
 
-            var isLiked=isLiked()
-            setInit(position)
-            setOnclick(position, commentAdapter)
+                setInit(position,likeNum?.toInt()?:0,isLiked,isExpert && !isBought)
 
-            //좋아요
-            binding.answerLikeBtn.setOnClickListener {
-                if(isLiked){
-                    likeAnswer(false)
-                    binding.answerLikeBtn.setImageResource(R.drawable.like_off)
-                    isLiked=false
-                }
-                else{
-                    likeAnswer(true)
-                    binding.answerLikeBtn.setImageResource(R.drawable.like_on)
-                    isLiked=true
-                }
             }
 
         }
 
-        //답변 내용 블러 처리
 
 
-        private fun setInit(position: Int){
-            answerContentView.text=items[position].content
-            //댓글수
-            commentNumberUpdate(items[position])
-            //댓글 펼치기
-            showComment(true)
-            setBlurText(true)
-
+        private fun setInit(position: Int,likeNum: Int,isLiked:Boolean,isBlur:Boolean){
+            binding.answerUserNameTv.text=items[position].nickname
+            binding.answerContentTv.text=items[position].content     //답변 내용
+            binding.commentLayout.visibility=View.GONE      //댓글 접은 상태
+            commentNumberUpdate(position)    //댓글 수
+            binding.answerLikeTv.text=likeNum.toString()
+            setBlurText(isBlur,likeNum)
         }
+
         private fun setOnclick(position: Int,adapter: DetailedAnswerCommentRVAdapter){
-            //댓글 펼치기/접기
-            binding.answerCommentBtnLayout.setOnClickListener {
-                showComment(isCommentShown)
-            }
             //댓글 쓰기
             binding.writeCommentBtn.setOnClickListener {
-                writeComment(binding.writeCommentEdit.text.toString(),adapter,items[position])
+                var content=binding.writeCommentEdit.text.toString()
+
+                if(content!=""){
+                    val answerInfo=AnswerInfo(
+                        0,
+                        AppData.qpUserID.toLong(),
+                        AppData.qpNickname,
+                        "title",
+                        content,
+                        "CHILD",
+                        items[position].answerId!!.toLong(),
+                        0
+                    )
+                    writeChildAnswerService(answerInfo,position,adapter)
+                }
+                else{
+                    Toast.makeText(appContext,"댓글을 작성하십시오",Toast.LENGTH_SHORT).show()
+                }
+            }
+
+            //좋아요 누르기
+            binding.answerLikeBtn.setOnClickListener {
+                likeAnswerService(items[position].answerId!!.toLong(),binding)
             }
             //더보기 팝업 메뉴
             showAnswerMorePopup(position,adapter)
-
         }
 
-        //좋아요 업데이트, 자신이 '좋아요'한 상태 반환
-        private fun isLiked():Boolean{
-            var liked=false
-            var likeNum=0
 
-            binding.answerLikeTv.text=likeNum.toString()
-            return liked
-        }
-        //좋아요/해제
-        private fun likeAnswer(toLike:Boolean){
-            if(toLike){
-                //서버에 post
-                val text=binding.answerLikeTv.text.toString()
-                val likeNum=text.toInt()+1
-                binding.answerLikeTv.text=likeNum.toString()
-            }
-            else{
-                //서버에 post
-                val text=binding.answerLikeTv.text.toString()
-                val likeNum=text.toInt()-1
-                binding.answerLikeTv.text=likeNum.toString()
-            }
-        }
-
-        private fun getLikeCount():Int{
-            var likeCount=0
-            return likeCount
-        }
-
-        //댓글 펼치기
-        private fun showComment(isShown: Boolean){
-            val commentRv=binding.commentLayout
-            if(isShown){
-                commentRv.visibility=View.GONE
-                isCommentShown=false
-            }
-            else{
-                commentRv.visibility=View.VISIBLE
-                isCommentShown=true
-            }
-        }
-        //댓글 등록
-        private fun writeComment(content:String,adapter:DetailedAnswerCommentRVAdapter,answer:Answer){
-            if(content!=""){
-                adapter.addItem(content)    //임시로 구현..
-                commentNumberUpdate(answer)
-                binding.writeCommentEdit.text=Editable.Factory.getInstance().newEditable("")
-            }
-            else{
-                Toast.makeText(appContext,"댓글을 작성하십시오",Toast.LENGTH_SHORT).show()
-            }
-        }
         //댓글수 표시
-        private fun commentNumberUpdate(answer:Answer){
-            binding.answerCommentBtnTv.text=
-                when (answer.commentList){
-                    null->"0"
-                    else->answer.commentList!!.size.toString()
-                }
-
+       private fun commentNumberUpdate(position: Int){
+            binding.answerCommentBtnTv.text=commentAdapterList[position].itemCount.toString()
+            Log.d("commentCount",items[position].answerId.toString().plus(commentAdapterList[position].itemCount.toString()))
         }
 
-        private fun setBlurText(isBlur:Boolean){
+        //답변 블러 처리
+        private fun setBlurText(isBlur:Boolean,likeNum:Int){
             binding.answerContentTv.setLayerType(View.LAYER_TYPE_SOFTWARE,null).apply{
                 if(isBlur) binding.answerContentTv.paint.maskFilter=BlurMaskFilter(16f,BlurMaskFilter.Blur.NORMAL)
                 else binding.answerContentTv.paint.maskFilter=null
             }
-            val container=binding.previewContainer
-            val inflater:LayoutInflater=appContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-            inflater.inflate(R.layout.item_answer_preview,container,true)
+            if(isBlur){
+                val container=binding.previewContainer
+                val inflater:LayoutInflater=appContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+                inflater.inflate(R.layout.item_answer_preview,container,true)
 
-            var charCount=binding.answerContentTv.text.count()
-            var likeCount=getLikeCount()
-            val textView=itemView.findViewById<TextView>(R.id.priview_tv)
-            var text=charCount.toString()+"자, "+likeCount.toString()+"명이 도움이 됐대요!"
-            textView.text=text
+                var charCount=binding.answerContentTv.text.count()
+                var likeCount=likeNum
+                val textView=itemView.findViewById<TextView>(R.id.priview_tv)
+                var text=charCount.toString()+"자, "+likeCount.toString()+"명이 도움이 됐대요!"
+                textView.text=text
 
+                binding.answerCommentBtnLayout.isClickable=false
+                binding.answerLikeBtn.isClickable=false
+            }
 
         }
 
         //더보기 버튼 눌렀을 때 팝업 메뉴
         private fun showAnswerMorePopup(position: Int,adapter: DetailedAnswerCommentRVAdapter){
             lateinit var popupWindow:SimplePopup
-            if(adapter.isCommentListEmpty()){
+            var isMine=items[position].userId.toInt()==AppData.qpUserID
+            if(adapter.isCommentListEmpty()&&isMine){
                 binding.answerMoreBtn.setOnClickListener {
                     Log.d("binding_content",position.toString())
                     val list= mutableListOf<String>().apply {
@@ -218,13 +230,18 @@ class DetailedQuestionRVAdapter(context:Context): RecyclerView.Adapter<DetailedQ
                         when(menuPos){
                             0-> {
                                 Toast.makeText(appContext, "수정하기", Toast.LENGTH_SHORT).show()
-                                myItemClickListener.onAnswerModify(position)
+                                myItemClickListener.onAnswerModify(position,items[position].answerId!!)
                             }
                             1-> {
                                 //Toast.makeText(appContext, "삭제하기", Toast.LENGTH_SHORT).show()
-                                myItemClickListener.onItemRemove(position)    //임시로 구현
+                                myItemClickListener.onItemRemove(position,items[position].answerId!!)    //임시로 구현
                             }
-                            2->Toast.makeText(appContext,"신고하기",Toast.LENGTH_SHORT).show()
+                            2-> {
+                                if(!isLogin){
+                                    myItemClickListener.showLoginMsg()
+                                }
+                                Toast.makeText(appContext, "신고하기", Toast.LENGTH_SHORT).show()
+                            }
                         }
                     }
                     popupWindow.isOutsideTouchable=true
@@ -238,7 +255,12 @@ class DetailedQuestionRVAdapter(context:Context): RecyclerView.Adapter<DetailedQ
                     }
                     popupWindow=SimplePopup(appContext,list){_,_,position->
                         when(position){
-                            0->Toast.makeText(appContext,"신고하기",Toast.LENGTH_SHORT).show()
+                            0-> {
+                                if(!isLogin){
+                                    myItemClickListener.showLoginMsg()
+                                }
+                                Toast.makeText(appContext, "신고하기", Toast.LENGTH_SHORT).show()
+                            }
                         }
                     }
                     popupWindow.isOutsideTouchable=true
@@ -247,6 +269,90 @@ class DetailedQuestionRVAdapter(context:Context): RecyclerView.Adapter<DetailedQ
 
             }
 
+        }
+        fun writeChildAnswerService(answerInfo:AnswerInfo,position: Int,adapter: DetailedAnswerCommentRVAdapter){
+            val questionService= getRetrofit().create(QuestionInterface::class.java)
+
+            questionService.writeAnswer(AppData.qpAccessToken,AppData.qpUserID.toLong(),answerInfo).enqueue(object:Callback<WriteAnswerResponse>{
+                override fun onResponse(
+                    call: Call<WriteAnswerResponse>,
+                    response: Response<WriteAnswerResponse>
+                ) {
+                    val resp=response.body()
+                    when(resp?.code){
+                        "ANSWER_3000"->{
+                            Log.d("writeChildAnswer/SUCCESS",resp.toString())
+                            answerInfo.answerId=resp.result.answerId
+                            adapter.addItem(0,answerInfo)    //임시로 구현..
+                            commentNumberUpdate(position)
+                            binding.writeCommentEdit.text=Editable.Factory.getInstance().newEditable("")
+                        }
+                        else->{
+                            Toast.makeText(appContext,"댓글 등록 실패",Toast.LENGTH_SHORT).show()
+                            Log.d("writeChildAnswer/FAIL",response.errorBody()?.string().toString())
+                        }
+                    }
+                }
+
+                override fun onFailure(call: Call<WriteAnswerResponse>, t: Throwable) {
+                    Log.d("writeChildAnswerResp/FAIL",t.message.toString())
+                }
+
+            })
+        }
+
+        fun modifyChildAnswerService(answerId:Long,title:String,content: String,parentPos: Int,childPos:Int){
+            val questionService= getRetrofit().create(QuestionInterface::class.java)
+            val modifyQInfo=ModifyQInfo(AppData.qpUserID.toLong(),title,content)
+
+            questionService.modifyAnswer(AppData.qpAccessToken,answerId,modifyQInfo).enqueue(object :Callback<ModifyAnswerResponse>{
+                override fun onResponse(
+                    call: Call<ModifyAnswerResponse>,
+                    response: Response<ModifyAnswerResponse>
+                ) {
+                    val resp=response.body()
+                    when(resp?.code){
+                        "ANSWER_3000"->{
+                            Log.d("modifyChild/SUCCESS",resp.toString())
+                            commentAdapterList[parentPos].modifyComment(childPos,content)
+                            binding.writeCommentEdit.text= Editable.Factory.getInstance().newEditable("")
+                        }
+                        else->{
+                            Log.d("modifyChild/FAIL",response.errorBody()?.string().toString())
+                        }
+                    }
+                }
+
+                override fun onFailure(call: Call<ModifyAnswerResponse>, t: Throwable) {
+                    Log.d("modifyChildResp/FAIL",t.message.toString())
+                }
+
+            })
+        }
+        fun deleteChildAnswerService(answerId:Long,parentPos: Int,childPos: Int){
+            val questionService= getRetrofit().create(QuestionInterface::class.java)
+            questionService.deleteAnswer(AppData.qpAccessToken,answerId,AppData.qpUserID.toLong()).enqueue(object :Callback<ModifyAnswerResponse>{
+                override fun onResponse(
+                    call: Call<ModifyAnswerResponse>,
+                    response: Response<ModifyAnswerResponse>
+                ) {
+                    val resp=response.body()
+                    when(resp?.code){
+                        "ANSWER_3000"->{
+                            Log.d("deleteChild/SUCCESS",resp.toString())
+                            commentAdapterList[parentPos].removeItem(childPos)
+                            commentNumberUpdate(parentPos)
+                        }
+                        else->{
+                            Log.d("deleteChild/FAIL",response.errorBody()?.string().toString())
+                        }
+                    }                }
+
+                override fun onFailure(call: Call<ModifyAnswerResponse>, t: Throwable) {
+                    Log.d("deleteChildResp/FAIL",t.message.toString())
+                }
+
+            })
         }
 
 
@@ -261,13 +367,15 @@ class DetailedQuestionRVAdapter(context:Context): RecyclerView.Adapter<DetailedQ
         return items[position].content
     }
 
-    fun addItem(item: Answer) {
-        this.items.add(item)
+    fun addItem(item: AnswerInfo) {
+        this.items.add(0,item)
         this.notifyDataSetChanged()
     }
-    fun addItemList(items:ArrayList<Answer>){
-        this.items.addAll(items)
-        this.notifyDataSetChanged()
+    fun addItemList(items:ArrayList<AnswerInfo>?){
+        if(items!=null){
+            this.items.addAll(items)
+            this.notifyDataSetChanged()
+        }
     }
 
     fun removeItem(position: Int){
@@ -284,6 +392,73 @@ class DetailedQuestionRVAdapter(context:Context): RecyclerView.Adapter<DetailedQ
 
 
 
+    fun getChildAnswerService(id:Long,position:Int){
+        val questionService= getRetrofit().create(QuestionInterface::class.java)
+
+        questionService.getChildAnswer(id,0,10).enqueue(object : Callback<ChildAnswerResponse>{
+            override fun onResponse(
+                call: Call<ChildAnswerResponse>,
+                response: Response<ChildAnswerResponse>
+            ) {
+                val resp=response.body()
+                when(resp?.code){
+                    "ANSWER_3000"->{
+                        Log.d("getChild/SUCCESS",resp.toString())
+                        commentAdapterList[position].addItems(resp.result.answerList)
+                    }
+                    else->{
+                        Log.d("getChild/FAIL",response.errorBody()?.string().toString())
+                    }
+                }
+            }
+
+            override fun onFailure(call: Call<ChildAnswerResponse>, t: Throwable) {
+                Log.d("getChildResp/FAIL",t.message.toString())
+            }
+
+        })
+    }
 
 
+
+    fun likeAnswerService(answerId:Long,binding:ItemAnswerBinding){
+        val questionService= getRetrofit().create(QuestionInterface::class.java)
+
+        questionService.likeAnswer(AppData.qpAccessToken,AppData.qpUserID,answerId).enqueue(object:Callback<LikeAnswerResponse>{
+            override fun onResponse(
+                call: Call<LikeAnswerResponse>,
+                response: Response<LikeAnswerResponse>
+            ) {
+                val resp=response.body()
+                Log.d("likeAnswerResp",response.toString().plus("answerId").plus(answerId))
+                when(resp?.code){
+                    "ANSWERLIKE_7000"->{
+                        Log.d("likeAnswer/SUCCESS",resp.toString())
+                        if(resp.result.answerLikeStatus=="DELETED"){
+                            binding.answerLikeBtn.setImageResource(R.drawable.like_off)     //좋아요 이미지
+                            val text=binding.answerLikeTv.text.toString()   //좋아요 수 텍스트뷰 수정
+                            val likeNum=text.toInt()-1
+                            binding.answerLikeTv.text=likeNum.toString()
+                        }
+                        else if(resp.result.answerLikeStatus=="ADDED"){
+                            binding.answerLikeBtn.setImageResource(R.drawable.like_on)
+                            val text=binding.answerLikeTv.text.toString()
+                            val likeNum=text.toInt()+1
+                            binding.answerLikeTv.text=likeNum.toString()
+                        }
+                    }
+                    else->{
+                        Log.d("likeAnswer/FAIL",response.errorBody()?.string().toString())
+                        if(response.code()==400)
+                            Toast.makeText(appContext,"로그인이 필요한 기능입니다",Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }
+
+            override fun onFailure(call: Call<LikeAnswerResponse>, t: Throwable) {
+                Log.d("likeAnswerResp/FAIL",t.message.toString())
+            }
+
+        })
+    }
 }
