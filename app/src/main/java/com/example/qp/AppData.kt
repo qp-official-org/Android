@@ -20,6 +20,7 @@ class AppData : Application() {
         var qpGender = ""
         var qpRole = ""
         var qpPoint : Long = 0
+        var qpCreatedAt = ""
 
         // 유저 정보 수정 함수
         fun modifyUserInfo(token: String, userId: Int, userModify: UserModify) {
@@ -81,6 +82,7 @@ class AppData : Application() {
                                 AppData.qpGender = resp.result.gender
                                 AppData.qpRole = resp.result.role
                                 AppData.qpPoint = resp.result.point
+                                AppData.qpCreatedAt = resp.result.createdAt
                             }
                             else-> Log.d("ssearch Result2", resp.message)
                         }

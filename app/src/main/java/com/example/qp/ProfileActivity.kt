@@ -60,7 +60,10 @@ class ProfileActivity : AppCompatActivity() {
         binding.profileEditNicknameEt.hint = AppData.qpNickname
         binding.profileMainCoinNumTv.text = AppData.qpPoint.toString()
         binding.profileMainCoinTextTv.text = (AppData.qpPoint / 10).toString()
-        //binding.profileMainDateTv.text
+        var year = AppData.qpCreatedAt.substring(0 until 4)
+        var month = AppData.qpCreatedAt.substring(5 until 7)
+        var day = AppData.qpCreatedAt.substring(8 until 10)
+        binding.profileMainDateTv.text = "${year}년 ${month}월 ${day}일 가입"
 
         // 충전 버튼 색상 변경 및 Dialog 등장
         binding.profileChargekBtn.setOnClickListener {
@@ -165,13 +168,6 @@ class ProfileActivity : AppCompatActivity() {
             binding.profileEditYesBtn.visibility = View.GONE
             binding.profileEditNoBtn.visibility = View.GONE
             binding.profileMainImageIv.setAlpha(1f)
-        }
-
-
-        // 임시 데이터 확인
-        binding.profileQpLogo.setOnClickListener {
-            Log.d("proffile Data1", AppData.qpAccessToken)
-            Log.d("proffile Data2", AppData.qpUserID.toString())
         }
     }
 

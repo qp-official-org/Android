@@ -37,7 +37,8 @@ data class User(
     var email: String,
     var role: String,
     var gender: String,
-    var point: Long
+    var point: Long,
+    var createdAt: String
 )
 
 data class UserModify(
