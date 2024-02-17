@@ -43,7 +43,9 @@ class QuestionRVAdapter(private val qList: ArrayList<QuestionInfo>)
         fun bind(questionInfo: QuestionInfo){
             binding.itemTimeTv.text = getTime(questionInfo.createdAt.toString())
             binding.itemQuestionTv.text = questionInfo.title
-            setStringImage(questionInfo.user!!.profileImage, binding.itemUserIv, con)
+            if(questionInfo.user!!.profileImage!=""){
+                setStringImage(questionInfo.user!!.profileImage, binding.itemUserIv, con)
+            }
             val tagList=questionInfo.hashtags
             if(tagList?.size==1){
                 binding.itemCategory1Tv.text = "#"+tagList[0].hashtag
@@ -68,12 +70,12 @@ class QuestionRVAdapter(private val qList: ArrayList<QuestionInfo>)
         }
     }
 
-    // 이미지뷰에 문자열 형태의 이미지를 설정
+/*    // 이미지뷰에 문자열 형태의 이미지를 설정
     fun setStringImage(imageUrl: String, imageView: ImageView, con: Context) {
         Glide.with(con)
             .load(imageUrl)
             .apply(RequestOptions().transform(CircleCrop()))
             .into(imageView)
-    }
+    }*/
 
 }

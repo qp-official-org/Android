@@ -40,6 +40,10 @@ class DetailedAnswerCommentRVAdapter(context: Context ):RecyclerView.Adapter<Det
             var answer=items[position]
             binding.commentContentTv.text=answer.content
             binding.commentUserNameTv.text=answer.nickname
+            if(answer.profileImage!=""){
+                setStringImage(answer.profileImage!!,binding.commentUserIv,appContext)
+            }
+            answer.profileImage?.let { setStringImage(it,binding.commentUserIv,appContext) }
 
             showCommentMorePopup(answer,position)
         }

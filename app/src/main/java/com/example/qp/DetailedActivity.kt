@@ -159,6 +159,13 @@ class DetailedActivity : AppCompatActivity(),DetailedQView{
                 inflater.inflate(R.layout.item_write_answer,container,true)
                 binding.answerBtn.visibility=View.GONE
 
+                val userNickname=findViewById<TextView>(R.id.write_answer_user_name_tv)
+                userNickname.text=AppData.qpNickname
+
+                val userImgView=findViewById<ImageView>(R.id.write_answer_user_img)
+                if(AppData.qpProfileImage!=""){
+                    setStringImage(AppData.qpProfileImage,userImgView,applicationContext)
+                }
                 val writeBtn=findViewById<TextView>(R.id.write_answer_btn)
                 val writeLayout=findViewById<EditText>(R.id.write_answer_edit)
                 writeLayout.text= Editable.Factory.getInstance().newEditable(content)
@@ -211,7 +218,14 @@ class DetailedActivity : AppCompatActivity(),DetailedQView{
         binding.detailedQuestionTitleTv.text = questionInfo.title
         binding.detailedQuestionContentTv.text = questionInfo.content
         binding.detailedQuestionTimeTv.text =getTime(questionInfo.createdAt.toString())
-        setStringImage(questionInfo.user!!.profileImage,binding.questionUserImg,applicationContext)
+        if(questionInfo.user!!.profileImage!=""){
+            setStringImage(questionInfo.user!!.profileImage,binding.questionUserImg,applicationContext)
+        }
+
+        if(questionInfo.childStatus=="ACTIVE")
+            binding.detailedChildStatusTv.visibility=View.VISIBLE
+        else
+            binding.detailedChildStatusTv.visibility=View.GONE
 
         updateExpertNum()
 
@@ -288,6 +302,8 @@ class DetailedActivity : AppCompatActivity(),DetailedQView{
                 0,
                 AppData.qpUserID.toLong(),
                 AppData.qpNickname,
+                "USER",
+                AppData.qpProfileImage,
                 "title11",
                  content,
                 "PARENT",
@@ -305,6 +321,14 @@ class DetailedActivity : AppCompatActivity(),DetailedQView{
             binding.answerBtn.visibility=View.GONE
             val inflater:LayoutInflater=getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
             inflater.inflate(R.layout.item_write_answer,container,true)
+
+            val userNickname=findViewById<TextView>(R.id.write_answer_user_name_tv)
+            userNickname.text=AppData.qpNickname
+
+            val userImgView=findViewById<ImageView>(R.id.write_answer_user_img)
+            if(AppData.qpProfileImage!=""){
+                setStringImage(AppData.qpProfileImage,userImgView,applicationContext)
+            }
             writeAnswer()
         }
         else{
@@ -547,13 +571,7 @@ class DetailedActivity : AppCompatActivity(),DetailedQView{
         })
     }
 
-    // 이미지뷰에 문자열 형태의 이미지를 설정
-    fun setStringImage(imageUrl: String, imageView: ImageView, con: Context) {
-        Glide.with(con)
-            .load(imageUrl)
-            .apply(RequestOptions().transform(CircleCrop()))
-            .into(imageView)
-    }
+
 
     //editText 밖을 터치하면 키보드 내려감
     override fun dispatchTouchEvent(event: MotionEvent?): Boolean {
@@ -579,4 +597,12 @@ class DetailedActivity : AppCompatActivity(),DetailedQView{
 fun getTime(time:String):String{
     val newTime=time.substring(0,10)+" "+time.substring(11,19)
     return newTime
+}
+
+// 이미지뷰에 문자열 형태의 이미지를 설정
+fun setStringImage(imageUrl: String, imageView: ImageView, con: Context) {
+    Glide.with(con)
+        .load(imageUrl)
+        .apply(RequestOptions().transform(CircleCrop()))
+        .into(imageView)
 }

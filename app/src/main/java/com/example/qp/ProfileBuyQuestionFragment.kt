@@ -21,6 +21,7 @@ class ProfileBuyQuestionFragment : Fragment() {
     ): View? {
         binding = FragmentProfileBuyQuestionBinding.inflate(inflater, container, false)
 
+
         val questionRVAdapter = QuestionRVAdapter(qDatas)
         binding.questionRv.adapter = questionRVAdapter
         binding.questionRv.layoutManager = GridLayoutManager(requireContext(), 2)

@@ -29,6 +29,7 @@ data class QuestionInfo(
     @SerializedName(value="hit")val hit: Int?=0,
     @SerializedName(value="answerCount")val answerCount: Int?=0,
     @SerializedName(value="expertCount")val expertCount: Int?=0,
+    @SerializedName(value="childStatus")val childStatus: String?="INACTIVE",
     @SerializedName(value="createdAt")val createdAt: String?="",
     @SerializedName(value="updatedAt")var updatedAt: String?="",
     @SerializedName(value="hashtags")val hashtags: ArrayList<TagInfo>?=null,
@@ -38,12 +39,13 @@ data class QuestionPost(
     @SerializedName(value="userId")val userId:Int,
     @SerializedName(value="title")val title:String,
     @SerializedName(value="content")val content:String,
+    @SerializedName(value="childStatus")var childStatus:String,
     @SerializedName(value="hashtag")val hashtag:ArrayList<Int>?
-)
+):Serializable
 
 data class UserInfo(
     @SerializedName(value="userId")val userId: Int,
-    @SerializedName(value="profileImage")val profileImage: String,
+    @SerializedName(value="profileImage")val profileImage: String="",
     @SerializedName(value="role")val role: String
 ):Serializable
 

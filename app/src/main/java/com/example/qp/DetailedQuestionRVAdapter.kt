@@ -126,13 +126,17 @@ class DetailedQuestionRVAdapter(context:Context): RecyclerView.Adapter<DetailedQ
                 //댓글 펼치기/접기
                 binding.answerCommentBtnLayout.setOnClickListener {
                     val commentRv=binding.commentLayout
-                    if(isCommentShown){
+                    if(isCommentShown){ //접기
                         commentRv.visibility=View.GONE
                         isCommentShown=false
                     }
-                    else{
+                    else{               //펼치기
                         commentRv.visibility=View.VISIBLE
                         isCommentShown=true
+                        if(AppData.qpProfileImage!=""){
+                            setStringImage(AppData.qpProfileImage,binding.writeCommentUserImg,appContext)
+                        }
+                        binding.writeCommentUserNameTv.text=AppData.qpNickname
                     }
                 }
 
@@ -151,6 +155,9 @@ class DetailedQuestionRVAdapter(context:Context): RecyclerView.Adapter<DetailedQ
             commentNumberUpdate(position)    //댓글 수
             binding.answerLikeTv.text=likeNum.toString()
             setBlurText(isBlur,likeNum)
+            if(items[position].profileImage!=""){
+                setStringImage(items[position].profileImage!!,binding.answerUserImg,appContext)
+            }
         }
 
         private fun setOnclick(position: Int,adapter: DetailedAnswerCommentRVAdapter){
@@ -163,6 +170,8 @@ class DetailedQuestionRVAdapter(context:Context): RecyclerView.Adapter<DetailedQ
                         0,
                         AppData.qpUserID.toLong(),
                         AppData.qpNickname,
+                        "USER",
+                        AppData.qpProfileImage,
                         "title",
                         content,
                         "CHILD",
