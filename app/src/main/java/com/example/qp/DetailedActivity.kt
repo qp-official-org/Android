@@ -213,6 +213,11 @@ class DetailedActivity : AppCompatActivity(),DetailedQView{
         binding.detailedQuestionTimeTv.text =getTime(questionInfo.createdAt.toString())
         setStringImage(questionInfo.user!!.profileImage,binding.questionUserImg,applicationContext)
 
+        if(questionInfo.childStatus=="ACTIVE")
+            binding.detailedChildStatusTv.visibility=View.VISIBLE
+        else
+            binding.detailedChildStatusTv.visibility=View.GONE
+
         updateExpertNum()
 
         val tagListSize = questionInfo.hashtags?.size

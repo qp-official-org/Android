@@ -204,10 +204,17 @@ class WriteQuestionActivity: AppCompatActivity() {
                             tagIds.add(newTagList[i].hashtagId)
                         }
 
+                        var childStatus=
+                            when(isChild){
+                                true->"ACTIVE"
+                                else->"INACTIVE"
+                            }
+
                         val questionPost = QuestionPost(
                             userId = AppData.qpUserID,
                             title = titleText,
                             content = contentText,
+                            childStatus=childStatus,
                             hashtag = tagIds
                         )
 
@@ -262,12 +269,21 @@ class WriteQuestionActivity: AppCompatActivity() {
                     "QUESTION_2000"-> {
                         Log.d("writeQ success","success!")
 
+                        var childStatus=
+                            when(isChild){
+                                true->"ACTIVE"
+                                else->"INACTIVE"
+                            }
+
                         val question = QuestionInfo(
-                            user=UserInfo(AppData.qpUserID,"","student"),
+                            user=UserInfo(AppData.qpUserID,AppData.qpProfileImage,"USER"),
+                            questionId = resp.result.questionId,
                             title = questionInfo.title,
                             content = questionInfo.content,
+                            childStatus=childStatus,
+                            createdAt=resp.result.createdAt,
+                            updatedAt=resp.result.createdAt,
                             hashtags = newTagList,
-                            questionId = resp.result.questionId,
                         )
 
                         val intent =

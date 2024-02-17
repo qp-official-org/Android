@@ -25,7 +25,7 @@ class ProfileBuyQuestionFragment : Fragment() {
         //수정 임시 데이터(삭제해도 무관합니다)
         var tagList = arrayListOf<TagInfo>(TagInfo(0, "tag1"), TagInfo(1, "tag2"))
         qDatas.apply {
-            add(
+            /*add(
                 QuestionInfo(
                     UserInfo(1, "1", "USER"),
                     1,
@@ -34,6 +34,7 @@ class ProfileBuyQuestionFragment : Fragment() {
                     1,
                     2,
                     3,
+
                     "2024-01-01",
                     "2024-01-01",
                     tagList
@@ -66,7 +67,7 @@ class ProfileBuyQuestionFragment : Fragment() {
                     "2024-01-01",
                     tagList
                 )
-            )
+            )*/
 
 
             val questionRVAdapter = QuestionRVAdapter(qDatas)
