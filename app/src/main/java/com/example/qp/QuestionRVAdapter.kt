@@ -4,6 +4,7 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.ImageView
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CircleCrop
@@ -43,6 +44,8 @@ class QuestionRVAdapter(private val qList: ArrayList<QuestionInfo>)
         fun bind(questionInfo: QuestionInfo){
             binding.itemTimeTv.text = getTime(questionInfo.createdAt.toString())
             binding.itemQuestionTv.text = questionInfo.title
+            binding.answerCommentTv.text = questionInfo.answerCount.toString()
+            binding.answerExpertTv.text = questionInfo.expertCount.toString()
             setStringImage(questionInfo.user!!.profileImage, binding.itemUserIv, con)
             val tagList=questionInfo.hashtags
             if(tagList?.size==1){
