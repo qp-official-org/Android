@@ -20,6 +20,8 @@ class AppData : Application() {
         var qpPoint : Long = 0
         var qpCreatedAt = ""
 
+        var qpIsLogin = false
+
         var searchRecord = ArrayList<String>()
 
         // 유저 정보 수정 함수

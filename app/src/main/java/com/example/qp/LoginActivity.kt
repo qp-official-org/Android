@@ -58,7 +58,6 @@ class LoginActivity : AppCompatActivity() {
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
 
             override fun afterTextChanged(s: Editable?) {
-                binding.loginAuthenticationFailTv.visibility = View.INVISIBLE
                 if(binding.loginAuthenticationEmailEt.length() == 8) {
                     binding.loginNextBtn.visibility = View.VISIBLE
                     binding.loginNextInvalidBtn.visibility = View.GONE

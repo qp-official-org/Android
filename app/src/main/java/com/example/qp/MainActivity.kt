@@ -83,6 +83,8 @@ class MainActivity : AppCompatActivity() {
                 binding.mainLoginSuccessBt.visibility = View.VISIBLE
                 binding.mainLoginSuccessUserImg.visibility = View.VISIBLE
 
+                AppData.qpIsLogin = true
+
                 // 하단 바에 사용자 닉네임과 포인트 데이터 반영
                 binding.mainBarNicknameTv.text = AppData.qpNickname
                 binding.mainBarCoinTv.text = AppData.qpPoint.toString()
@@ -150,8 +152,6 @@ class MainActivity : AppCompatActivity() {
                 Log.i("TAG", "로그인 성공 $token")
                 binding.mainLoginBt.visibility = View.GONE
                 binding.mainLoginSuccessBt.visibility = View.VISIBLE
-
-                Log.d("DData", token.toString())
             }
         }
 

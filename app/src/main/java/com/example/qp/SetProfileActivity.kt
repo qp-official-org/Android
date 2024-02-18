@@ -35,6 +35,7 @@ class SetProfileActivity : AppCompatActivity() {
                 binding.profileWelcomeTv.visibility = View.GONE
                 binding.profileExitBtnTv.visibility = View.GONE
                 binding.profileExitBtnIv.visibility = View.GONE
+                binding.profileWelcomeIv.visibility = View.GONE
             }
             else {
                 finish()
@@ -51,6 +52,7 @@ class SetProfileActivity : AppCompatActivity() {
             binding.profileWelcomeTv.visibility = View.VISIBLE
             binding.profileExitBtnTv.visibility = View.VISIBLE
             binding.profileExitBtnIv.visibility = View.VISIBLE
+            binding.profileWelcomeIv.visibility = View.VISIBLE
         }
 
         // 회원가입절차 종료, 메인 페이지로 복귀
