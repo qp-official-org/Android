@@ -99,7 +99,6 @@ class DetailedActivity : AppCompatActivity(),DetailedQView{
 
         Log.d("detailedQOncreate", questionInfo.toString())
 
-        Log.d("userInfo",AppData.qpUserID.toString()+AppData.qpNickname)
     }
 
 
@@ -125,6 +124,8 @@ class DetailedActivity : AppCompatActivity(),DetailedQView{
 
     private fun setInit(){
 
+        getNotifyQ()
+
         // 로그인 여부 확인
         UserApiClient.instance.accessTokenInfo { token, error ->
             if (error != null) {
@@ -136,6 +137,7 @@ class DetailedActivity : AppCompatActivity(),DetailedQView{
                 Log.i("TAG", "로그인 성공 $token")
                 binding.detailedLoginBtn.visibility = View.GONE
                 binding.detailedLoginSuccessBt.visibility = View.VISIBLE
+                Log.d("userInfo","id: "+AppData.qpUserID.toString()+"nickname: "+AppData.qpNickname+"email"+AppData.qpEmail+"token"+AppData.qpAccessToken)
             }
         }
 
@@ -196,14 +198,11 @@ class DetailedActivity : AppCompatActivity(),DetailedQView{
                 QpToast.createToast(applicationContext)?.show()
             }
             else{
-                if(!isNotified){
-                    notifyQuestion(true)
-                }
-                else{
-                    notifyQuestion(false)
-                }
+                if(isNotified)
+                    QpToast.createToast(applicationContext,"이미 해당 질문의 알림을 설정하였습니다.")?.show()
+                else
+                    notifyQService()
             }
-
         }
         //로그인 버튼
         binding.detailedLoginBtn.setOnClickListener {
@@ -216,7 +215,7 @@ class DetailedActivity : AppCompatActivity(),DetailedQView{
 
         setQuestionMorePopup()
 
-        //updateNotifyView()
+        updateNotifyView()
     }
 
     private fun initView(){
@@ -262,13 +261,13 @@ class DetailedActivity : AppCompatActivity(),DetailedQView{
 
     private fun updateNotifyView(){
         var container=binding.noticeContainer
-        if(answerAdapter.isItemListEmpty()){
+        if(answerAdapter.isItemListEmpty()&&!isNotified){
             val inflater:LayoutInflater=getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
             inflater.inflate(R.layout.item_notice,container,true)
 
             val notifyBtn=findViewById<TextView>(R.id.notify_btn)
             notifyBtn.setOnClickListener {
-                notifyQuestion(true)
+                notifyQService()
                 container.removeAllViews()
             }
         }
@@ -284,19 +283,6 @@ class DetailedActivity : AppCompatActivity(),DetailedQView{
             }
     }
 
-    private fun notifyQuestion(toNotify:Boolean){
-        if(toNotify){
-            binding.answerNoticeBtn.setImageResource(R.drawable.notification_on)
-            isNotified=true
-            QpToast.createToast(applicationContext,"답변 알림 설정")?.show()
-        }
-        else{
-            binding.answerNoticeBtn.setImageResource(R.drawable.notification_off)
-            isNotified=false
-            QpToast.createToast(applicationContext,"답변 알림 해제")?.show()
-
-        }
-    }
 
     private fun writeAnswer(){
         val btn=findViewById<TextView>(R.id.write_answer_btn)
@@ -349,27 +335,45 @@ class DetailedActivity : AppCompatActivity(),DetailedQView{
         lateinit var popupWindow: SimplePopup
         var isMine=questionInfo.user?.userId==AppData.qpUserID  //본인이 작성한 질문인지 여부
 
-            binding.questionMoreBtn.setOnClickListener {
-                if(answerAdapter.isItemListEmpty()&&isMine&&isLogin){
+        binding.questionMoreBtn.setOnClickListener {
+            if(answerAdapter.isItemListEmpty()&&isMine&&isLogin){
+                val list= mutableListOf<String>().apply {
+                    add("수정하기")
+                    add("삭제하기")
+                    add("신고하기")
+                }
+                popupWindow=SimplePopup(applicationContext,list){_,_,position->
+                    when(position){
+                        0-> {   //수정하기
+                            val intent=Intent(this@DetailedActivity,ModifyQuestionActivity::class.java)
+                            intent.putExtra("modifyQuestion",questionInfo)
+                            startActivity(intent)
+                            Log.d("modifyLog",questionInfo.toString())
+                            Toast.makeText(applicationContext, "수정하기", Toast.LENGTH_SHORT).show()
+                        }
+                        1-> {   //삭제하기
+                                QpToast.createToast(applicationContext,"질문 삭제")?.show()
+                                deleteQ(AppData.qpAccessToken, questionInfo.questionId, AppData.qpUserID)
+                        }
+                        2-> {   //신고하기
+                            Toast.makeText(applicationContext, "신고하기", Toast.LENGTH_SHORT).show()
+                            if(!isLogin){
+                                QpToast.createToast(applicationContext)?.show()
+                            }
+                        }
+                    }
+                }
+                popupWindow.isOutsideTouchable=true
+                popupWindow.showAsDropDown(it,40,10)
+            }
+            else{                   //답변이 한개라도 있으면 수정&삭제 불가
+                binding.questionMoreBtn.setOnClickListener {
                     val list= mutableListOf<String>().apply {
-                        add("수정하기")
-                        add("삭제하기")
                         add("신고하기")
                     }
                     popupWindow=SimplePopup(applicationContext,list){_,_,position->
                         when(position){
-                            0-> {   //수정하기
-                                val intent=Intent(this@DetailedActivity,ModifyQuestionActivity::class.java)
-                                intent.putExtra("modifyQuestion",questionInfo)
-                                startActivity(intent)
-                                Log.d("modifyLog",questionInfo.toString())
-                                Toast.makeText(applicationContext, "수정하기", Toast.LENGTH_SHORT).show()
-                            }
-                            1-> {   //삭제하기
-                                    QpToast.createToast(applicationContext,"질문 삭제")?.show()
-                                    deleteQ(AppData.qpAccessToken, questionInfo.questionId, AppData.qpUserID)
-                            }
-                            2-> {   //신고하기
+                            0-> {
                                 Toast.makeText(applicationContext, "신고하기", Toast.LENGTH_SHORT).show()
                                 if(!isLogin){
                                     QpToast.createToast(applicationContext)?.show()
@@ -380,27 +384,9 @@ class DetailedActivity : AppCompatActivity(),DetailedQView{
                     popupWindow.isOutsideTouchable=true
                     popupWindow.showAsDropDown(it,40,10)
                 }
-                else{                   //답변이 한개라도 있으면 수정&삭제 불가
-                    binding.questionMoreBtn.setOnClickListener {
-                        val list= mutableListOf<String>().apply {
-                            add("신고하기")
-                        }
-                        popupWindow=SimplePopup(applicationContext,list){_,_,position->
-                            when(position){
-                                0-> {
-                                    Toast.makeText(applicationContext, "신고하기", Toast.LENGTH_SHORT).show()
-                                    if(!isLogin){
-                                        QpToast.createToast(applicationContext)?.show()
-                                    }
-                                }
-                            }
-                        }
-                        popupWindow.isOutsideTouchable=true
-                        popupWindow.showAsDropDown(it,40,10)
-                    }
 
-                }
             }
+        }
 
     }
 
@@ -459,7 +445,7 @@ class DetailedActivity : AppCompatActivity(),DetailedQView{
                         Log.d("writeAnswer/answer",answer.toString())
 
                         showWriteAnswerEdit(false)  //답변 작성 공간 접기
-                        //updateNotifyView()
+                        updateNotifyView()
                         updateExpertNum()   //전문가 수 갱신
                         QpToast.createToast(applicationContext,"답변이 등록되었습니다")?.show()
                     }
@@ -515,6 +501,7 @@ class DetailedActivity : AppCompatActivity(),DetailedQView{
                 val resp=response.body()
                 when(resp?.code){
                     "ANSWER_3000"->{
+                        Log.d("modifyAnswer/SUCCESS",resp.toString())
                         val container=binding.writeAnswerContainer
                         answerAdapter.modifyAnswer(position,content)
                         container.removeAllViews()
@@ -550,7 +537,7 @@ class DetailedActivity : AppCompatActivity(),DetailedQView{
                         updateExpertNum()
                         if(answerAdapter.isItemListEmpty()){
                             binding.answerBtn.visibility=View.VISIBLE
-                            //updateNotifyView()
+                            updateNotifyView()
                         }
                     }
                     else->{
@@ -562,6 +549,74 @@ class DetailedActivity : AppCompatActivity(),DetailedQView{
 
             override fun onFailure(call: Call<ModifyAnswerResponse>, t: Throwable) {
                 Log.d("deleteAnswerResp/FAIL",t.message.toString())
+            }
+
+        })
+    }
+
+    fun notifyQService(){
+        val questionService= getRetrofit().create(QuestionInterface::class.java)
+
+        questionService.notifyQ(AppData.qpAccessToken,questionInfo.questionId,AppData.qpUserID.toLong()).enqueue(object :Callback<NotifyQResponse>{
+            override fun onResponse(
+                call: Call<NotifyQResponse>,
+                response: Response<NotifyQResponse>
+            ) {
+                val resp=response.body()
+                when(resp?.code){
+                    "QUESTION_2000"->{
+                        Log.d("notifyQ/SUCCESS",resp.toString())
+                        binding.answerNoticeBtn.setImageResource(R.drawable.notification_on)
+                        isNotified=true
+                        QpToast.createToast(applicationContext,"답변 알림 설정")?.show()
+                    }
+                    "QUESTION_2004"->{
+                        QpToast.createToast(applicationContext,"이미 알림을 설정하였습니다.")
+                    }
+                    else->{
+                        Log.d("notifyQ/FAIL",response.errorBody()?.string().toString())
+                        QpToast.createToast(applicationContext,"알림설정 실패")?.show()
+                    }
+                }
+            }
+
+            override fun onFailure(call: Call<NotifyQResponse>, t: Throwable) {
+                Log.d("notifyQResp/FAIL",t.message.toString())
+            }
+
+        })
+    }
+
+    fun getNotifyQ(){
+        val questionService= getRetrofit().create(QuestionInterface::class.java)
+
+        questionService.getNotifyQ(questionInfo.questionId.toInt()).enqueue(object :Callback<GetNotifyResponse>{
+            override fun onResponse(
+                call: Call<GetNotifyResponse>,
+                response: Response<GetNotifyResponse>
+            ) {
+                val resp=response.body()
+                when(resp?.code){
+                    "QUESTION_2000"->{
+                        Log.d("getNotifyQ",resp.toString())
+                        val userList=resp.result.questionAlarms
+                        var idList=ArrayList<Long>()
+                        for(i in 0 until userList.size)
+                            idList.add(userList[i].userId)
+                        if(questionInfo.user!!.userId.toLong() in idList){
+                            isNotified=true
+                            binding.answerNoticeBtn.setImageResource(R.drawable.notification_on)
+                        }
+                        updateNotifyView()
+                    }
+                    else->{
+                        Log.d("getNotifyQ",response.errorBody()?.string().toString())
+                    }
+                }
+            }
+
+            override fun onFailure(call: Call<GetNotifyResponse>, t: Throwable) {
+                Log.d("getNotifyQ",t.message.toString())
             }
 
         })

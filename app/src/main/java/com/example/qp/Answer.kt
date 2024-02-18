@@ -9,7 +9,7 @@ data class AnswerInfo (
     @SerializedName(value="nickname")var nickname:String?="",
     @SerializedName(value="role")var role:String?="USER",
     @SerializedName(value="profileImage")var profileImage:String?="",
-    @SerializedName(value="title")var title:String,
+    @SerializedName(value="title")var title:String="",
     @SerializedName(value="content")var content:String="",
     @SerializedName(value="category")var category:String,
     @SerializedName(value="answerGroup")var answerGroup:Long,

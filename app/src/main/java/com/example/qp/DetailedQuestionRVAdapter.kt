@@ -72,8 +72,6 @@ class DetailedQuestionRVAdapter(context:Context): RecyclerView.Adapter<DetailedQ
 
 
     inner class ViewHolder(val binding:ItemAnswerBinding) : RecyclerView.ViewHolder(binding.root) {
-        private val answerContentView=binding.answerContentTv
-        private val profileView=itemView.findViewById<ImageView>(R.id.question_user_img)
         fun bind(position: Int) {
 
             commentAdapterList.add(position,DetailedAnswerCommentRVAdapter(appContext))
@@ -157,8 +155,8 @@ class DetailedQuestionRVAdapter(context:Context): RecyclerView.Adapter<DetailedQ
             binding.answerContentTv.text=items[position].content     //답변 내용
             binding.commentLayout.visibility=View.GONE      //댓글 접은 상태
             commentNumberUpdate(position)    //댓글 수
-            binding.answerLikeTv.text=likeNum.toString()
-            setBlurText(isBlur,likeNum)
+            binding.answerLikeTv.text=likeNum.toString()    //좋아요 수
+            setBlurText(isBlur,position)
             if(items[position].profileImage!=""){
                 setStringImage(items[position].profileImage!!,binding.answerUserImg,appContext)
             }
@@ -192,12 +190,12 @@ class DetailedQuestionRVAdapter(context:Context): RecyclerView.Adapter<DetailedQ
             //좋아요 누르기
             binding.answerLikeBtn.setOnClickListener {
                 if(isLogin)
-                    likeAnswerService(items[position].answerId!!.toLong(),binding)
+                    likeAnswerService(items[position].answerId!!.toLong(),binding,position)
                 else
                     QpToast.createToast(appContext)?.show()
             }
             //더보기 팝업 메뉴
-            showAnswerMorePopup(position,adapter)
+            showAnswerMorePopup(position)
         }
 
 
@@ -208,18 +206,20 @@ class DetailedQuestionRVAdapter(context:Context): RecyclerView.Adapter<DetailedQ
         }
 
         //답변 블러 처리
-        private fun setBlurText(isBlur:Boolean,likeNum:Int){
+        private fun setBlurText(isBlur:Boolean,position: Int){
+            var isMine=items[position].userId==AppData.qpUserID.toLong()
             binding.answerContentTv.setLayerType(View.LAYER_TYPE_SOFTWARE,null).apply{
-                if(isBlur) binding.answerContentTv.paint.maskFilter=BlurMaskFilter(16f,BlurMaskFilter.Blur.NORMAL)
+                if(isBlur&&!isMine) binding.answerContentTv.paint.maskFilter=BlurMaskFilter(16f,BlurMaskFilter.Blur.NORMAL)
                 else binding.answerContentTv.paint.maskFilter=null
             }
-            if(isBlur){
+            if(isBlur&&!isMine){
+                //Log.d("setBlurLog",)
                 val container=binding.previewContainer
                 val inflater:LayoutInflater=appContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
                 inflater.inflate(R.layout.item_answer_preview,container,true)
 
                 var charCount=binding.answerContentTv.text.count()
-                var likeCount=likeNum
+                var likeCount=items[position].likes
                 val textView=itemView.findViewById<TextView>(R.id.priview_tv)
                 var text=charCount.toString()+"자, "+likeCount.toString()+"명이 도움이 됐대요!"
                 textView.text=text
@@ -231,11 +231,13 @@ class DetailedQuestionRVAdapter(context:Context): RecyclerView.Adapter<DetailedQ
         }
 
         //더보기 버튼 눌렀을 때 팝업 메뉴
-        private fun showAnswerMorePopup(position: Int,adapter: DetailedAnswerCommentRVAdapter){
+        private fun showAnswerMorePopup(position: Int){
             lateinit var popupWindow:SimplePopup
             var isMine=items[position].userId.toInt()==AppData.qpUserID
+            Log.d("answerMore",commentAdapterList[position].isCommentListEmpty().toString()+isMine)
+
             binding.answerMoreBtn.setOnClickListener {
-                if(adapter.isCommentListEmpty()&&isMine&&isLogin){
+                if(commentAdapterList[position].isCommentListEmpty()&&isMine&&isLogin){
                     val list= mutableListOf<String>().apply {
                         add("수정하기")
                         add("삭제하기")
@@ -297,13 +299,14 @@ class DetailedQuestionRVAdapter(context:Context): RecyclerView.Adapter<DetailedQ
                         "ANSWER_3000"->{
                             Log.d("writeChildAnswer/SUCCESS",resp.toString())
                             answerInfo.answerId=resp.result.answerId
-                            adapter.addItem(0,answerInfo)    //임시로 구현..
+                            adapter.addItem(0,answerInfo)
                             commentNumberUpdate(position)
                             binding.writeCommentEdit.text=Editable.Factory.getInstance().newEditable("")
                         }
                         else->{
                             Toast.makeText(appContext,"댓글 등록 실패",Toast.LENGTH_SHORT).show()
                             Log.d("writeChildAnswer/FAIL",response.errorBody()?.string().toString())
+                            Log.d("writeAnswer/user","token:"+AppData.qpAccessToken+"userId: "+AppData.qpUserID)
                         }
                     }
                 }
@@ -435,7 +438,7 @@ class DetailedQuestionRVAdapter(context:Context): RecyclerView.Adapter<DetailedQ
 
 
 
-    fun likeAnswerService(answerId:Long,binding:ItemAnswerBinding){
+    fun likeAnswerService(answerId:Long,binding:ItemAnswerBinding,position: Int){
         val questionService= getRetrofit().create(QuestionInterface::class.java)
 
         questionService.likeAnswer(AppData.qpAccessToken,AppData.qpUserID,answerId).enqueue(object:Callback<LikeAnswerResponse>{
@@ -449,14 +452,12 @@ class DetailedQuestionRVAdapter(context:Context): RecyclerView.Adapter<DetailedQ
                     "ANSWERLIKE_7000"->{
                         Log.d("likeAnswer/SUCCESS",resp.toString())
                         if(resp.result.answerLikeStatus=="DELETED"){
-                            val text=binding.answerLikeTv.text.toString()   //좋아요 수 텍스트뷰 수정
-                            val likeNum=text.toInt()-1
-                            binding.answerLikeTv.text=likeNum.toString()
+                            items[position].likes = items[position].likes?.minus(1)
+                            binding.answerLikeTv.text=items[position].likes.toString()
                         }
                         else if(resp.result.answerLikeStatus=="ADDED"){
-                            val text=binding.answerLikeTv.text.toString()
-                            val likeNum=text.toInt()+1
-                            binding.answerLikeTv.text=likeNum.toString()
+                            items[position].likes = items[position].likes?.plus(1)
+                            binding.answerLikeTv.text=items[position].likes.toString()
                         }
                     }
                     else->{

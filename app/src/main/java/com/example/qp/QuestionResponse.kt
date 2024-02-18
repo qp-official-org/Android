@@ -2,6 +2,7 @@ package com.example.qp
 
 import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
+import java.io.Serial
 import java.io.Serializable
 import java.sql.Timestamp
 
@@ -144,4 +145,27 @@ data class ReportQResult(
     @SerializedName(value="questionReportId")var questionReportId:Int,
     @SerializedName(value="content")var content:String,
     @SerializedName(value="createdAt")var createdAt:String
+):Serializable
+
+data class NotifyQResponse(
+    @SerializedName(value="isSuccess")val isSuccess: Boolean?,
+    @SerializedName(value="code")val code: String,
+    @SerializedName(value="message")val message: String,
+    @SerializedName(value="result")val result:NotifyQResult
+):Serializable
+data class NotifyQResult(
+    @SerializedName(value="userId")var userId:Long,
+    @SerializedName(value="createdAt")var createdAt:String
+):Serializable
+
+data class GetNotifyResponse(
+    @SerializedName(value="isSuccess")val isSuccess: Boolean?,
+    @SerializedName(value="code")val code: String,
+    @SerializedName(value="message")val message: String,
+    @SerializedName(value="result")val result:GetNotifyResult
+):Serializable
+data class GetNotifyResult(
+    @SerializedName(value="questionId")var questionId:Long,
+    @SerializedName(value="questionAlarms")var questionAlarms:ArrayList<NotifyQResult>,
+    @SerializedName(value="totalElements")var total:Int
 ):Serializable

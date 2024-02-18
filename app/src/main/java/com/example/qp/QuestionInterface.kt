@@ -93,4 +93,16 @@ interface QuestionInterface {
         @Path("questionId")questionId:Int,
         @Body report:ReportQ
     ):Call<ReportQResponse>
+
+    @POST("/questions/{questionId}/alarms/user/{userId}")
+    fun notifyQ(
+        @Header("accessToken")token:String,
+        @Path("questionId")questionId:Long,
+        @Path("userId")userId:Long
+    ):Call<NotifyQResponse>
+
+    @GET("/questions/{questionId}/alarms")
+    fun getNotifyQ(
+        @Path("questionId")questionId:Int
+    ):Call<GetNotifyResponse>
 }
