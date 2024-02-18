@@ -77,6 +77,7 @@ class AppData : Application() {
                                 Log.d("ssearch Data4", resp.result.role)
                                 Log.d("ssearch Data5", resp.result.gender)
                                 Log.d("ssearch Data6", resp.result.point.toString())
+                                Log.d("ssearch Data7", resp.result.createdAt)
 
                                 AppData.qpNickname = resp.result.nickname
                                 AppData.qpProfileImage = resp.result.profileImage

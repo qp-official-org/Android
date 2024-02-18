@@ -129,10 +129,8 @@ class LoginActivity : AppCompatActivity() {
                             AppData.qpAccessToken = resp.result.accessToken
                             AppData.qpUserID = resp.result.userId
                             AppData.searchRecord.clear()
-                            Log.d("qpUserData1", AppData.qpAccessToken)
-                            Log.d("qpUserData2", AppData.qpUserID.toString())
 
-                            Log.d("qpUserData3", resp.result.isNew.toString())
+                            Log.d("isNew", resp.result.isNew.toString())
                             if(resp.result.isNew) {     // 새로 가입한 계정
                                 startActivity(Intent(this@LoginActivity, SetNicknameActivity::class.java))
                             }
