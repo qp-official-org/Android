@@ -112,9 +112,18 @@ class MainActivity : AppCompatActivity() {
                     Toast.makeText(this, "로그아웃 실패 $error", Toast.LENGTH_SHORT).show()
                 }else {
                     Toast.makeText(this, "로그아웃 성공", Toast.LENGTH_SHORT).show()
-                    AppData.qpUserID = 0
+                    // 전역변수 초기화
                     AppData.qpAccessToken = ""
+                    AppData.qpUserID = 0
+                    AppData.qpNickname = ""
+                    AppData.qpProfileImage = ""
+                    AppData.qpEmail = ""
+                    AppData.qpGender = ""
+                    AppData.qpRole = ""
+                    AppData.qpPoint = 0
+                    AppData.qpCreatedAt = ""
                     AppData.searchRecord.clear()
+
                     binding.mainLoginBt.visibility = View.VISIBLE
                     binding.mainLoginSuccessBt.visibility = View.GONE
                     binding.mainLoginSuccessUserImg.visibility = View.GONE
