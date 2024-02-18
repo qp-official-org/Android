@@ -147,6 +147,7 @@ class ProfileActivity : AppCompatActivity() {
             binding.profileEditYesBtn.visibility = View.VISIBLE
             binding.profileEditNoBtn.visibility = View.VISIBLE
             binding.profileMainImageIv.setAlpha(0.7f)
+            binding.profileMainbackBoxIv.setAlpha(0.7f)
         }
 
         // editText 입력마다 체크
@@ -186,6 +187,7 @@ class ProfileActivity : AppCompatActivity() {
                 binding.profileEditYesBtn.visibility = View.GONE
                 binding.profileEditNoBtn.visibility = View.GONE
                 binding.profileMainImageIv.setAlpha(1f)
+                binding.profileMainbackBoxIv.setAlpha(1f)
                 binding.profileNicknameInvalidTv.visibility = View.INVISIBLE
                 binding.profileNicknameValidTv.visibility = View.INVISIBLE
 
@@ -204,6 +206,7 @@ class ProfileActivity : AppCompatActivity() {
             binding.profileEditYesBtn.visibility = View.GONE
             binding.profileEditNoBtn.visibility = View.GONE
             binding.profileMainImageIv.setAlpha(1f)
+            binding.profileMainbackBoxIv.setAlpha(1f)
             binding.profileNicknameInvalidTv.visibility = View.INVISIBLE
             binding.profileNicknameValidTv.visibility = View.INVISIBLE
         }
