@@ -289,18 +289,18 @@ class DetailedActivity : AppCompatActivity(),DetailedQView{
         val editText=findViewById<EditText>(R.id.write_answer_edit)
 
         btn.setOnClickListener {
-            var content=editText.text.toString()
+            val content=editText.text.toString()
             var answer=AnswerInfo(
-                0,
-                AppData.qpUserID.toLong(),
-                AppData.qpNickname,
-                "USER",
-                AppData.qpProfileImage,
-                "title11",
-                 content,
-                "PARENT",
-                0,
-                0
+                answerId=0,
+                userId=AppData.qpUserID.toLong(),
+                nickname = AppData.qpNickname,
+                role=AppData.qpRole,
+                profileImage = AppData.qpProfileImage,
+                title="title",
+                content=content,
+                category = "PARENT",
+                answerGroup = 0,
+                likes = 0
             )
             writeAnswerService(answer,AppData.qpAccessToken)
         }
@@ -450,7 +450,9 @@ class DetailedActivity : AppCompatActivity(),DetailedQView{
                         QpToast.createToast(applicationContext,"답변이 등록되었습니다")?.show()
                     }
                     else->{
-                        Log.d("writeAnswer/FAIL",response.errorBody()?.string().toString())
+                        val msg=response.errorBody()?.string().toString()
+                        Log.d("writeAnswer/FAIL",msg)
+                        QpToast.createToast(applicationContext,"답변 등록 실패"+msg)
                     }
                 }
             }

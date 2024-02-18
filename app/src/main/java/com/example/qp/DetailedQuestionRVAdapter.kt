@@ -304,7 +304,8 @@ class DetailedQuestionRVAdapter(context:Context): RecyclerView.Adapter<DetailedQ
                             binding.writeCommentEdit.text=Editable.Factory.getInstance().newEditable("")
                         }
                         else->{
-                            Toast.makeText(appContext,"댓글 등록 실패",Toast.LENGTH_SHORT).show()
+                            val msg=response.errorBody()?.string().toString()
+                            QpToast.createToast(appContext,"댓글 등록 실패:"+msg)
                             Log.d("writeChildAnswer/FAIL",response.errorBody()?.string().toString())
                             Log.d("writeAnswer/user","token:"+AppData.qpAccessToken+"userId: "+AppData.qpUserID)
                         }

@@ -297,22 +297,9 @@ class WriteQuestionActivity: AppCompatActivity() {
                         QpToast.createToast(applicationContext,"등록 완료")?.show()
                     }
                     else-> {
-                        /*val question = QuestionInfo(
-                            title = questionInfo.title,
-                            content = questionInfo.content,
-                            hashtags = newTagList
-                        )
-
-                        val intent =
-                            Intent(this@WriteQuestionActivity, DetailedActivity::class.java)
-                        val gson = Gson()
-                        val qJson = gson.toJson(question)
-                        intent.putExtra("question", qJson)
-                        startActivity(intent)
-                        finish()
-                        Toast.makeText(applicationContext, "등록 완료", Toast.LENGTH_SHORT).show()*/
-                        Log.d("writeQ/FAIL",response.errorBody()?.string().toString())
-                        QpToast.createToast(applicationContext,"등록 실패")?.show()
+                        val msg=response.errorBody()?.string().toString()
+                        Log.d("writeQ/FAIL",msg)
+                        QpToast.createToast(applicationContext,"등록 실패:"+msg)?.show()
                     }
                 }
               }
