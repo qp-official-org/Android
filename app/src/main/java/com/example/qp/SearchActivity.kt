@@ -183,8 +183,7 @@ class SearchActivity : AppCompatActivity() {
                 startActivity(intent)
             }
             else{
-                val dialog = SimpleDialog()
-                dialog.show(supportFragmentManager,"dialog")
+                QpToast.createToast(applicationContext)?.show()
             }
         }
     }

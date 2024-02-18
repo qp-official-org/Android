@@ -1,6 +1,7 @@
 package com.example.qp
 
 import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,10 +10,12 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.example.qp.databinding.ItemAnswerCommentBinding
+import com.kakao.sdk.user.UserApiClient
 
 class DetailedAnswerCommentRVAdapter(context: Context ):RecyclerView.Adapter<DetailedAnswerCommentRVAdapter.ViewHolder>() {
     private var appContext=context
     private val items=ArrayList<AnswerInfo>()
+    private var isLogin=false
 
     interface CommentClickListener{
         fun onItemRemove(position:Int,answerId:Long)
@@ -28,11 +31,23 @@ class DetailedAnswerCommentRVAdapter(context: Context ):RecyclerView.Adapter<Det
         return ViewHolder(binding)
     }
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        checkLogin()
         holder.bind(position)
     }
 
     override fun getItemCount(): Int =items.size
 
+
+    fun checkLogin(){
+        UserApiClient.instance.accessTokenInfo { token, error ->
+            if (error != null) {
+                Log.e("TAG", "로그인 실패", error)
+            } else if (token != null) {
+                isLogin=true
+                Log.i("TAG", "로그인 성공 $token")
+            }
+        }
+    }
 
     inner class ViewHolder(val binding:ItemAnswerCommentBinding) : RecyclerView.ViewHolder(binding.root) {
 
@@ -51,8 +66,9 @@ class DetailedAnswerCommentRVAdapter(context: Context ):RecyclerView.Adapter<Det
 
         private fun showCommentMorePopup(answer: AnswerInfo,position:Int){
             lateinit var popupWindow:SimplePopup
-            if(AppData.qpUserID==answer.userId.toInt()){
-                binding.commentMoreBtn.setOnClickListener {
+            binding.commentMoreBtn.setOnClickListener {
+                if(AppData.qpUserID==answer.userId.toInt()&&isLogin){
+
                     val list= mutableListOf<String>().apply {
                         add("수정하기")
                         add("삭제하기")
@@ -74,22 +90,22 @@ class DetailedAnswerCommentRVAdapter(context: Context ):RecyclerView.Adapter<Det
                     popupWindow.isOutsideTouchable=true
                     popupWindow.showAsDropDown(it,40,10)
                 }
-            }
-            else{
-                binding.commentMoreBtn.setOnClickListener {
-                    val list= mutableListOf<String>().apply {
-                        add("신고하기")
-                    }
-                    popupWindow=SimplePopup(appContext,list){_,_,menuPos->
-                        when(menuPos){
-                            0-> Toast.makeText(appContext,"신고하기", Toast.LENGTH_SHORT).show()
+                else{
+                    binding.commentMoreBtn.setOnClickListener {
+                        val list= mutableListOf<String>().apply {
+                            add("신고하기")
                         }
+                        popupWindow=SimplePopup(appContext,list){_,_,menuPos->
+                            when(menuPos){
+                                0-> Toast.makeText(appContext,"신고하기", Toast.LENGTH_SHORT).show()
+                            }
+                        }
+                        popupWindow.isOutsideTouchable=true
+                        popupWindow.showAsDropDown(it,40,10)
                     }
-                    popupWindow.isOutsideTouchable=true
-                    popupWindow.showAsDropDown(it,40,10)
                 }
-            }
 
+            }
         }
 
 

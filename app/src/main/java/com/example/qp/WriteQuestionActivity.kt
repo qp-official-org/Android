@@ -133,7 +133,7 @@ class WriteQuestionActivity: AppCompatActivity() {
                     if(s.isNotEmpty())
                         if((s[s.length-1].code ==32 || s[s.length-1] =='\n') && s.isNotBlank()) {
                             if(!adapter.dupCheck(s.toString().trim())){
-                                Toast.makeText(applicationContext,"이미 추가함",Toast.LENGTH_SHORT).show()
+                                QpToast.createToast(applicationContext,"이미 추가된 태그입니다")?.show()
                                 return
                             }
                             adapter.addItem(s.toString().trim())
@@ -154,7 +154,7 @@ class WriteQuestionActivity: AppCompatActivity() {
 
         edittext.setOnClickListener {
             if(adapter.itemCount>=3){
-                Toast.makeText(applicationContext,"다시 입력하려면 기존 텍스트를 지워주세요",Toast.LENGTH_SHORT).show()
+                QpToast.createToast(applicationContext,"다시 입력하려면 기존 텍스트를 지워주세요")?.show()
             }
             else{
                 edittext.isFocusable=true
@@ -223,11 +223,12 @@ class WriteQuestionActivity: AppCompatActivity() {
 
 
                 }
-                else Toast.makeText(applicationContext,"동의가 체크되지 않음",Toast.LENGTH_SHORT).show()
+                else QpToast.createToast(applicationContext,"동의가 체크되지 않았습니다")?.show()
+
 
             }
             else{
-                Toast.makeText(applicationContext,"제목 또는 본문 형식이 유효하지 않습니다.",Toast.LENGTH_SHORT).show()
+                QpToast.createToast(applicationContext, "제목 또는 본문 형식이 유효하지 않습니다.")?.show()
             }
         }
     }
@@ -276,7 +277,7 @@ class WriteQuestionActivity: AppCompatActivity() {
                             }
 
                         val question = QuestionInfo(
-                            user=UserInfo(AppData.qpUserID,AppData.qpProfileImage,"User"),
+                            user=UserInfo(AppData.qpUserID,AppData.qpProfileImage,AppData.qpRole),
                             questionId = resp.result.questionId,
                             title = questionInfo.title,
                             content = questionInfo.content,
@@ -293,7 +294,7 @@ class WriteQuestionActivity: AppCompatActivity() {
                         intent.putExtra("question", qJson)
                         startActivity(intent)
                         finish()
-                        Toast.makeText(applicationContext, "등록 완료", Toast.LENGTH_SHORT).show()
+                        QpToast.createToast(applicationContext,"등록 완료")?.show()
                     }
                     else-> {
                         /*val question = QuestionInfo(
@@ -311,7 +312,7 @@ class WriteQuestionActivity: AppCompatActivity() {
                         finish()
                         Toast.makeText(applicationContext, "등록 완료", Toast.LENGTH_SHORT).show()*/
                         Log.d("writeQ/FAIL",response.errorBody()?.string().toString())
-                        Toast.makeText(applicationContext,"등록 실패",Toast.LENGTH_SHORT).show()
+                        QpToast.createToast(applicationContext,"등록 실패")?.show()
                     }
                 }
               }
