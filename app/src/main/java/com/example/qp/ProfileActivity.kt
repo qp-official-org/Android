@@ -59,6 +59,12 @@ class ProfileActivity : AppCompatActivity() {
             startActivity(Intent(this, SearchActivity::class.java))
         }
 
+        // 로고 클릭 시 홈으로 이동
+        binding.profileQpLogo.setOnClickListener {
+            startActivity(Intent(this, MainActivity::class.java))
+            finishAffinity()    // 쌓인 모든 Activity 종료
+        }
+
         // 유저 데이터 반영
         binding.profileMainTv.text = AppData.qpNickname
         binding.profileEditNicknameEt.hint = AppData.qpNickname

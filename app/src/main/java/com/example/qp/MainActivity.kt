@@ -115,6 +115,8 @@ class MainActivity : AppCompatActivity() {
                     binding.mainLoginBt.visibility = View.VISIBLE
                     binding.mainLoginSuccessBt.visibility = View.GONE
                     binding.mainLoginSuccessUserImg.visibility = View.GONE
+
+                    AppData.qpIsLogin = false
                 }
             }
         }

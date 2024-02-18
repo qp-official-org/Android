@@ -59,6 +59,8 @@ class SetProfileActivity : AppCompatActivity() {
         binding.profileExitBtnIv.setOnClickListener {
             Toast.makeText(this, "회원가입에 성공했습니다.", Toast.LENGTH_SHORT).show()
 
+            AppData.qpIsLogin = true
+
             startActivity(Intent(this, MainActivity::class.java))
             finishAffinity()    // 쌓인 모든 Activity 종료
         }

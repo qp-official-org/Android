@@ -138,6 +138,7 @@ class LoginActivity : AppCompatActivity() {
                             }
                             else {      // 기존에 존재하던 계정
                                 Toast.makeText(this@LoginActivity, "로그인에 성공했습니다.", Toast.LENGTH_SHORT).show()
+                                AppData.qpIsLogin = true
                                 finish()
                             }
                         }
