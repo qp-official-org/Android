@@ -342,6 +342,7 @@ class DetailedActivity : AppCompatActivity(),DetailedQView{
     private fun setQuestionMorePopup(){
         lateinit var popupWindow: SimplePopup
         var isMine=questionInfo.user?.userId==AppData.qpUserID  //본인이 작성한 질문인지 여부
+
         binding.questionMoreBtn.setOnClickListener {
             if(answerAdapter.isItemListEmpty()&&isMine&&isLogin){
                 val list= mutableListOf<String>().apply {
@@ -394,6 +395,7 @@ class DetailedActivity : AppCompatActivity(),DetailedQView{
 
             }
         }
+
     }
 
     override fun onGetQSuccess(questionResp:QuestionInfo?) {
