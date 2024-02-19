@@ -100,6 +100,7 @@ class LoginActivity : AppCompatActivity() {
             Log.i("Login TAG", "카카오계정으로 로그인 성공 ${token.accessToken}")
 
             signUp(token.accessToken)
+            GlobalApplication.preferences.setString("kakaoToken", token.accessToken)
         }
     }
 
