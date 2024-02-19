@@ -57,8 +57,8 @@ class DetailedActivity : AppCompatActivity(),DetailedQView{
 
         // 로고 클릭 시 홈으로 이동
         binding.detailedLogoIv.setOnClickListener {
-            startActivity(Intent(this, MainActivity::class.java))
-            finishAffinity()    // 쌓인 모든 Activity 종료
+            AppData.isGoHome = true
+            finish()
         }
 
 
@@ -88,6 +88,12 @@ class DetailedActivity : AppCompatActivity(),DetailedQView{
         Log.d("detailedQOncreate", questionInfo.toString())
 
         Log.d("userInfo",AppData.qpUserID.toString()+AppData.qpNickname)
+    }
+
+    override fun onRestart() {
+        if(AppData.isGoHome)    finish()
+
+        super.onRestart()
     }
 
 

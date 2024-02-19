@@ -35,7 +35,6 @@ class SetNicknameActivity : AppCompatActivity() {
                     Toast.makeText(this, "로그아웃 실패 $error", Toast.LENGTH_SHORT).show()
                 }
             }
-
             finish()
         }
 
@@ -68,11 +67,15 @@ class SetNicknameActivity : AppCompatActivity() {
 
         // 닉네임 입력 완료 후 다음버튼 누르면 데이터 수정됨
         binding.nicknameNextBtn.setOnClickListener {
-            var userName : String = binding.nicknameInputEt.text.toString()
-
-            val userModify = UserModify(userName, "")
+            val userModify = UserModify(binding.nicknameInputEt.text.toString(), "")
             AppData.modifyUserInfo(AppData.qpAccessToken, AppData.qpUserID, userModify)
             startActivity(Intent(this, SetProfileActivity::class.java))
         }
+    }
+
+    override fun onRestart() {
+        if(AppData.isGoHome)    finish()
+
+        super.onRestart()
     }
 }

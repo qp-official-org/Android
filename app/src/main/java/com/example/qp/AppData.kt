@@ -22,6 +22,8 @@ class AppData : Application() {
 
         var qpIsLogin = false
 
+        var isGoHome = false
+
         var searchRecord = ArrayList<String>()
 
         // 유저 정보 수정 함수

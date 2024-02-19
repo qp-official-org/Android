@@ -61,8 +61,8 @@ class ProfileActivity : AppCompatActivity() {
 
         // 로고 클릭 시 홈으로 이동
         binding.profileQpLogo.setOnClickListener {
-            startActivity(Intent(this, MainActivity::class.java))
-            finishAffinity()    // 쌓인 모든 Activity 종료
+            AppData.isGoHome = true
+            finish()
         }
 
         // 유저 데이터 반영
@@ -216,6 +216,12 @@ class ProfileActivity : AppCompatActivity() {
             binding.profileNicknameInvalidTv.visibility = View.INVISIBLE
             binding.profileNicknameValidTv.visibility = View.INVISIBLE
         }
+    }
+
+    override fun onRestart() {
+        if(AppData.isGoHome)    finish()
+
+        super.onRestart()
     }
 
 //    // Dialog 호출 함수 (개발중)

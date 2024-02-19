@@ -44,11 +44,11 @@ class MainActivity : AppCompatActivity() {
 
             Handler(Looper.getMainLooper()).postDelayed(Runnable {
                 isExit = true
-            }, 500)
+            }, 300)
 
             Handler(Looper.getMainLooper()).postDelayed(Runnable {
                 isExit = false
-            }, 4000)
+            }, 3000)
         }
     }
 
@@ -58,49 +58,37 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // sharedPreference에 저장된 로컬 데이터 불러오기
-        AppData.qpAccessToken = GlobalApplication.preferences.getString("accessToken", "")
-        AppData.qpUserID = GlobalApplication.preferences.getInt("userID", 0)
-
-        Log.d("sharedpp1", AppData.qpAccessToken)
-        Log.d("sharedpp2", AppData.qpUserID.toString())
-
         // 로그인 여부 확인
         UserApiClient.instance.accessTokenInfo { token, error ->
             Log.d("KakaoToken", AuthApiClient.instance.hasToken().toString())
             if (error != null) {
-                Log.e("TTAG", "로그인 실패", error)
+                Log.e("TTAG", "카카오 로그인 실패", error)
                 binding.mainLoginBt.visibility = View.VISIBLE
                 binding.mainLoginSuccessBt.visibility = View.GONE
                 binding.mainLoginSuccessUserImg.visibility = View.GONE
-
-                AppData.qpAccessToken = ""
-                AppData.qpUserID = 0
             } else if (token != null) {
-                Log.i("TTAG", "로그인 성공 $token")
+                Log.i("TTAG", "카카오 로그인 성공 $token")
 
-                AppData.searchUserInfo(AppData.qpAccessToken, AppData.qpUserID)
+                // sharedPreference에 저장된 로컬 데이터 불러오기
+                AppData.qpAccessToken = GlobalApplication.preferences.getString("accessToken", "")
+                AppData.qpUserID = GlobalApplication.preferences.getInt("userID", 0)
 
-                var refreshToken: String = GlobalApplication.preferences.getString("refreshToken", "")
-                Log.d("sharedpp3", refreshToken)
-
+                // 큐피 로그인 시도
                 signIn(GlobalApplication.preferences.getString("kakaoToken", ""))
 
                 Handler(Looper.getMainLooper()).postDelayed(Runnable {
-                    if(AppData.qpIsLogin) {
-                        autoSignIn(AppData.qpAccessToken, refreshToken, AppData.qpUserID)
+                    if(AppData.qpIsLogin) {     //
+                        autoSignIn(AppData.qpAccessToken, GlobalApplication.preferences.getString("refreshToken", ""), AppData.qpUserID)
+                        AppData.searchUserInfo(AppData.qpAccessToken, AppData.qpUserID)
 
                         binding.mainLoginBt.visibility = View.GONE
                         binding.mainLoginSuccessBt.visibility = View.VISIBLE
                         binding.mainLoginSuccessUserImg.visibility = View.VISIBLE
 
-                        // 통신 대기 시간 0.3초
                         Handler(Looper.getMainLooper()).postDelayed(Runnable {
                             // 하단 바에 사용자 닉네임과 포인트 데이터 반영
                             binding.mainBarNicknameTv.text = AppData.qpNickname
                             binding.mainBarCoinTv.text = AppData.qpPoint.toString()
-                            Log.d("speedTest1", AppData.qpNickname)
-                            Log.d("speedTest2", AppData.qpPoint.toString())
                         }, 300)
                     }
                 }, 300)
@@ -116,9 +104,9 @@ class MainActivity : AppCompatActivity() {
         binding.mainLogoIv.setOnClickListener {
             UserApiClient.instance.logout { error ->
                 if (error != null) {
-                    Toast.makeText(this, "로그아웃 실패 $error", Toast.LENGTH_SHORT).show()
+                    Log.d("TTAG", "로그아웃 실패 $error")
                 }else {
-                    Toast.makeText(this, "로그아웃 성공", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, "로그아웃 되었습니다.", Toast.LENGTH_SHORT).show()
                     // 전역변수 초기화
                     AppData.qpAccessToken = ""
                     AppData.qpUserID = 0
@@ -162,36 +150,26 @@ class MainActivity : AppCompatActivity() {
         super.onRestart()
         Log.d("onRestart", "onRestart")
 
-        // 로그인 여부 확인
-        UserApiClient.instance.accessTokenInfo { token, error ->
-            if (error != null) {
-                Log.e("TTAG", "로그인 실패", error)
-                binding.mainLoginBt.visibility = View.VISIBLE
-                binding.mainLoginSuccessBt.visibility = View.GONE
-                binding.mainLoginSuccessUserImg.visibility = View.GONE
+        AppData.isGoHome = false
 
-                AppData.qpAccessToken = ""
-                AppData.qpUserID = 0
-            } else if (token != null) {
-                Log.i("TTAG", "로그인 성공 $token")
+        if(AppData.qpIsLogin) {
+            AppData.searchUserInfo(AppData.qpAccessToken, AppData.qpUserID)
 
-                AppData.searchUserInfo(AppData.qpAccessToken, AppData.qpUserID)
+            binding.mainLoginBt.visibility = View.GONE
+            binding.mainLoginSuccessBt.visibility = View.VISIBLE
+            binding.mainLoginSuccessUserImg.visibility = View.VISIBLE
 
-                binding.mainLoginBt.visibility = View.GONE
-                binding.mainLoginSuccessBt.visibility = View.VISIBLE
-                binding.mainLoginSuccessUserImg.visibility = View.VISIBLE
-
-                AppData.qpIsLogin = true
-
-                // 통신 대기 시간 0.3초
-                Handler(Looper.getMainLooper()).postDelayed(Runnable {
-                    // 하단 바에 사용자 닉네임과 포인트 데이터 반영
-                    binding.mainBarNicknameTv.text = AppData.qpNickname
-                    binding.mainBarCoinTv.text = AppData.qpPoint.toString()
-                    Log.d("speedTest3", AppData.qpNickname)
-                    Log.d("speedTest4", AppData.qpPoint.toString())
-                }, 300)
-            }
+            // 통신 대기 시간 0.3초
+            Handler(Looper.getMainLooper()).postDelayed(Runnable {
+                // 하단 바에 사용자 닉네임과 포인트 데이터 반영
+                binding.mainBarNicknameTv.text = AppData.qpNickname
+                binding.mainBarCoinTv.text = AppData.qpPoint.toString()
+            }, 300)
+        }
+        else {
+            binding.mainLoginBt.visibility = View.VISIBLE
+            binding.mainLoginSuccessBt.visibility = View.GONE
+            binding.mainLoginSuccessUserImg.visibility = View.GONE
         }
     }
 
@@ -274,13 +252,12 @@ class MainActivity : AppCompatActivity() {
         val userService = getRetrofit().create(UserInterface::class.java)
 
         var userAuto = UserAuto(userID)
-
         userService.autoSignIn(accessToken, refreshToken, userAuto).enqueue(object: Callback<UserResponse<AutoSignIn>>{
             override fun onResponse(
                 call: Call<UserResponse<AutoSignIn>>,
                 response: Response<UserResponse<AutoSignIn>>
             ) {
-                Log.d("autosingUp Success", response.toString())
+                Log.d("autoSingUp Success", response.toString())
                 val resp = response.body()
                 if(resp!=null){
                     when(resp.code){
@@ -302,7 +279,7 @@ class MainActivity : AppCompatActivity() {
             }
 
             override fun onFailure(call: Call<UserResponse<AutoSignIn>>, t: Throwable) {
-                Log.d("autosingUp Fail", t.message.toString())
+                Log.d("autoSingUp Fail", t.message.toString())
             }
         })
     }
@@ -321,8 +298,6 @@ class MainActivity : AppCompatActivity() {
                     when(resp.code) {
                         "USER_1000" -> {
                             Log.d("singIn Result", resp.message)
-
-                            AppData.searchRecord.clear()
 
                             Toast.makeText(this@MainActivity, "로그인에 성공했습니다.", Toast.LENGTH_SHORT).show()
                             AppData.qpIsLogin = true
