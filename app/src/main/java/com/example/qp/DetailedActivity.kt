@@ -374,6 +374,7 @@ class DetailedActivity : AppCompatActivity(),DetailedQView{
                                 intent.putExtra("category","question")
                                 startActivity(intent)
                             }
+
                         }
                     }
                 }
