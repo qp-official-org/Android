@@ -71,6 +71,12 @@ class SearchActivity : AppCompatActivity() {
         register()
     }
 
+    override fun onRestart() {
+        if(AppData.isGoHome)    finish()
+
+        super.onRestart()
+    }
+
     private fun searchResult(){
         binding.searchInputSv.setOnQueryTextListener(textListner)
         binding.searchImageBt.setOnClickListener {

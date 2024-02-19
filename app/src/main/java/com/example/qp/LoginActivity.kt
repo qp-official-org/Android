@@ -26,6 +26,7 @@ class LoginActivity : AppCompatActivity() {
             finish()
         }
     }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityLoginBinding.inflate(layoutInflater)
@@ -35,9 +36,8 @@ class LoginActivity : AppCompatActivity() {
         binding.loginAuthenticationEmailEt.visibility = View.GONE
         binding.loginNextBtn.visibility = View.GONE
         binding.loginNextInvalidBtn.visibility = View.GONE
-        binding.loginAuthenticationFailTv.visibility = View.INVISIBLE
 
-        // X 버튼 클릭 시 Activity Main으로 복귀 후 Activity 종료
+        // X 버튼 클릭 시 Activity 종료
         onBackPressedDispatcher.addCallback(this, onBackPressedCallback)    // 종료함수
         binding.loginCloseIv.setOnClickListener {
             finish()
@@ -58,7 +58,6 @@ class LoginActivity : AppCompatActivity() {
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
 
             override fun afterTextChanged(s: Editable?) {
-                binding.loginAuthenticationFailTv.visibility = View.INVISIBLE
                 if(binding.loginAuthenticationEmailEt.length() == 8) {
                     binding.loginNextBtn.visibility = View.VISIBLE
                     binding.loginNextInvalidBtn.visibility = View.GONE
@@ -81,16 +80,22 @@ class LoginActivity : AppCompatActivity() {
 
         // 소셜 로그인 (현재 카카오만 가능)
         binding.loginNaverBtn.setOnClickListener {
-            Toast.makeText(this, "네이버 로그인", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "네이버 로그인 (지원 X)", Toast.LENGTH_SHORT).show()
         }
         binding.loginGoogleBtn.setOnClickListener {
-            Toast.makeText(this, "구글 로그인", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "구글 로그인 (지원 X)", Toast.LENGTH_SHORT).show()
         }
         binding.loginKakaoBtn.setOnClickListener {
             Toast.makeText(this, "카카오 로그인", Toast.LENGTH_SHORT).show()
 
             UserApiClient.instance.loginWithKakaoAccount(this, callback = kakaoCallback)
         }
+    }
+
+    override fun onRestart() {
+        if(AppData.isGoHome)    finish()
+
+        super.onRestart()
     }
 
     // 카카오 콜백 함수 (로그인 동작 관련)
@@ -101,6 +106,7 @@ class LoginActivity : AppCompatActivity() {
             Log.i("Login TAG", "카카오계정으로 로그인 성공 ${token.accessToken}")
 
             signUp(token.accessToken)
+            GlobalApplication.preferences.setString("kakaoToken", token.accessToken)
         }
     }
 
@@ -122,25 +128,22 @@ class LoginActivity : AppCompatActivity() {
                             GlobalApplication.preferences.setString("refreshToken", resp.result.refreshToken)
                             GlobalApplication.preferences.setInt("userID", resp.result.userId)
 
-                            Log.d("sharedpp5", GlobalApplication.preferences.getString("accessToken", ""))
-                            Log.d("sharedpp6", GlobalApplication.preferences.getString("refreshToken", ""))
-                            Log.d("sharedpp7", GlobalApplication.preferences.getInt("userID", 0).toString())
-
                             // 전역변수 사용
                             AppData.qpAccessToken = resp.result.accessToken
                             AppData.qpUserID = resp.result.userId
                             AppData.searchRecord.clear()
-                            Log.d("qpUserData1", AppData.qpAccessToken)
-                            Log.d("qpUserData2", AppData.qpUserID.toString())
 
-                            Log.d("qpUserData3", resp.result.isNew.toString())
                             if(resp.result.isNew) {     // 새로 가입한 계정
                                 startActivity(Intent(this@LoginActivity, SetNicknameActivity::class.java))
                             }
                             else {      // 기존에 존재하던 계정
                                 Toast.makeText(this@LoginActivity, "로그인에 성공했습니다.", Toast.LENGTH_SHORT).show()
+                                AppData.qpIsLogin = true
                                 finish()
                             }
+
+                            // 회원가입 테스트 시 위의 if문 주석처리하고 사용
+                            //startActivity(Intent(this@LoginActivity, SetNicknameActivity::class.java))
                         }
                         else->Log.d("singUp Result", resp.message)
                     }
