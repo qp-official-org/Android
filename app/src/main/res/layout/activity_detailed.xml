@@ -212,6 +212,7 @@
                         android:src="@drawable/baseline_more_vert_24"
                         android:background="@color/white"/>
                     <TextView
+                        android:id="@+id/detailed_child_status_tv"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         app:layout_constraintEnd_toStartOf="@id/question_more_btn"
