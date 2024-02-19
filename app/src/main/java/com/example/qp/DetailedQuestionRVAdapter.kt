@@ -2,6 +2,7 @@ package com.example.qp
 
 import android.app.Application
 import android.content.Context
+import android.content.Intent
 import android.graphics.BlurMaskFilter
 import android.text.Editable
 import android.util.Log
@@ -14,6 +15,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat.getSystemService
+import androidx.core.content.ContextCompat.startActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.qp.databinding.ItemAnswerBinding
@@ -41,6 +43,7 @@ class DetailedQuestionRVAdapter(context:Context): RecyclerView.Adapter<DetailedQ
         fun onAnswerModify(position:Int,answerId:Long)
 
         fun showLoginMsg()
+        fun reportAnswer(id:Long)
     }
 
     private lateinit var myItemClickListener: ItemClickListener
@@ -226,6 +229,14 @@ class DetailedQuestionRVAdapter(context:Context): RecyclerView.Adapter<DetailedQ
 
                 binding.answerCommentBtn.isClickable=false
                 binding.answerLikeBtn.isClickable=false
+
+                val btn=itemView.findViewById<TextView>(R.id.preview_btn)
+                btn.setOnClickListener {
+                    container.removeAllViews()
+                    setBlurText(false,position)
+                    binding.answerCommentBtn.isClickable=true
+                    binding.answerLikeBtn.isClickable=true
+                }
             }
 
         }
@@ -251,13 +262,15 @@ class DetailedQuestionRVAdapter(context:Context): RecyclerView.Adapter<DetailedQ
                             }
                             1-> {
                                 //Toast.makeText(appContext, "삭제하기", Toast.LENGTH_SHORT).show()
-                                myItemClickListener.onItemRemove(position,items[position].answerId!!)    //임시로 구현
+                                myItemClickListener.onItemRemove(position,items[position].answerId!!)
                             }
                             2-> {
                                 if(!isLogin){
                                     myItemClickListener.showLoginMsg()
                                 }
-                                Toast.makeText(appContext, "신고하기", Toast.LENGTH_SHORT).show()
+                                else{
+                                    myItemClickListener.reportAnswer(items[position].answerId!!)
+                                }
                             }
                         }
                     }
@@ -275,7 +288,9 @@ class DetailedQuestionRVAdapter(context:Context): RecyclerView.Adapter<DetailedQ
                                     if(!isLogin){
                                         myItemClickListener.showLoginMsg()
                                     }
-                                    Toast.makeText(appContext, "신고하기", Toast.LENGTH_SHORT).show()
+                                    else{
+                                        myItemClickListener.reportAnswer(items[position].answerId!!)
+                                    }
                                 }
                             }
                         }

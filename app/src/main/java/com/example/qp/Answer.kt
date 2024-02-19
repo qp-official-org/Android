@@ -55,3 +55,18 @@ data class WriteAnswerResult(
     @SerializedName("answerId")var answerId:Long,
     @SerializedName("createdAt")var createdAt:String
 ):Serializable
+
+data class ReportAnswerResponse(
+    @SerializedName(value="isSuccess")val isSuccess: Boolean?,
+    @SerializedName(value="code")val code: String,
+    @SerializedName(value="message")val message: String,
+    @SerializedName(value="result")val result:ReportAnswerResult
+):Serializable
+
+data class ReportAnswerResult(
+    @SerializedName(value="answerId")var answerId:Long,
+    @SerializedName(value="userId")var userId:Long,
+    @SerializedName(value="answerReportId")var answerReportId:Int,
+    @SerializedName(value="content")var content:String,
+    @SerializedName(value="createdAt")var createdAt:String
+):Serializable

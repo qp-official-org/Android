@@ -15,6 +15,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import com.example.qp.databinding.ActivityDetailedBinding
 import com.google.gson.Gson
 import com.kakao.sdk.user.UserApiClient
@@ -181,6 +182,13 @@ class DetailedActivity : AppCompatActivity(),DetailedQView{
 
             override fun showLoginMsg() {
                 QpToast.createToast(applicationContext)?.show()
+            }
+
+            override fun reportAnswer(id: Long) {
+                val intent= Intent(applicationContext,ReportActivity::class.java)
+                intent.putExtra("report",id)
+                intent.putExtra("category","answer")
+                startActivity(intent)
             }
         })
 
@@ -360,6 +368,12 @@ class DetailedActivity : AppCompatActivity(),DetailedQView{
                             if(!isLogin){
                                 QpToast.createToast(applicationContext)?.show()
                             }
+                            else{
+                                val intent=Intent(this@DetailedActivity,ReportActivity::class.java)
+                                intent.putExtra("report",questionInfo.questionId)
+                                intent.putExtra("category","question")
+                                startActivity(intent)
+                            }
                         }
                     }
                 }
@@ -377,6 +391,12 @@ class DetailedActivity : AppCompatActivity(),DetailedQView{
                                 Toast.makeText(applicationContext, "신고하기", Toast.LENGTH_SHORT).show()
                                 if(!isLogin){
                                     QpToast.createToast(applicationContext)?.show()
+                                }
+                                else{
+                                    val intent=Intent(this@DetailedActivity,ReportActivity::class.java)
+                                    intent.putExtra("report",questionInfo.questionId)
+                                    intent.putExtra("category","question")
+                                    startActivity(intent)
                                 }
                             }
                         }
@@ -414,6 +434,7 @@ class DetailedActivity : AppCompatActivity(),DetailedQView{
                     }
                     else-> {
                         Log.d("FAILURE/DeleteQ", resp?.message ?: "응답실패")
+                        Log.d("deleteQ/FAIL",response.errorBody()?.string().toString())
                     }
                 }
             }

@@ -1,6 +1,7 @@
 package com.example.qp
 
 import android.content.Context
+import android.content.Intent
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -8,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.example.qp.databinding.ItemAnswerCommentBinding
 import com.kakao.sdk.user.UserApiClient
@@ -84,7 +86,12 @@ class DetailedAnswerCommentRVAdapter(context: Context ):RecyclerView.Adapter<Det
                                 Toast.makeText(appContext, "삭제하기", Toast.LENGTH_SHORT).show()
                                 myItemClickListener.onItemRemove(position,items[position].answerId!!)
                             }
-                            2-> Toast.makeText(appContext,"신고하기", Toast.LENGTH_SHORT).show()
+                            2-> {
+                                val intent= Intent(appContext,ReportActivity::class.java)
+                                intent.putExtra("report",items[position].answerId)
+                                intent.putExtra("category","answer")
+                                ContextCompat.startActivity(appContext, intent, null)
+                            }
                         }
                     }
                     popupWindow.isOutsideTouchable=true
@@ -97,7 +104,16 @@ class DetailedAnswerCommentRVAdapter(context: Context ):RecyclerView.Adapter<Det
                         }
                         popupWindow=SimplePopup(appContext,list){_,_,menuPos->
                             when(menuPos){
-                                0-> Toast.makeText(appContext,"신고하기", Toast.LENGTH_SHORT).show()
+                                0-> {
+                                    if(!isLogin)
+                                        QpToast.createToast(appContext)
+                                    else{
+                                        val intent= Intent(appContext,ReportActivity::class.java)
+                                        intent.putExtra("report",items[position].answerId)
+                                        intent.putExtra("category","answer")
+                                        ContextCompat.startActivity(appContext, intent, null)
+                                    }
+                                }
                             }
                         }
                         popupWindow.isOutsideTouchable=true
