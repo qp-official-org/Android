@@ -35,6 +35,7 @@ class SearchActivity : AppCompatActivity() {
             getfilteredQuestions(page, query)
             moreFiltered(query)
             record(query)
+            binding.searchInputSv.setQuery(query, false)
             binding.searchRecentWord.isVisible = false
             binding.searchInputSv.clearFocus() // 키보드 숨기기
             return true
