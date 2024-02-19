@@ -5,7 +5,6 @@ import android.content.res.Resources
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.widget.Toast
-import androidx.databinding.DataBindingUtil
 import com.example.qp.databinding.ItemToastBinding
 
 object QpToast {
