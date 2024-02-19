@@ -349,27 +349,45 @@ class DetailedActivity : AppCompatActivity(),DetailedQView{
         lateinit var popupWindow: SimplePopup
         var isMine=questionInfo.user?.userId==AppData.qpUserID  //본인이 작성한 질문인지 여부
 
-            binding.questionMoreBtn.setOnClickListener {
-                if(answerAdapter.isItemListEmpty()&&isMine&&isLogin){
+        binding.questionMoreBtn.setOnClickListener {
+            if(answerAdapter.isItemListEmpty()&&isMine&&isLogin){
+                val list= mutableListOf<String>().apply {
+                    add("수정하기")
+                    add("삭제하기")
+                    add("신고하기")
+                }
+                popupWindow=SimplePopup(applicationContext,list){_,_,position->
+                    when(position){
+                        0-> {   //수정하기
+                            val intent=Intent(this@DetailedActivity,ModifyQuestionActivity::class.java)
+                            intent.putExtra("modifyQuestion",questionInfo)
+                            startActivity(intent)
+                            Log.d("modifyLog",questionInfo.toString())
+                            Toast.makeText(applicationContext, "수정하기", Toast.LENGTH_SHORT).show()
+                        }
+                        1-> {   //삭제하기
+                                QpToast.createToast(applicationContext,"질문 삭제")?.show()
+                                deleteQ(AppData.qpAccessToken, questionInfo.questionId, AppData.qpUserID)
+                        }
+                        2-> {   //신고하기
+                            Toast.makeText(applicationContext, "신고하기", Toast.LENGTH_SHORT).show()
+                            if(!isLogin){
+                                QpToast.createToast(applicationContext)?.show()
+                            }
+                        }
+                    }
+                }
+                popupWindow.isOutsideTouchable=true
+                popupWindow.showAsDropDown(it,40,10)
+            }
+            else{                   //답변이 한개라도 있으면 수정&삭제 불가
+                binding.questionMoreBtn.setOnClickListener {
                     val list= mutableListOf<String>().apply {
-                        add("수정하기")
-                        add("삭제하기")
                         add("신고하기")
                     }
                     popupWindow=SimplePopup(applicationContext,list){_,_,position->
                         when(position){
-                            0-> {   //수정하기
-                                val intent=Intent(this@DetailedActivity,ModifyQuestionActivity::class.java)
-                                intent.putExtra("modifyQuestion",questionInfo)
-                                startActivity(intent)
-                                Log.d("modifyLog",questionInfo.toString())
-                                Toast.makeText(applicationContext, "수정하기", Toast.LENGTH_SHORT).show()
-                            }
-                            1-> {   //삭제하기
-                                    QpToast.createToast(applicationContext,"질문 삭제")?.show()
-                                    deleteQ(AppData.qpAccessToken, questionInfo.questionId, AppData.qpUserID)
-                            }
-                            2-> {   //신고하기
+                            0-> {
                                 Toast.makeText(applicationContext, "신고하기", Toast.LENGTH_SHORT).show()
                                 if(!isLogin){
                                     QpToast.createToast(applicationContext)?.show()
@@ -380,27 +398,9 @@ class DetailedActivity : AppCompatActivity(),DetailedQView{
                     popupWindow.isOutsideTouchable=true
                     popupWindow.showAsDropDown(it,40,10)
                 }
-                else{                   //답변이 한개라도 있으면 수정&삭제 불가
-                    binding.questionMoreBtn.setOnClickListener {
-                        val list= mutableListOf<String>().apply {
-                            add("신고하기")
-                        }
-                        popupWindow=SimplePopup(applicationContext,list){_,_,position->
-                            when(position){
-                                0-> {
-                                    Toast.makeText(applicationContext, "신고하기", Toast.LENGTH_SHORT).show()
-                                    if(!isLogin){
-                                        QpToast.createToast(applicationContext)?.show()
-                                    }
-                                }
-                            }
-                        }
-                        popupWindow.isOutsideTouchable=true
-                        popupWindow.showAsDropDown(it,40,10)
-                    }
 
-                }
             }
+        }
 
     }
 
