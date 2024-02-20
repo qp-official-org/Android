@@ -71,6 +71,11 @@ class ProfileActivity : AppCompatActivity() {
 
         // 전문가 인증 전환
         binding.profileCheckExpert2Tv.setOnClickListener {
+            binding.profileAuthEt.setText("")
+            // 키보드 내리기
+            val inputMethodManager = this.getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+            inputMethodManager.hideSoftInputFromWindow(binding.profileAuthEt.windowToken, 0)
+
             if(isAuthbtn) {
                 isAuthbtn = false
                 binding.profileChargekBtn.visibility = View.VISIBLE
@@ -81,8 +86,13 @@ class ProfileActivity : AppCompatActivity() {
             }
             else {
                 isAuthbtn = true
+                invalidAllbtn()
                 binding.profileChargekBtn.visibility = View.GONE
                 binding.profileCharge10kBtn.visibility = View.GONE
+                binding.profileChargekKakaoBtn.visibility = View.GONE
+                binding.profileChargekNaverBtn.visibility = View.GONE
+                binding.profileCharge10kKakaoBtn.visibility = View.GONE
+                binding.profileCharge10kNaverBtn.visibility = View.GONE
 
                 binding.profileAuthEt.visibility = View.VISIBLE
                 binding.profileAuthNextInvalidBtn.visibility = View.VISIBLE
@@ -109,6 +119,7 @@ class ProfileActivity : AppCompatActivity() {
         })
         binding.profileAuthNextBtn.setOnClickListener {
             if(binding.profileAuthEt.text.toString() == "qpExpert") {
+                binding.profileAuthEt.setText("")
                 changeRole(AppData.qpUserID, "EXPERT")
                 binding.profileExpertMarkIv.visibility = View.VISIBLE
 
@@ -122,6 +133,8 @@ class ProfileActivity : AppCompatActivity() {
                 binding.profileAuthNextBtn.visibility = View.GONE
 
                 Toast.makeText(this, "전문가 인증이 완료되었습니다.", Toast.LENGTH_SHORT).show()
+
+                binding.profileMainEditBtn.visibility = View.GONE
 
                 // 키보드 내리기
                 val inputMethodManager = this.getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
@@ -139,6 +152,14 @@ class ProfileActivity : AppCompatActivity() {
                 binding.profileCheckExpertLn.visibility = View.VISIBLE
 
                 Toast.makeText(this, "인증이 해제되었습니다.", Toast.LENGTH_SHORT).show()
+
+                invalidAllbtn()
+                binding.profileChargekKakaoBtn.visibility = View.GONE
+                binding.profileChargekNaverBtn.visibility = View.GONE
+                binding.profileCharge10kKakaoBtn.visibility = View.GONE
+                binding.profileCharge10kNaverBtn.visibility = View.GONE
+
+                binding.profileMainEditBtn.visibility = View.VISIBLE
             }
         }
 
@@ -160,66 +181,46 @@ class ProfileActivity : AppCompatActivity() {
 
         // 충전 버튼 색상 변경 및 Dialog 등장
         binding.profileChargekBtn.setOnClickListener {
-            binding.profileChargekBtn.setBackgroundResource(R.drawable.box_orange)
-            binding.profileChargekTv1.setTextColor(Color.WHITE)
-            binding.profileChargekTv2.setTextColor(Color.WHITE)
+            btnActive(binding.profileChargekBtn, binding.profileChargekTv1, binding.profileChargekTv2)
             binding.profileChargekNaverBtn.visibility = View.VISIBLE
             binding.profileChargekKakaoBtn.visibility = View.VISIBLE
 
-            binding.profileCharge10kBtn.setBackgroundResource(R.drawable.box_white_lined)
-            binding.profileCharge10kTv1.setTextColor(Color.BLACK)
-            binding.profileCharge10kTv2.setTextColor(Color.BLACK)
-            binding.profileCharge10kNaverBtn.setBackgroundResource(R.drawable.box_white_lined)
+            btnInactive(binding.profileCharge10kBtn, binding.profileCharge10kTv1, binding.profileCharge10kTv2)
+            btnInactive2(binding.profileCharge10kNaverBtn, binding.profileCharge10kNaverTv)
+            btnInactive2(binding.profileCharge10kKakaoBtn, binding.profileCharge10kKakaoTv)
             binding.profileCharge10kNaverBtn.visibility = View.GONE
-            binding.profileCharge10kNaverTv.setTextColor(Color.BLACK)
-            binding.profileCharge10kKakaoBtn.setBackgroundResource(R.drawable.box_white_lined)
             binding.profileCharge10kKakaoBtn.visibility = View.GONE
-            binding.profileCharge10kKakaoTv.setTextColor(Color.BLACK)
         }
         binding.profileChargekNaverBtn.setOnClickListener {
-            binding.profileChargekNaverBtn.setBackgroundResource(R.drawable.box_orange)
-            binding.profileChargekNaverTv.setTextColor(Color.WHITE)
-            binding.profileChargekKakaoBtn.setBackgroundResource(R.drawable.box_white_lined)
-            binding.profileChargekKakaoTv.setTextColor(Color.BLACK)
+            btnActive2(binding.profileChargekNaverBtn, binding.profileChargekNaverTv)
+            btnInactive2(binding.profileChargekKakaoBtn, binding.profileChargekKakaoTv)
             //madeDialog(1000, "네이버 페이")
         }
         binding.profileChargekKakaoBtn.setOnClickListener {
-            binding.profileChargekNaverBtn.setBackgroundResource(R.drawable.box_white_lined)
-            binding.profileChargekNaverTv.setTextColor(Color.BLACK)
-            binding.profileChargekKakaoBtn.setBackgroundResource(R.drawable.box_orange)
-            binding.profileChargekKakaoTv.setTextColor(Color.WHITE)
+            btnInactive2(binding.profileChargekNaverBtn, binding.profileChargekNaverTv)
+            btnActive2(binding.profileChargekKakaoBtn, binding.profileChargekKakaoTv)
             //madeDialog(1000, "카카오 페이")
         }
 
         binding.profileCharge10kBtn.setOnClickListener {
-            binding.profileCharge10kBtn.setBackgroundResource(R.drawable.box_orange)
-            binding.profileCharge10kTv1.setTextColor(Color.WHITE)
-            binding.profileCharge10kTv2.setTextColor(Color.WHITE)
+            btnActive(binding.profileCharge10kBtn, binding.profileCharge10kTv1, binding.profileCharge10kTv2)
             binding.profileCharge10kNaverBtn.visibility = View.VISIBLE
             binding.profileCharge10kKakaoBtn.visibility = View.VISIBLE
 
-            binding.profileChargekBtn.setBackgroundResource(R.drawable.box_white_lined)
-            binding.profileChargekTv1.setTextColor(Color.BLACK)
-            binding.profileChargekTv2.setTextColor(Color.BLACK)
-            binding.profileChargekNaverBtn.setBackgroundResource(R.drawable.box_white_lined)
+            btnInactive(binding.profileChargekBtn, binding.profileChargekTv1, binding.profileChargekTv2)
+            btnInactive2(binding.profileChargekNaverBtn, binding.profileChargekNaverTv)
+            btnInactive2(binding.profileChargekKakaoBtn, binding.profileChargekKakaoTv)
             binding.profileChargekNaverBtn.visibility = View.GONE
-            binding.profileChargekNaverTv.setTextColor(Color.BLACK)
-            binding.profileChargekKakaoBtn.setBackgroundResource(R.drawable.box_white_lined)
             binding.profileChargekKakaoBtn.visibility = View.GONE
-            binding.profileChargekKakaoTv.setTextColor(Color.BLACK)
         }
         binding.profileCharge10kNaverBtn.setOnClickListener {
-            binding.profileCharge10kNaverBtn.setBackgroundResource(R.drawable.box_orange)
-            binding.profileCharge10kNaverTv.setTextColor(Color.WHITE)
-            binding.profileCharge10kKakaoBtn.setBackgroundResource(R.drawable.box_white_lined)
-            binding.profileCharge10kKakaoTv.setTextColor(Color.BLACK)
+            btnActive2(binding.profileCharge10kNaverBtn, binding.profileCharge10kNaverTv)
+            btnInactive2(binding.profileCharge10kKakaoBtn, binding.profileCharge10kKakaoTv)
             //madeDialog(10000, "네이버 페이")
         }
         binding.profileCharge10kKakaoBtn.setOnClickListener {
-            binding.profileCharge10kNaverBtn.setBackgroundResource(R.drawable.box_white_lined)
-            binding.profileCharge10kNaverTv.setTextColor(Color.BLACK)
-            binding.profileCharge10kKakaoBtn.setBackgroundResource(R.drawable.box_orange)
-            binding.profileCharge10kKakaoTv.setTextColor(Color.WHITE)
+            btnInactive2(binding.profileCharge10kNaverBtn, binding.profileCharge10kNaverTv)
+            btnActive2(binding.profileCharge10kKakaoBtn, binding.profileCharge10kKakaoTv)
             //madeDialog(10000, "카카오 페이")
         }
 
@@ -229,6 +230,12 @@ class ProfileActivity : AppCompatActivity() {
 
         // 프로필 수정버튼
         binding.profileMainEditBtn.setOnClickListener {
+            invalidAllbtn()
+            binding.profileChargekKakaoBtn.visibility = View.GONE
+            binding.profileChargekNaverBtn.visibility = View.GONE
+            binding.profileCharge10kKakaoBtn.visibility = View.GONE
+            binding.profileCharge10kNaverBtn.visibility = View.GONE
+
             binding.profileEditSettingIv.visibility = View.VISIBLE
             binding.profileMainTv.visibility = View.GONE
             binding.profileEditNicknameEt.visibility = View.VISIBLE
@@ -305,6 +312,37 @@ class ProfileActivity : AppCompatActivity() {
         if(AppData.isGoHome)    finish()
 
         super.onRestart()
+    }
+
+    private fun btnActive(btn: View, t1: TextView, t2: TextView) {
+        btn.setBackgroundResource(R.drawable.box_orange)
+        t1.setTextColor(Color.WHITE)
+        t2.setTextColor(Color.WHITE)
+    }
+
+    private fun btnInactive(btn: View, t1: TextView, t2: TextView) {
+        btn.setBackgroundResource(R.drawable.box_white_lined)
+        t1.setTextColor(Color.BLACK)
+        t2.setTextColor(Color.BLACK)
+    }
+
+    private fun btnActive2(btn: View, t1: TextView) {
+        btn.setBackgroundResource(R.drawable.box_orange)
+        t1.setTextColor(Color.WHITE)
+    }
+
+    private fun btnInactive2(btn: View, t1: TextView) {
+        btn.setBackgroundResource(R.drawable.box_white_lined)
+        t1.setTextColor(Color.BLACK)
+    }
+
+    private fun invalidAllbtn() {
+        btnInactive(binding.profileChargekBtn,binding.profileChargekTv1, binding.profileChargekTv2)
+        btnInactive(binding.profileCharge10kBtn,binding.profileCharge10kTv1, binding.profileCharge10kTv2)
+        btnInactive2(binding.profileChargekKakaoBtn, binding.profileChargekKakaoTv)
+        btnInactive2(binding.profileChargekNaverBtn, binding.profileChargekNaverTv)
+        btnInactive2(binding.profileCharge10kKakaoBtn, binding.profileCharge10kKakaoTv)
+        btnInactive2(binding.profileCharge10kNaverBtn, binding.profileCharge10kNaverTv)
     }
 
 
