@@ -37,31 +37,42 @@
         android:textSize="25sp"
         android:textStyle="bold"
         android:textColor="@color/black" />
-    <ImageView
-        android:id="@+id/profile_image_iv"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/profile_image_cl"
         android:layout_width="130dp"
         android:layout_height="130dp"
-        android:src="@drawable/outline_account_circle_24"
         app:layout_constraintTop_toBottomOf="@id/profile_main_tv"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="10dp" />
-    <ImageView
-        android:id="@+id/profile_image_edit_iv"
-        android:layout_width="45dp"
-        android:layout_height="45dp"
-        android:src="@drawable/outline_edit_24"
-        app:layout_constraintBottom_toBottomOf="@id/profile_image_iv"
-        app:layout_constraintEnd_toEndOf="@id/profile_image_iv"
-        android:padding="8dp"
-        android:background="@drawable/btn_image_edit" />
+        android:layout_marginTop="10dp">
+        
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/profile_image_iv"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/profile_def"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+        <ImageView
+            android:id="@+id/profile_image_edit_iv"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:src="@drawable/outline_edit_24"
+            app:layout_constraintBottom_toBottomOf="@id/profile_image_iv"
+            app:layout_constraintEnd_toEndOf="@id/profile_image_iv"
+            android:padding="8dp"
+            android:background="@drawable/btn_image_edit" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
     <ImageView
         android:id="@+id/profile_next_btn_iv"
         android:layout_width="130dp"
         android:layout_height="35dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/profile_image_iv"
+        app:layout_constraintTop_toBottomOf="@id/profile_image_cl"
         android:background="@drawable/btn_login"
         android:layout_marginTop="60dp" />
     <TextView

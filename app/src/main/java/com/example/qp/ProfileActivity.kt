@@ -438,7 +438,7 @@ class ProfileActivity : AppCompatActivity() {
                 mDialogView.findViewById<TextView>(R.id.charge_text6_tv)
                     .text = "${AppData.qpPoint} point입니다."
                 mDialogView.findViewById<TextView>(R.id.charge_text7_tv)
-                    .text = "${AppData.qpPoint / 10}개의 답변을 확인할 수 있어요!"
+                    .text = "${AppData.qpPoint / 100}개의 답변을 확인할 수 있어요!"
             }, 300)
         }
 
@@ -452,7 +452,7 @@ class ProfileActivity : AppCompatActivity() {
             binding.profileCharge10kKakaoBtn.visibility = View.GONE
 
             binding.profileMainCoinNumTv.text = AppData.qpPoint.toString()
-            binding.profileMainCoinTextTv.text = (AppData.qpPoint / 10).toString()
+            binding.profileMainCoinTextTv.text = (AppData.qpPoint / 100).toString()
         }
 
         val noButton = mDialogView.findViewById<AppCompatButton>(R.id.charge_no_btn)
