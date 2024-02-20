@@ -110,7 +110,7 @@ class ProfileActivity : AppCompatActivity() {
         binding.profileMainTv.text = AppData.qpNickname
         binding.profileEditNicknameEt.hint = AppData.qpNickname
         binding.profileMainCoinNumTv.text = AppData.qpPoint.toString()
-        binding.profileMainCoinTextTv.text = (AppData.qpPoint / 10).toString()
+        binding.profileMainCoinTextTv.text = (AppData.qpPoint / 100).toString()
         var year = AppData.qpCreatedAt.substring(0 until 4)
         var month = AppData.qpCreatedAt.substring(5 until 7)
         var day = AppData.qpCreatedAt.substring(8 until 10)
