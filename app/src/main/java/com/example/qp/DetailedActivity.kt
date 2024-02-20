@@ -9,7 +9,6 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.text.Editable
-import android.util.DisplayMetrics
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.MotionEvent
@@ -21,16 +20,12 @@ import android.widget.ScrollView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
 import androidx.core.widget.NestedScrollView
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.qp.databinding.ActivityDetailedBinding
 import com.google.gson.Gson
 import com.kakao.sdk.user.UserApiClient
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
@@ -44,7 +39,6 @@ import java.lang.Math.abs
 class DetailedActivity : AppCompatActivity(),DetailedQView{
 
     private lateinit var binding: ActivityDetailedBinding
-    private var gson: Gson = Gson()
     private lateinit var answerAdapter:DetailedQuestionRVAdapter
     private var id:Long=0
     private lateinit var questionInfo:QuestionInfo
@@ -99,7 +93,7 @@ class DetailedActivity : AppCompatActivity(),DetailedQView{
 
                         AppData.qpIsLogin = false
                         isLogin=false
-                        binding.answerNoticeBtn.setImageResource(R.drawable.notification_off)
+                        binding.answerNoticeBtn.setImageResource(R.drawable.notify_alarm_off)
                     }
                 }
             }
@@ -112,19 +106,7 @@ class DetailedActivity : AppCompatActivity(),DetailedQView{
         if(AppData.isGoHome)    finish()
 
         super.onRestart()
-        /*UserApiClient.instance.accessTokenInfo { token, error ->
-            if (error != null) {
-                Log.e("TAG", "로그인 실패", error)
-                binding.mainLoginBt.visibility = View.VISIBLE
-                binding.detailedLoginSuccessBt.visibility = View.GONE
-            } else if (token != null) {
-                isLogin=true
-                Log.i("TAG", "로그인 성공 $token")
-                binding.detailedLoginBtn.visibility = View.GONE
-                binding.detailedLoginSuccessBt.visibility = View.VISIBLE
-                Log.d("userInfo","id: "+AppData.qpUserID.toString()+"nickname: "+AppData.qpNickname+"email"+AppData.qpEmail+"token"+AppData.qpAccessToken)
-            }
-        }*/
+
         if(AppData.qpIsLogin) {
             isLogin=true
             AppData.searchUserInfo(AppData.qpAccessToken, AppData.qpUserID)
@@ -157,20 +139,6 @@ class DetailedActivity : AppCompatActivity(),DetailedQView{
     private fun setInit(){
 
 
-        /*// 로그인 여부 확인
-        UserApiClient.instance.accessTokenInfo { token, error ->
-            if (error != null) {
-                Log.e("TAG", "로그인 실패", error)
-                binding.detailedLoginBtn.visibility = View.VISIBLE
-                binding.detailedLoginSuccessBt.visibility = View.GONE
-            } else if (token != null) {
-                isLogin=true
-                Log.i("TAG", "로그인 성공 $token")
-                binding.detailedLoginBtn.visibility = View.GONE
-                binding.detailedLoginSuccessBt.visibility = View.VISIBLE
-                getNotifyQ()
-                Log.d("userInfo","id: "+AppData.qpUserID.toString()+"nickname: "+AppData.qpNickname+"email"+AppData.qpEmail+"token"+AppData.qpAccessToken)
-            }*/
         if(AppData.qpIsLogin) {
             isLogin=true
             AppData.searchUserInfo(AppData.qpAccessToken, AppData.qpUserID)
@@ -260,6 +228,10 @@ class DetailedActivity : AppCompatActivity(),DetailedQView{
 
             override fun scrollTop(view: View) {
                 binding.detailedScrollView.scrollTo(0,view.bottom+view.height)
+            }
+
+            override fun usePoint(point: Long) {
+                binding.mainBarCoinTv.text=(AppData.qpPoint-point).toString()
             }
         })
 
@@ -430,6 +402,7 @@ class DetailedActivity : AppCompatActivity(),DetailedQView{
 
         binding.questionMoreBtn.setOnClickListener {
             var isMine=questionInfo.user?.userId==AppData.qpUserID  //본인이 작성한 질문인지 여부
+            Log.d("questionMorePopup",answerAdapter.isItemListEmpty().toString()+isMine+isLogin+isLogin)
             if(answerAdapter.isItemListEmpty()&&isMine&&isLogin){
                 val list= mutableListOf<String>().apply {
                     add("수정하기")
@@ -713,6 +686,7 @@ class DetailedActivity : AppCompatActivity(),DetailedQView{
                         if(answerAdapter.isItemListEmpty()){
                             binding.answerBtn.visibility=View.VISIBLE
                             updateNotifyView()
+                            setQuestionMorePopup()
                         }
                     }
                     else->{
@@ -741,7 +715,7 @@ class DetailedActivity : AppCompatActivity(),DetailedQView{
                 when(resp?.code){
                     "QUESTION_2000"->{
                         Log.d("notifyQ/SUCCESS",resp.toString())
-                        binding.answerNoticeBtn.setImageResource(R.drawable.notification_on)
+                        binding.answerNoticeBtn.setImageResource(R.drawable.notify_alarm_on)
                         isNotified=true
                         QpToast.createToast(applicationContext,"답변 알림 설정")?.show()
                         //updateNotifyView()
@@ -881,7 +855,6 @@ fun setStringImage(imageUrl: String, imageView: ImageView, con: Context) {
         .apply(RequestOptions().transform(CircleCrop()))
         .into(imageView)
 }
-fun px2dp(px: Int, context: Context) = px / ((context.resources.displayMetrics.densityDpi.toFloat()) / DisplayMetrics.DENSITY_DEFAULT)
 
 
 internal fun calculateRectOnScreen(view: View): Rect {

@@ -18,7 +18,7 @@ data class AnswerUser(
     @SerializedName(value = "nickname")var nickname:String?="",
     @SerializedName(value = "profileImage")var profileImage:String?="",
     @SerializedName(value="role")var role:String?="USER"
-    )
+    ):Serializable
 
 data class ParentAnswerResponse(
     @SerializedName("isSuccess")var isSuccess:Boolean,

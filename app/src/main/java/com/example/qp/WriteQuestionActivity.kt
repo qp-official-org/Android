@@ -281,27 +281,9 @@ class WriteQuestionActivity: AppCompatActivity() {
                     "QUESTION_2000"-> {
                         Log.d("writeQ success","success!")
 
-                        /*var childStatus=
-                            when(isChild){
-                                true->"ACTIVE"
-                                else->"INACTIVE"
-                            }
-
-                        val question = QuestionInfo(
-                            user=UserInfo(AppData.qpUserID,AppData.qpProfileImage,AppData.qpRole),
-                            questionId = resp.result.questionId,
-                            title = questionInfo.title,
-                            content = questionInfo.content,
-                            childStatus=childStatus,
-                            createdAt=resp.result.createdAt,
-                            updatedAt=resp.result.createdAt,
-                            hashtags = newTagList,
-                        )*/
-
                         val intent =
                             Intent(this@WriteQuestionActivity, DetailedActivity::class.java)
                         val gson = Gson()
-                        //val qJson = gson.toJson(question)
                         intent.putExtra("question", resp.result.questionId)
                         startActivity(intent)
                         finish()

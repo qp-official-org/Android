@@ -1,10 +1,15 @@
 package com.example.qp
 
+import android.content.Context
 import android.content.Intent
+import android.graphics.Rect
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
+import android.view.MotionEvent
 import android.view.View
+import android.view.inputmethod.InputMethodManager
+import android.widget.EditText
 import androidx.annotation.RequiresApi
 
 import androidx.appcompat.app.AppCompatActivity
@@ -56,14 +61,7 @@ class SearchActivity : AppCompatActivity() {
         binding = ActivitySearchBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        /*UserApiClient.instance.accessTokenInfo { token, error ->
-            if (error != null) {
-                isLogin=false
 
-            } else if (token != null) {
-                isLogin=true
-            }
-        }*/
 
         //최근 검색어 리사이클러뷰 설정
         val layoutManager = FlexboxLayoutManager(this)
@@ -176,9 +174,7 @@ class SearchActivity : AppCompatActivity() {
             @RequiresApi(Build.VERSION_CODES.TIRAMISU)
             override fun onItemClick(questionInfo: QuestionInfo) {
                 val intent = Intent(this@SearchActivity, DetailedActivity::class.java)
-                val gson = Gson()
-                val qJson = gson.toJson(questionInfo)
-                intent.putExtra("question", qJson)
+                intent.putExtra("question", questionInfo.questionId)
                 startActivity(intent)
             }
         })
@@ -196,6 +192,23 @@ class SearchActivity : AppCompatActivity() {
                 QpToast.createToast(applicationContext)?.show()
             }
         }
+    }
+
+    override fun dispatchTouchEvent(event: MotionEvent?): Boolean {
+        if (event?.action === MotionEvent.ACTION_DOWN) {
+            val v = currentFocus
+            if (v is EditText) {
+                val outRect = Rect()
+                v.getGlobalVisibleRect(outRect)
+                if (!outRect.contains(event.rawX.toInt(), event.rawY.toInt())) {
+                    v.clearFocus()
+                    val imm: InputMethodManager =
+                        getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                    imm.hideSoftInputFromWindow(v.getWindowToken(), 0)
+                }
+            }
+        }
+        return super.dispatchTouchEvent(event)
     }
 
 }

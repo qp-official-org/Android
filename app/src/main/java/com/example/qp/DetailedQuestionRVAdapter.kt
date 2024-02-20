@@ -47,6 +47,8 @@ class DetailedQuestionRVAdapter(context:Context): RecyclerView.Adapter<DetailedQ
 
         fun scroll2viw(view:View)
         fun scrollTop(view:View)
+
+        fun usePoint(point:Long)
     }
 
     private lateinit var myItemClickListener: ItemClickListener
@@ -217,9 +219,11 @@ class DetailedQuestionRVAdapter(context:Context): RecyclerView.Adapter<DetailedQ
                 if(isBlur&&!isMine) binding.answerContentTv.paint.maskFilter=BlurMaskFilter(16f,BlurMaskFilter.Blur.NORMAL)
                 else binding.answerContentTv.paint.maskFilter=null
             }
+            val container=binding.previewContainer
+            container.removeAllViews()
+
             if(isBlur&&!isMine){
-                //Log.d("setBlurLog",)
-                val container=binding.previewContainer
+                Log.d("setBlurLog",items[position].content+isBlur.toString()+isMine.toString())
                 val inflater:LayoutInflater=appContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
                 inflater.inflate(R.layout.item_answer_preview,container,true)
 
@@ -234,10 +238,21 @@ class DetailedQuestionRVAdapter(context:Context): RecyclerView.Adapter<DetailedQ
 
                 val btn=itemView.findViewById<TextView>(R.id.preview_btn)
                 btn.setOnClickListener {
-                    container.removeAllViews()
-                    setBlurText(false,position)
-                    binding.answerCommentBtn.isClickable=true
-                    binding.answerLikeBtn.isClickable=true
+                    if(AppData.qpPoint>100){
+                        val userPoint=UserPoint(-100)
+                        AppData.changePoint(AppData.qpAccessToken,AppData.qpUserID,userPoint)
+                        Log.d("usePoint",AppData.qpPoint.toString())
+                        container.removeAllViews()
+                        setBlurText(false,position)
+                        binding.answerCommentBtn.isClickable=true
+                        binding.answerLikeBtn.isClickable=true
+
+                        myItemClickListener.usePoint(100)
+                    }
+                    else{
+                        QpToast.createToast(appContext,"포인트가 부족합니다")?.show()
+                    }
+
                 }
             }
 
@@ -246,9 +261,9 @@ class DetailedQuestionRVAdapter(context:Context): RecyclerView.Adapter<DetailedQ
         //더보기 버튼 눌렀을 때 팝업 메뉴
         private fun showAnswerMorePopup(position: Int){
             lateinit var popupWindow:SimplePopup
-            var isMine=items[position].user.userId!!.toInt()==AppData.qpUserID
 
             binding.answerMoreBtn.setOnClickListener {
+                var isMine=items[position].user.userId!!.toInt()==AppData.qpUserID
                 Log.d("answerMore",commentAdapterList[position].isCommentListEmpty().toString()+isMine)
                 if(commentAdapterList[position].isCommentListEmpty()&&isMine&&isLogin){
 
@@ -450,7 +465,7 @@ class DetailedQuestionRVAdapter(context:Context): RecyclerView.Adapter<DetailedQ
 
 
     fun isItemListEmpty():Boolean{
-        return items.isEmpty()||items==null
+        return items.isEmpty()
     }
 
     fun getContent(position:Int):String{

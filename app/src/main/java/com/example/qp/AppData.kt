@@ -120,9 +120,14 @@ class AppData : Application() {
                                 Log.d("ppoint Result", resp.result.point.toString())
                                 AppData.qpPoint = resp.result.point
                             }
-                            else-> Log.d("ppoint Result2", resp.message)
+                            else-> {
+                                Log.d("ppoint Result2", resp.message)
+                            }
                         }
                     }
+                    else
+                        Log.d("ppoint error?",response.errorBody()?.string().toString())
+
                 }
 
                 override fun onFailure(call: Call<UserResponse<UserPointResult>>, t: Throwable) {
