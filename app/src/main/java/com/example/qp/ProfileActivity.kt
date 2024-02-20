@@ -1,18 +1,17 @@
 package com.example.qp
 
-import android.content.Context
 import android.content.Intent
 import android.graphics.Color
-import android.os.Build
+import android.graphics.Paint
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.inputmethod.InputMethodManager
-import android.widget.Button
-import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
@@ -20,15 +19,17 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatButton
 import com.example.qp.databinding.ActivityProfileBinding
-//import com.example.qp.databinding.DialogChargeBinding
 import com.google.android.material.tabs.TabLayoutMediator
-import org.w3c.dom.Text
+import com.kakao.sdk.user.UserApiClient
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import java.util.regex.Pattern
 
 class ProfileActivity : AppCompatActivity() {
     lateinit var binding: ActivityProfileBinding
-//    lateinit var binding2: DialogChargeBinding
     var isNick = false
+    var isAuthbtn = false
 
     private val information = arrayListOf("내가 한 질문", "내가 구매한 답변", "알림신청한 질문")
 
@@ -42,7 +43,6 @@ class ProfileActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityProfileBinding.inflate(layoutInflater)
-//        binding2 = DialogChargeBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         onBackPressedDispatcher.addCallback(this, onBackPressedCallback)    // 종료함수
@@ -65,6 +65,34 @@ class ProfileActivity : AppCompatActivity() {
             finish()
         }
 
+        binding.profileMainLogoutTv.paintFlags = Paint.UNDERLINE_TEXT_FLAG
+        // 로그아웃 버튼
+        binding.profileMainLogoutTv.setOnClickListener {
+            UserApiClient.instance.logout { error ->
+                if (error != null) {
+                    Log.d("TTAG", "로그아웃 실패 $error")
+                }else {
+                    Toast.makeText(this, "로그아웃 되었습니다.", Toast.LENGTH_SHORT).show()
+                    // 전역변수 초기화
+                    AppData.qpAccessToken = ""
+                    AppData.qpUserID = 0
+                    AppData.qpNickname = ""
+                    AppData.qpProfileImage = ""
+                    AppData.qpEmail = ""
+                    AppData.qpGender = ""
+                    AppData.qpRole = ""
+                    AppData.qpPoint = 0
+                    AppData.qpCreatedAt = ""
+                    AppData.searchRecord.clear()
+
+                    AppData.qpIsLogin = false
+
+                    AppData.isGoHome = true
+                    finish()
+                }
+            }
+        }
+
         // 유저 데이터 반영
         binding.profileMainTv.text = AppData.qpNickname
         binding.profileEditNicknameEt.hint = AppData.qpNickname
@@ -75,69 +103,150 @@ class ProfileActivity : AppCompatActivity() {
         var day = AppData.qpCreatedAt.substring(8 until 10)
         binding.profileMainDateTv.text = "${year}년 ${month}월 ${day}일 가입"
 
+        binding.profileCheckExpert2Tv.paintFlags = Paint.UNDERLINE_TEXT_FLAG
+        // 전문가 인증 전환
+        binding.profileCheckExpert2Tv.setOnClickListener {
+            binding.profileAuthEt.setText("")
+            // 키보드 내리기
+            val inputMethodManager = this.getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+            inputMethodManager.hideSoftInputFromWindow(binding.profileAuthEt.windowToken, 0)
+
+            if(isAuthbtn) {
+                isAuthbtn = false
+                binding.profileChargekBtn.visibility = View.VISIBLE
+                binding.profileCharge10kBtn.visibility = View.VISIBLE
+
+                binding.profileAuthEt.visibility = View.GONE
+                binding.profileAuthNextInvalidBtn.visibility = View.GONE
+            }
+            else {
+                isAuthbtn = true
+                invalidAllbtn()
+                binding.profileChargekBtn.visibility = View.GONE
+                binding.profileCharge10kBtn.visibility = View.GONE
+                binding.profileChargekKakaoBtn.visibility = View.GONE
+                binding.profileChargekNaverBtn.visibility = View.GONE
+                binding.profileCharge10kKakaoBtn.visibility = View.GONE
+                binding.profileCharge10kNaverBtn.visibility = View.GONE
+
+                binding.profileAuthEt.visibility = View.VISIBLE
+                binding.profileAuthNextInvalidBtn.visibility = View.VISIBLE
+            }
+        }
+
+        // 전문가 인증 (임시)
+        binding.profileAuthEt.addTextChangedListener(object: TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+
+            override fun afterTextChanged(s: Editable?) {
+                binding.profileAuthFailTv.visibility = View.GONE
+                if(binding.profileAuthEt.length() == 8) {
+                    binding.profileAuthNextBtn.visibility = View.VISIBLE
+                    binding.profileAuthNextInvalidBtn.visibility = View.GONE
+                }
+                else{
+                    binding.profileAuthNextBtn.visibility = View.GONE
+                    binding.profileAuthNextInvalidBtn.visibility = View.VISIBLE
+                }
+            }
+        })
+        binding.profileAuthNextBtn.setOnClickListener {
+            if(binding.profileAuthEt.text.toString() == "qpExpert") {
+                binding.profileAuthEt.setText("")
+                changeRole(AppData.qpUserID, "EXPERT")
+                binding.profileExpertMarkIv.visibility = View.VISIBLE
+
+                isAuthbtn = false
+                binding.profileChargekBtn.visibility = View.VISIBLE
+                binding.profileCharge10kBtn.visibility = View.VISIBLE
+
+                binding.profileAuthEt.visibility = View.GONE
+                binding.profileAuthNextInvalidBtn.visibility = View.GONE
+                binding.profileCheckExpertLn.visibility = View.GONE
+                binding.profileAuthNextBtn.visibility = View.GONE
+
+                Toast.makeText(this, "전문가 인증이 완료되었습니다.", Toast.LENGTH_SHORT).show()
+
+                binding.profileMainEditBtn.visibility = View.GONE
+
+                // 키보드 내리기
+                val inputMethodManager = this.getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+                inputMethodManager.hideSoftInputFromWindow(binding.profileAuthEt.windowToken, 0)
+            }
+            else {
+                binding.profileAuthFailTv.visibility = View.VISIBLE
+            }
+        }
+        binding.profileMainImageIv.setOnClickListener {
+            if(AppData.qpRole != "USER") {
+                changeRole(AppData.qpUserID, "USER")
+                binding.profileExpertMarkIv.visibility = View.GONE
+
+                binding.profileCheckExpertLn.visibility = View.VISIBLE
+
+                Toast.makeText(this, "인증이 해제되었습니다.", Toast.LENGTH_SHORT).show()
+
+                invalidAllbtn()
+                binding.profileChargekKakaoBtn.visibility = View.GONE
+                binding.profileChargekNaverBtn.visibility = View.GONE
+                binding.profileCharge10kKakaoBtn.visibility = View.GONE
+                binding.profileCharge10kNaverBtn.visibility = View.GONE
+
+                binding.profileMainEditBtn.visibility = View.VISIBLE
+            }
+        }
+
+        // 전문가면 인증버튼 안보이게, 인증마크 달리게
+        if(AppData.qpRole == "EXPERT") {
+            binding.profileCheckExpertLn.visibility = View.GONE
+            binding.profileExpertMarkIv.visibility = View.VISIBLE
+        }
+
         // 충전 버튼 색상 변경 및 Dialog 등장
         binding.profileChargekBtn.setOnClickListener {
-            binding.profileChargekBtn.setBackgroundResource(R.drawable.box_orange)
-            binding.profileChargekTv1.setTextColor(Color.WHITE)
-            binding.profileChargekTv2.setTextColor(Color.WHITE)
+            btnActive(binding.profileChargekBtn, binding.profileChargekTv1, binding.profileChargekTv2)
             binding.profileChargekNaverBtn.visibility = View.VISIBLE
             binding.profileChargekKakaoBtn.visibility = View.VISIBLE
 
-            binding.profileCharge10kBtn.setBackgroundResource(R.drawable.box_white_lined)
-            binding.profileCharge10kTv1.setTextColor(Color.BLACK)
-            binding.profileCharge10kTv2.setTextColor(Color.BLACK)
-            binding.profileCharge10kNaverBtn.setBackgroundResource(R.drawable.box_white_lined)
+            btnInactive(binding.profileCharge10kBtn, binding.profileCharge10kTv1, binding.profileCharge10kTv2)
+            btnInactive2(binding.profileCharge10kNaverBtn, binding.profileCharge10kNaverTv)
+            btnInactive2(binding.profileCharge10kKakaoBtn, binding.profileCharge10kKakaoTv)
             binding.profileCharge10kNaverBtn.visibility = View.GONE
-            binding.profileCharge10kNaverTv.setTextColor(Color.BLACK)
-            binding.profileCharge10kKakaoBtn.setBackgroundResource(R.drawable.box_white_lined)
             binding.profileCharge10kKakaoBtn.visibility = View.GONE
-            binding.profileCharge10kKakaoTv.setTextColor(Color.BLACK)
         }
         binding.profileChargekNaverBtn.setOnClickListener {
-            binding.profileChargekNaverBtn.setBackgroundResource(R.drawable.box_orange)
-            binding.profileChargekNaverTv.setTextColor(Color.WHITE)
-            binding.profileChargekKakaoBtn.setBackgroundResource(R.drawable.box_white_lined)
-            binding.profileChargekKakaoTv.setTextColor(Color.BLACK)
-            //madeDialog(1000, "네이버 페이")
+            btnActive2(binding.profileChargekNaverBtn, binding.profileChargekNaverTv)
+            btnInactive2(binding.profileChargekKakaoBtn, binding.profileChargekKakaoTv)
+            madeDialog(1000, "네이버 페이")
         }
         binding.profileChargekKakaoBtn.setOnClickListener {
-            binding.profileChargekNaverBtn.setBackgroundResource(R.drawable.box_white_lined)
-            binding.profileChargekNaverTv.setTextColor(Color.BLACK)
-            binding.profileChargekKakaoBtn.setBackgroundResource(R.drawable.box_orange)
-            binding.profileChargekKakaoTv.setTextColor(Color.WHITE)
-            //madeDialog(1000, "카카오 페이")
+            btnInactive2(binding.profileChargekNaverBtn, binding.profileChargekNaverTv)
+            btnActive2(binding.profileChargekKakaoBtn, binding.profileChargekKakaoTv)
+            madeDialog(1000, "카카오 페이")
         }
 
         binding.profileCharge10kBtn.setOnClickListener {
-            binding.profileCharge10kBtn.setBackgroundResource(R.drawable.box_orange)
-            binding.profileCharge10kTv1.setTextColor(Color.WHITE)
-            binding.profileCharge10kTv2.setTextColor(Color.WHITE)
+            btnActive(binding.profileCharge10kBtn, binding.profileCharge10kTv1, binding.profileCharge10kTv2)
             binding.profileCharge10kNaverBtn.visibility = View.VISIBLE
             binding.profileCharge10kKakaoBtn.visibility = View.VISIBLE
 
-            binding.profileChargekBtn.setBackgroundResource(R.drawable.box_white_lined)
-            binding.profileChargekTv1.setTextColor(Color.BLACK)
-            binding.profileChargekTv2.setTextColor(Color.BLACK)
-            binding.profileChargekNaverBtn.setBackgroundResource(R.drawable.box_white_lined)
+            btnInactive(binding.profileChargekBtn, binding.profileChargekTv1, binding.profileChargekTv2)
+            btnInactive2(binding.profileChargekNaverBtn, binding.profileChargekNaverTv)
+            btnInactive2(binding.profileChargekKakaoBtn, binding.profileChargekKakaoTv)
             binding.profileChargekNaverBtn.visibility = View.GONE
-            binding.profileChargekNaverTv.setTextColor(Color.BLACK)
-            binding.profileChargekKakaoBtn.setBackgroundResource(R.drawable.box_white_lined)
             binding.profileChargekKakaoBtn.visibility = View.GONE
-            binding.profileChargekKakaoTv.setTextColor(Color.BLACK)
         }
         binding.profileCharge10kNaverBtn.setOnClickListener {
-            binding.profileCharge10kNaverBtn.setBackgroundResource(R.drawable.box_orange)
-            binding.profileCharge10kNaverTv.setTextColor(Color.WHITE)
-            binding.profileCharge10kKakaoBtn.setBackgroundResource(R.drawable.box_white_lined)
-            binding.profileCharge10kKakaoTv.setTextColor(Color.BLACK)
-            //madeDialog(10000, "네이버 페이")
+            btnActive2(binding.profileCharge10kNaverBtn, binding.profileCharge10kNaverTv)
+            btnInactive2(binding.profileCharge10kKakaoBtn, binding.profileCharge10kKakaoTv)
+            madeDialog(10000, "네이버 페이")
         }
         binding.profileCharge10kKakaoBtn.setOnClickListener {
-            binding.profileCharge10kNaverBtn.setBackgroundResource(R.drawable.box_white_lined)
-            binding.profileCharge10kNaverTv.setTextColor(Color.BLACK)
-            binding.profileCharge10kKakaoBtn.setBackgroundResource(R.drawable.box_orange)
-            binding.profileCharge10kKakaoTv.setTextColor(Color.WHITE)
-            //madeDialog(10000, "카카오 페이")
+            btnInactive2(binding.profileCharge10kNaverBtn, binding.profileCharge10kNaverTv)
+            btnActive2(binding.profileCharge10kKakaoBtn, binding.profileCharge10kKakaoTv)
+            madeDialog(10000, "카카오 페이")
         }
 
         if(AppData.qpRole == "EXPERT") {        // 전문가일 경우 프로필 수정 불가
@@ -146,6 +255,12 @@ class ProfileActivity : AppCompatActivity() {
 
         // 프로필 수정버튼
         binding.profileMainEditBtn.setOnClickListener {
+            invalidAllbtn()
+            binding.profileChargekKakaoBtn.visibility = View.GONE
+            binding.profileChargekNaverBtn.visibility = View.GONE
+            binding.profileCharge10kKakaoBtn.visibility = View.GONE
+            binding.profileCharge10kNaverBtn.visibility = View.GONE
+
             binding.profileEditSettingIv.visibility = View.VISIBLE
             binding.profileMainTv.visibility = View.GONE
             binding.profileEditNicknameEt.visibility = View.VISIBLE
@@ -224,45 +339,129 @@ class ProfileActivity : AppCompatActivity() {
         super.onRestart()
     }
 
-//    // Dialog 호출 함수 (개발중)
-//    fun madeDialog(num : Int, str : String) {
-//        val mDialogView = LayoutInflater.from(this).inflate(R.layout.dialog_charge, null)
-//
-//        binding2.chargeText1Tv.text = "선택하신 금액 '${num}원'을"
-//        binding2.chargeText2Tv.text = "'${str}'로"
-//
-//        val mBuilder = AlertDialog.Builder(this)
-//            .setView(mDialogView)
-//
-//        mBuilder.show()
-//
-//        binding2.chargeYesBtn.setOnClickListener {
-//            binding2.chargeText1Tv.visibility = View.GONE
-//            binding2.chargeText2Tv.visibility = View.GONE
-//            binding2.chargeText3Tv.visibility = View.GONE
-//            binding2.chargeYesBtn.visibility = View.GONE
-//            binding2.chargeNoBtn.visibility = View.GONE
-//
-//            binding2.chargeText4Tv.visibility = View.VISIBLE
-//            binding2.chargeText5Tv.visibility = View.VISIBLE
-//            binding2.chargeText6Tv.visibility = View.VISIBLE
-//            binding2.chargeText7Tv.visibility = View.VISIBLE
-//            binding2.chargeNextBtn.visibility = View.VISIBLE
-//
-//            binding2.chargeText5Tv.text = "현재 '큐피'님의 잔여 포인트는"
-//            val pnum : Int = num+800
-//            binding2.chargeText6Tv.text = "${pnum} point입니다."
-//            val pque : Int = pnum/10
-//            binding2.chargeText7Tv.text = "${pque}개의 답변을 확인할 수 있어요!"
-//
-//            binding2.chargeNextBtn.setOnClickListener {
-//                mBuilder.show().dismiss()
-//
-//                binding.profileMainCoinNumTv.text = "$pnum"
-//            }
-//        }
-//        binding2.chargeNoBtn.setOnClickListener {
-//            mBuilder.show().dismiss()
-//        }
-//    }
+    private fun btnActive(btn: View, t1: TextView, t2: TextView) {
+        btn.setBackgroundResource(R.drawable.box_orange)
+        t1.setTextColor(Color.WHITE)
+        t2.setTextColor(Color.WHITE)
+    }
+
+    private fun btnInactive(btn: View, t1: TextView, t2: TextView) {
+        btn.setBackgroundResource(R.drawable.box_white_lined)
+        t1.setTextColor(Color.BLACK)
+        t2.setTextColor(Color.BLACK)
+    }
+
+    private fun btnActive2(btn: View, t1: TextView) {
+        btn.setBackgroundResource(R.drawable.box_orange)
+        t1.setTextColor(Color.WHITE)
+    }
+
+    private fun btnInactive2(btn: View, t1: TextView) {
+        btn.setBackgroundResource(R.drawable.box_white_lined)
+        t1.setTextColor(Color.BLACK)
+    }
+
+    private fun invalidAllbtn() {
+        btnInactive(binding.profileChargekBtn,binding.profileChargekTv1, binding.profileChargekTv2)
+        btnInactive(binding.profileCharge10kBtn,binding.profileCharge10kTv1, binding.profileCharge10kTv2)
+        btnInactive2(binding.profileChargekKakaoBtn, binding.profileChargekKakaoTv)
+        btnInactive2(binding.profileChargekNaverBtn, binding.profileChargekNaverTv)
+        btnInactive2(binding.profileCharge10kKakaoBtn, binding.profileCharge10kKakaoTv)
+        btnInactive2(binding.profileCharge10kNaverBtn, binding.profileCharge10kNaverTv)
+    }
+
+
+    // 계정 Role 변경 (개발용)
+    private fun changeRole(userId: Int, role: String) {
+        val userService = getRetrofit().create(UserInterface::class.java)
+
+        userService.changeRole(userId, role).enqueue(object : Callback<UserResponse<UserModifyResult>> {
+            override fun onResponse(
+                call: Call<UserResponse<UserModifyResult>>,
+                response: Response<UserResponse<UserModifyResult>>
+            ) {
+                Log.d("cchange Success", response.toString())
+                val resp = response.body()
+                if(resp!=null) {
+                    when(resp.code) {
+                        "USER_1000" -> {
+                            Log.d("cchange Result1", resp.message)
+                            AppData.qpRole = role
+                            Log.d("cchange Result2", AppData.qpRole)
+                        }
+                        else -> Log.d("cchange Result", resp.message)
+                    }
+                }
+            }
+
+            override fun onFailure(call: Call<UserResponse<UserModifyResult>>, t: Throwable) {
+                Log.d("cchange Fail", t.message.toString())
+            }
+
+        })
+    }
+
+    // Dialog 호출 함수
+    fun madeDialog(num: Long, str: String) {
+        val mDialogView = LayoutInflater.from(this).inflate(R.layout.dialog_charge, null)
+        val mBuilder = AlertDialog.Builder(this)
+            .setView(mDialogView)
+            .setCancelable(false)
+
+        if(num == 1000L)    mDialogView.findViewById<TextView>(R.id.charge_text1_tv).text = "선택하신 금액 '1,000원'을"
+        else if(num == 10000L)    mDialogView.findViewById<TextView>(R.id.charge_text1_tv).text = "선택하신 금액 '10,000원'을"
+        else    mDialogView.findViewById<TextView>(R.id.charge_text1_tv).text = "선택하신 금액 '${num}원'을"
+        mDialogView.findViewById<TextView>(R.id.charge_text2_tv).text = "'${str}'로"
+
+        val mAlertDialog = mBuilder.show()
+
+        val okButton = mDialogView.findViewById<AppCompatButton>(R.id.charge_yes_btn)
+        okButton.setOnClickListener {
+            mDialogView.findViewById<TextView>(R.id.charge_text1_tv).visibility = View.GONE
+            mDialogView.findViewById<TextView>(R.id.charge_text2_tv).visibility = View.GONE
+            mDialogView.findViewById<TextView>(R.id.charge_text3_tv).visibility = View.GONE
+            mDialogView.findViewById<AppCompatButton>(R.id.charge_yes_btn).visibility = View.GONE
+            mDialogView.findViewById<AppCompatButton>(R.id.charge_no_btn).visibility = View.GONE
+
+            mDialogView.findViewById<TextView>(R.id.charge_text4_tv).visibility = View.VISIBLE
+            mDialogView.findViewById<TextView>(R.id.charge_text5_tv).visibility = View.VISIBLE
+            mDialogView.findViewById<TextView>(R.id.charge_text6_tv).visibility = View.VISIBLE
+            mDialogView.findViewById<TextView>(R.id.charge_text7_tv).visibility = View.VISIBLE
+            mDialogView.findViewById<AppCompatButton>(R.id.charge_next_btn).visibility = View.VISIBLE
+
+            var userPoint = UserPoint(num)
+            AppData.changePoint(AppData.qpAccessToken, AppData.qpUserID, userPoint)
+
+            Handler(Looper.getMainLooper()).postDelayed(Runnable {
+                mDialogView.findViewById<TextView>(R.id.charge_text5_tv)
+                    .text = "현재 '${AppData.qpNickname}'님의 잔여 포인트는"
+                mDialogView.findViewById<TextView>(R.id.charge_text6_tv)
+                    .text = "${AppData.qpPoint} point입니다."
+                mDialogView.findViewById<TextView>(R.id.charge_text7_tv)
+                    .text = "${AppData.qpPoint / 10}개의 답변을 확인할 수 있어요!"
+            }, 300)
+        }
+
+        val exitButton = mDialogView.findViewById<AppCompatButton>(R.id.charge_next_btn)
+        exitButton.setOnClickListener {
+            mAlertDialog.dismiss()
+            invalidAllbtn()
+            binding.profileChargekNaverBtn.visibility = View.GONE
+            binding.profileCharge10kNaverBtn.visibility = View.GONE
+            binding.profileChargekKakaoBtn.visibility = View.GONE
+            binding.profileCharge10kKakaoBtn.visibility = View.GONE
+
+            binding.profileMainCoinNumTv.text = AppData.qpPoint.toString()
+            binding.profileMainCoinTextTv.text = (AppData.qpPoint / 10).toString()
+        }
+
+        val noButton = mDialogView.findViewById<AppCompatButton>(R.id.charge_no_btn)
+        noButton.setOnClickListener {
+            mAlertDialog.dismiss()
+            btnInactive2(binding.profileChargekNaverBtn, binding.profileChargekNaverTv)
+            btnInactive2(binding.profileCharge10kNaverBtn, binding.profileCharge10kNaverTv)
+            btnInactive2(binding.profileChargekKakaoBtn, binding.profileChargekKakaoTv)
+            btnInactive2(binding.profileCharge10kKakaoBtn, binding.profileCharge10kKakaoTv)
+        }
+    }
 }
