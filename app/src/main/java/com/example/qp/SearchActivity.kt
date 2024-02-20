@@ -56,14 +56,14 @@ class SearchActivity : AppCompatActivity() {
         binding = ActivitySearchBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        UserApiClient.instance.accessTokenInfo { token, error ->
+        /*UserApiClient.instance.accessTokenInfo { token, error ->
             if (error != null) {
                 isLogin=false
 
             } else if (token != null) {
                 isLogin=true
             }
-        }
+        }*/
 
         //최근 검색어 리사이클러뷰 설정
         val layoutManager = FlexboxLayoutManager(this)
@@ -188,7 +188,7 @@ class SearchActivity : AppCompatActivity() {
         binding.searchRegisterBt.setOnClickListener {
 
             Log.d("searchIsLogin",isLogin.toString())
-            if(AppData.qpUserID != 0 && isLogin){
+            if(AppData.qpUserID != 0 && AppData.qpIsLogin){
                 val intent = Intent(this@SearchActivity, WriteQuestionActivity::class.java)
                 startActivity(intent)
             }

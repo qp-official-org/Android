@@ -68,17 +68,17 @@ class DetailedActivity : AppCompatActivity(),DetailedQView{
 
         CoroutineScope(Dispatchers.Main).launch {
 
-            //getQuestion(questionInfo.questionId)
             getQuestion(id)
             Log.d("view","view")
 
         }
 
-//        Log.d("detailedQOncreate", questionInfo.toString())
 
     }
 
     override fun onRestart() {
+        if(AppData.isGoHome)    finish()
+
         super.onRestart()
         UserApiClient.instance.accessTokenInfo { token, error ->
             if (error != null) {
@@ -93,12 +93,6 @@ class DetailedActivity : AppCompatActivity(),DetailedQView{
                 Log.d("userInfo","id: "+AppData.qpUserID.toString()+"nickname: "+AppData.qpNickname+"email"+AppData.qpEmail+"token"+AppData.qpAccessToken)
             }
         }
-    }
-
-    override fun onRestart() {
-        if(AppData.isGoHome)    finish()
-
-        super.onRestart()
     }
 
 
@@ -295,6 +289,9 @@ class DetailedActivity : AppCompatActivity(),DetailedQView{
 
             }
         }
+        else if(answerAdapter.isItemListEmpty()&&!isNotified){
+            QpToast.createToast(applicationContext,"이미 해당 질문의 알림을 설정하였습니다.")?.show()
+        }
         else{
             container.removeAllViews()
         }
@@ -449,6 +446,7 @@ class DetailedActivity : AppCompatActivity(),DetailedQView{
                     "QUESTION_2000"-> {
                         Log.d("SUCCESS/DeleteQ", resp.message)
                         startActivity(Intent(this@DetailedActivity, MainActivity::class.java))
+                        finish()
                     }
                     else-> {
                         Log.d("FAILURE/DeleteQ", resp?.message ?: "응답실패")
@@ -528,7 +526,10 @@ class DetailedActivity : AppCompatActivity(),DetailedQView{
 
                         showWriteAnswerEdit(false)  //답변 작성 공간 접기
                         updateNotifyView()
-                        updateExpertNum()   //전문가 수 갱신
+                        if(AppData.qpRole=="EXPERT"){
+                            questionInfo.expertCount = questionInfo.expertCount?.plus(1)
+                            updateExpertNum()   //전문가 수 갱신
+                        }
                         QpToast.createToast(applicationContext,"답변이 등록되었습니다")?.show()
                     }
                     else->{
@@ -665,13 +666,11 @@ class DetailedActivity : AppCompatActivity(),DetailedQView{
                         binding.answerNoticeBtn.setImageResource(R.drawable.notification_on)
                         isNotified=true
                         QpToast.createToast(applicationContext,"답변 알림 설정")?.show()
-                    }
-                    "QUESTION_2004"->{
-                        QpToast.createToast(applicationContext,"이미 알림을 설정하였습니다.")
+                        //updateNotifyView()
                     }
                     else->{
                         Log.d("notifyQ/FAIL",response.errorBody()?.string().toString())
-                        QpToast.createToast(applicationContext,"알림설정 실패")?.show()
+                        QpToast.createToast(applicationContext,"이미 설정한 알림입니다.")?.show()
                     }
                 }
             }

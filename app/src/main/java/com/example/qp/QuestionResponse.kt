@@ -29,7 +29,7 @@ data class QuestionInfo(
     @SerializedName(value="content")var content: String?,
     @SerializedName(value="hit")val hit: Int?=0,
     @SerializedName(value="answerCount")val answerCount: Int?=0,
-    @SerializedName(value="expertCount")val expertCount: Int?=0,
+    @SerializedName(value="expertCount")var expertCount: Int?=0,
     @SerializedName(value="childStatus")val childStatus: String?="INACTIVE",
     @SerializedName(value="createdAt")val createdAt: String?="",
     @SerializedName(value="updatedAt")var updatedAt: String?="",
