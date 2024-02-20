@@ -23,7 +23,7 @@ data class QuestionChart(
 ):Serializable
 
 data class QuestionInfo(
-    @SerializedName(value="user")val user: UserInfo?=null,
+    @SerializedName(value="user")var user: UserInfo?=null,
     @SerializedName(value="questionId")val questionId: Long=0,
     @SerializedName(value="title")var title: String,
     @SerializedName(value="content")var content: String?,
@@ -168,4 +168,23 @@ data class GetNotifyResult(
     @SerializedName(value="questionId")var questionId:Long,
     @SerializedName(value="questionAlarms")var questionAlarms:ArrayList<NotifyQResult>,
     @SerializedName(value="totalElements")var total:Int
+):Serializable
+
+data class GetOtherQResponse(
+    @SerializedName(value="isSuccess")val isSuccess: Boolean?,
+    @SerializedName(value="code")val code: String,
+    @SerializedName(value="message")val message: String,
+    @SerializedName(value="result")val result:GetOtherQResult
+):Serializable
+
+data class GetOtherQResult(
+    @SerializedName(value="hasLater")val hasPrev:Boolean,
+    @SerializedName(value ="hasOlder")val hasNext:Boolean,
+    @SerializedName(value = "laterQuestion")var prevQuestion:OtherQ,
+    @SerializedName(value = "olderQuestion")var nextQuestion:OtherQ
+):Serializable
+
+data class OtherQ(
+    @SerializedName(value = "questionId")val questionId:Long,
+    @SerializedName(value = "title")val title:String
 ):Serializable

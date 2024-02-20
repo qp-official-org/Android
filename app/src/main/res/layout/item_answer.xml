@@ -78,7 +78,8 @@
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_margin="10dp"
             android:src="@drawable/baseline_more_vert_24"
-            android:background="@color/white"/>
+            android:background="@color/white"
+            android:padding="2dp"/>
 
         <LinearLayout
             android:id="@+id/answer_comment_btn"
@@ -93,7 +94,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:layout_marginRight="3dp"
+                android:layout_margin="3dp"
                 android:src="@drawable/baseline_chat_bubble_24"/>
             <TextView
                 android:id="@+id/answer_comment_btn_tv"
@@ -124,7 +125,7 @@
                 android:id="@+id/answer_like_iv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginRight="3dp"
+                android:layout_margin="3dp"
                 android:layout_gravity="center_vertical"
                 android:src="@drawable/like_off"
                 android:background="@color/white"/>
@@ -218,13 +219,7 @@
                         android:maxLength="100"
                         />
 
-                    <ImageButton
-                        android:id="@+id/write_comment_more_btn"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        android:layout_margin="10dp"/>
+
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
                 <TextView

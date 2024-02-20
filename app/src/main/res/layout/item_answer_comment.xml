@@ -68,7 +68,8 @@
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_margin="10dp"
             android:src="@drawable/baseline_more_vert_24"
-            android:background="@color/white"/>
+            android:background="@color/white"
+            android:padding="2dp"/>
 
 
 

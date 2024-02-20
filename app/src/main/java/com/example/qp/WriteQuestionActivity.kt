@@ -270,7 +270,7 @@ class WriteQuestionActivity: AppCompatActivity() {
                     "QUESTION_2000"-> {
                         Log.d("writeQ success","success!")
 
-                        var childStatus=
+                        /*var childStatus=
                             when(isChild){
                                 true->"ACTIVE"
                                 else->"INACTIVE"
@@ -285,13 +285,13 @@ class WriteQuestionActivity: AppCompatActivity() {
                             createdAt=resp.result.createdAt,
                             updatedAt=resp.result.createdAt,
                             hashtags = newTagList,
-                        )
+                        )*/
 
                         val intent =
                             Intent(this@WriteQuestionActivity, DetailedActivity::class.java)
                         val gson = Gson()
-                        val qJson = gson.toJson(question)
-                        intent.putExtra("question", qJson)
+                        //val qJson = gson.toJson(question)
+                        intent.putExtra("question", resp.result.questionId)
                         startActivity(intent)
                         finish()
                         QpToast.createToast(applicationContext,"등록 완료")?.show()

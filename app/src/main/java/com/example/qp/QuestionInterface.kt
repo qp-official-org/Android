@@ -2,6 +2,7 @@ package com.example.qp
 
 import retrofit2.Call
 import retrofit2.http.*
+import java.io.Serializable
 
 interface QuestionInterface {
     @GET("/questions") //질문 페이징 조회
@@ -57,7 +58,7 @@ interface QuestionInterface {
     fun writeAnswer(
         @Header("accessToken")token:String,
         @Path("questionId")questionId:Long,
-        @Body answer:AnswerInfo
+        @Body answer:AnswerPost
     ):Call<WriteAnswerResponse>
 
     @PATCH("/questions/{questionId}")
@@ -112,4 +113,9 @@ interface QuestionInterface {
     fun getNotifyQ(
         @Path("questionId")questionId:Int
     ):Call<GetNotifyResponse>
+
+    @GET("/questions/{questionId}/adjacent")
+    fun getOtherQ(
+        @Path("questionId")questionId:Long
+    ):Call<GetOtherQResponse>
 }

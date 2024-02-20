@@ -21,7 +21,9 @@ class DetailedAnswerCommentRVAdapter(context: Context ):RecyclerView.Adapter<Det
 
     interface CommentClickListener{
         fun onItemRemove(position:Int,answerId:Long)
-        fun onCommentModify(pos: Int,answerId:Long)
+        fun onCommentModify(pos: Int,answerId:Long,view:View)
+
+        fun reportChildAnswer(id:Long)
     }
     private lateinit var myItemClickListener: CommentClickListener
     fun setMyItemClickListener(itemClickListener: CommentClickListener){
@@ -56,11 +58,11 @@ class DetailedAnswerCommentRVAdapter(context: Context ):RecyclerView.Adapter<Det
         fun bind(position:Int){
             var answer=items[position]
             binding.commentContentTv.text=answer.content
-            binding.commentUserNameTv.text=answer.nickname
-            if(answer.profileImage!=""){
-                setStringImage(answer.profileImage!!,binding.commentUserIv,appContext)
+            binding.commentUserNameTv.text=answer.user.nickname
+            if(answer.user.profileImage!=""){
+                setStringImage(answer.user.profileImage!!,binding.commentUserIv,appContext)
             }
-            answer.profileImage?.let { setStringImage(it,binding.commentUserIv,appContext) }
+            answer.user.profileImage?.let { setStringImage(it,binding.commentUserIv,appContext) }
 
             showCommentMorePopup(answer,position)
         }
@@ -69,7 +71,7 @@ class DetailedAnswerCommentRVAdapter(context: Context ):RecyclerView.Adapter<Det
         private fun showCommentMorePopup(answer: AnswerInfo,position:Int){
             lateinit var popupWindow:SimplePopup
             binding.commentMoreBtn.setOnClickListener {
-                if(AppData.qpUserID==answer.userId.toInt()&&isLogin){
+                if(AppData.qpUserID==answer.user.userId!!.toInt()&&isLogin){
 
                     val list= mutableListOf<String>().apply {
                         add("수정하기")
@@ -79,18 +81,15 @@ class DetailedAnswerCommentRVAdapter(context: Context ):RecyclerView.Adapter<Det
                     popupWindow=SimplePopup(appContext,list){_,_,menuPos->
                         when(menuPos){
                             0-> {
-                                Toast.makeText(appContext, "수정하기", Toast.LENGTH_SHORT).show()
-                                myItemClickListener.onCommentModify(position,items[position].answerId!!.toLong())
+                                //Toast.makeText(appContext, "수정하기", Toast.LENGTH_SHORT).show()
+                                myItemClickListener.onCommentModify(position,items[position].answerId!!.toLong(),itemView)
                             }
                             1-> {
-                                Toast.makeText(appContext, "삭제하기", Toast.LENGTH_SHORT).show()
+                                //Toast.makeText(appContext, "삭제하기", Toast.LENGTH_SHORT).show()
                                 myItemClickListener.onItemRemove(position,items[position].answerId!!)
                             }
                             2-> {
-                                val intent= Intent(appContext,ReportActivity::class.java)
-                                intent.putExtra("report",items[position].answerId)
-                                intent.putExtra("category","answer")
-                                ContextCompat.startActivity(appContext, intent, null)
+                                myItemClickListener.reportChildAnswer(items[position].answerId!!)
                             }
                         }
                     }
@@ -108,10 +107,7 @@ class DetailedAnswerCommentRVAdapter(context: Context ):RecyclerView.Adapter<Det
                                     if(!isLogin)
                                         QpToast.createToast(appContext)
                                     else{
-                                        val intent= Intent(appContext,ReportActivity::class.java)
-                                        intent.putExtra("report",items[position].answerId)
-                                        intent.putExtra("category","answer")
-                                        ContextCompat.startActivity(appContext, intent, null)
+                                        myItemClickListener.reportChildAnswer(items[position].answerId!!)
                                     }
                                 }
                             }
