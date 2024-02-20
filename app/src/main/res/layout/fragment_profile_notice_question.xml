@@ -7,17 +7,16 @@
     tools:context=".ProfileNoticeQuestionFragment"
     android:background="@color/white">
 
-    <!--
     <TextView
+        android:id="@+id/no_alarm_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Notice Question"
+        android:text="알람 설정한 질문이 없습니다"
         android:textSize="20sp"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
-        -->
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/question_rv"
@@ -25,6 +24,7 @@
         android:layout_height="0dp"
         android:layout_marginTop="15dp"
         android:layout_marginBottom="15dp"
+        android:visibility="gone"
         android:paddingStart="10dp"
         tools:listitem="@layout/item_question"
         app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"

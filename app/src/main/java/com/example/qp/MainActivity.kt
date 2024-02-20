@@ -152,6 +152,11 @@ class MainActivity : AppCompatActivity() {
 
         AppData.isGoHome = false
 
+        page = 0
+        qDatas.clear()
+        getQuestions(page)
+        moreQuestion()
+
         if(AppData.qpIsLogin) {
             AppData.searchUserInfo(AppData.qpAccessToken, AppData.qpUserID)
 

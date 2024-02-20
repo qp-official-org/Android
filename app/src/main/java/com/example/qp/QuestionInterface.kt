@@ -11,6 +11,22 @@ interface QuestionInterface {
         @Query("search") search: String?
     ): Call<QuestionResponse>
 
+    @GET("/questions/user/{userId}") //작성질문 조회
+    fun getWriteQuestions(
+        @Header("accessToken") token: String,
+        @Path("userId") userId: Int,
+        @Query("page") page: Int,
+        @Query("size") size: Int
+    ): Call<QuestionResponse>
+
+    @GET("/questions/alarms/user/{userId}") //알람질문 조회
+    fun getAlarmQuestions(
+        @Header("accessToken") token: String,
+        @Path("userId") userId: Int,
+        @Query("page") page: Int,
+        @Query("size") size: Int
+    ): Call<QuestionResponse>
+
     @POST("/questions") //질문 등록
     fun writeQ(
         @Header("accessToken") token:String,
