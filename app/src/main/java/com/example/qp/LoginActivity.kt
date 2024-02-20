@@ -2,10 +2,7 @@ package com.example.qp
 
 import android.content.Intent
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
 import android.util.Log
-import android.view.View
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
@@ -32,51 +29,11 @@ class LoginActivity : AppCompatActivity() {
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // 전문가 로그인 관련 버튼 비활성화
-        binding.loginAuthenticationEmailEt.visibility = View.GONE
-        binding.loginNextBtn.visibility = View.GONE
-        binding.loginNextInvalidBtn.visibility = View.GONE
-
         // X 버튼 클릭 시 Activity 종료
         onBackPressedDispatcher.addCallback(this, onBackPressedCallback)    // 종료함수
         binding.loginCloseIv.setOnClickListener {
             finish()
         }
-
-        // 전문가로 로그인 텍스트 클릭 시 관련 버튼 활성화
-        binding.loginExpert2Tv.setOnClickListener {
-            binding.loginAuthenticationEmailEt.visibility = View.VISIBLE
-            binding.loginAuthenticationFailTv.visibility = View.VISIBLE
-            binding.loginNextInvalidBtn.visibility = View.VISIBLE
-        }
-
-
-        // 전문가 로그인
-        binding.loginAuthenticationEmailEt.addTextChangedListener(object: TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
-
-            override fun afterTextChanged(s: Editable?) {
-                if(binding.loginAuthenticationEmailEt.length() == 8) {
-                    binding.loginNextBtn.visibility = View.VISIBLE
-                    binding.loginNextInvalidBtn.visibility = View.GONE
-                }
-                else{
-                    binding.loginNextBtn.visibility = View.GONE
-                    binding.loginNextInvalidBtn.visibility = View.VISIBLE
-                }
-            }
-        })
-        // 인증번호 맞는 경우, 다음 Activity 전환
-        binding.loginNextBtn.setOnClickListener {
-            startActivity(Intent(this,SetNicknameActivity::class.java))
-        }
-        // 인증번호 틀린 경우
-        binding.loginNextInvalidBtn.setOnClickListener {
-            binding.loginAuthenticationFailTv.visibility = View.VISIBLE
-        }
-
 
         // 소셜 로그인 (현재 카카오만 가능)
         binding.loginNaverBtn.setOnClickListener {

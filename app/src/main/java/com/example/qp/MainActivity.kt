@@ -1,6 +1,7 @@
 package com.example.qp
 
 import android.content.Intent
+import android.graphics.Paint
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -100,8 +101,9 @@ class MainActivity : AppCompatActivity() {
         //백엔드로부터 질문 정보를 가져와 리사이클러뷰를 구성하는 함수
         getQuestions(page)
 
-        // 임시 로그아웃 (로고 클릭시)
-        binding.mainLogoIv.setOnClickListener {
+        binding.mainBarLogoutTv.paintFlags = Paint.UNDERLINE_TEXT_FLAG
+        // 로그아웃 버튼
+        binding.mainBarLogoutTv.setOnClickListener {
             UserApiClient.instance.logout { error ->
                 if (error != null) {
                     Log.d("TTAG", "로그아웃 실패 $error")
@@ -305,6 +307,13 @@ class MainActivity : AppCompatActivity() {
                             Log.d("singIn Result", resp.message)
 
                             Toast.makeText(this@MainActivity, "로그인에 성공했습니다.", Toast.LENGTH_SHORT).show()
+
+                            GlobalApplication.preferences.setString("accessToken", resp.result.accessToken)
+                            GlobalApplication.preferences.setString("refreshToken", resp.result.refreshToken)
+                            GlobalApplication.preferences.setInt("userID", resp.result.userId)
+                            AppData.qpAccessToken = resp.result.accessToken
+                            AppData.qpUserID = resp.result.userId
+
                             AppData.qpIsLogin = true
                         }
                         else->Log.d("singIn Result", resp.message)
