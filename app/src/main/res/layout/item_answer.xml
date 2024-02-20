@@ -96,8 +96,9 @@
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
+                android:layout_gravity="bottom"
                 android:layout_margin="3dp"
+                android:layout_marginTop="5dp"
                 android:src="@drawable/baseline_chat_bubble_24"
                 />
             <TextView
@@ -130,7 +131,7 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="3dp"
                 android:layout_gravity="center_vertical"
-                android:src="@drawable/like_off"
+                android:src="@drawable/iconamoon_like"
                 android:background="@color/white"/>
             <TextView
                 android:id="@+id/answer_like_tv"
