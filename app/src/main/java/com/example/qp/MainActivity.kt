@@ -173,6 +173,7 @@ class MainActivity : AppCompatActivity() {
                 // 하단 바에 사용자 닉네임과 포인트 데이터 반영
                 binding.mainBarNicknameTv.text = AppData.qpNickname
                 binding.mainBarCoinTv.text = AppData.qpPoint.toString()
+                Glide.with(this).load(AppData.qpProfileImage).into(binding.mainLoginSuccessUserImg)
             }, 300)
         }
         else {
