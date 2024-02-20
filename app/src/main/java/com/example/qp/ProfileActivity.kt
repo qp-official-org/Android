@@ -197,7 +197,7 @@ class ProfileActivity : AppCompatActivity() {
                 binding.profileNicknameInvalidTv.visibility = View.INVISIBLE
                 binding.profileNicknameValidTv.visibility = View.INVISIBLE
 
-                var userModify = UserModify(editname, "")
+                var userModify = UserModify(editname, AppData.qpProfileImage)
                 AppData.modifyUserInfo(AppData.qpAccessToken, AppData.qpUserID, userModify)
             }
             else {
@@ -281,6 +281,7 @@ class ProfileActivity : AppCompatActivity() {
                         Log.d("imageResponse_s", response.code().toString())
                         Log.d("imageResponse_s", response.body()?.message.toString())
                         Log.d("imageResponse_s", response.body()?.result.toString())
+                        AppData.qpProfileImage = response.body()?.result?.url ?: ""
                     }
 
                     override fun onFailure(call: Call<ImageResponse>, t: Throwable) {
