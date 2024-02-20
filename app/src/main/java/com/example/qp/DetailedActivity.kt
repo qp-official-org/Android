@@ -111,10 +111,10 @@ class DetailedActivity : AppCompatActivity(),DetailedQView{
         if(AppData.isGoHome)    finish()
 
         super.onRestart()
-        UserApiClient.instance.accessTokenInfo { token, error ->
+        /*UserApiClient.instance.accessTokenInfo { token, error ->
             if (error != null) {
                 Log.e("TAG", "로그인 실패", error)
-                binding.detailedLoginBtn.visibility = View.VISIBLE
+                binding.mainLoginBt.visibility = View.VISIBLE
                 binding.detailedLoginSuccessBt.visibility = View.GONE
             } else if (token != null) {
                 isLogin=true
@@ -123,7 +123,31 @@ class DetailedActivity : AppCompatActivity(),DetailedQView{
                 binding.detailedLoginSuccessBt.visibility = View.VISIBLE
                 Log.d("userInfo","id: "+AppData.qpUserID.toString()+"nickname: "+AppData.qpNickname+"email"+AppData.qpEmail+"token"+AppData.qpAccessToken)
             }
+        }*/
+        if(AppData.qpIsLogin) {
+            isLogin=true
+            AppData.searchUserInfo(AppData.qpAccessToken, AppData.qpUserID)
+
+            binding.mainLoginBt.visibility = View.GONE
+            binding.mainLoginSuccessBt.visibility = View.VISIBLE
+            binding.mainLoginSuccessUserImg.visibility = View.VISIBLE
+
+            // 통신 대기 시간 0.3초
+            Handler(Looper.getMainLooper()).postDelayed(Runnable {
+                // 하단 바에 사용자 닉네임과 포인트 데이터 반영
+                binding.mainBarNicknameTv.text = AppData.qpNickname
+                binding.mainBarCoinTv.text = AppData.qpPoint.toString()
+            }, 300)
+            getNotifyQ()
+
         }
+        else {
+            isLogin=false
+            binding.mainLoginBt.visibility = View.VISIBLE
+            binding.mainLoginSuccessBt.visibility = View.GONE
+            binding.mainLoginSuccessUserImg.visibility = View.GONE
+        }
+
     }
 
 
@@ -265,7 +289,7 @@ class DetailedActivity : AppCompatActivity(),DetailedQView{
 
 
         //프로필로 화면 전환
-        binding.detailedLoginSuccessBt.setOnClickListener {
+        binding.mainLoginSuccessBt.setOnClickListener {
             startActivity(Intent(this@DetailedActivity, ProfileActivity::class.java))
         }
 
