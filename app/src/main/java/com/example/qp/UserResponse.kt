@@ -35,6 +35,10 @@ data class UserModifyResult(
     val profileImage: String,
     val updatedAt: String
 )
+data class UserPointResult(
+    val userId: Int,
+    val point: Long
+)
 
 
 data class User(
@@ -54,4 +58,8 @@ data class UserModify(
 
 data class UserAuto(
     var userId: Int
+)
+
+data class UserPoint (
+    var point: Long
 )

@@ -48,4 +48,11 @@ interface UserInterface {
         @Path("userId") userId: Int,
         @Query("role") role: String
     ): Call<UserResponse<UserModifyResult>>
+
+    @PATCH("/users/point/{userId}")     // 유저 포인트 수정
+    fun changePoint(
+        @Header("accessToken") accessToken: String,
+        @Path("userId") userId: Int,
+        @Body userPoint: UserPoint
+    ): Call<UserResponse<UserPointResult>>
 }

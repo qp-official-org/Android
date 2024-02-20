@@ -100,5 +100,34 @@ class AppData : Application() {
                 }
             })
         }
+
+        fun changePoint(token: String, userId: Int, userPoint: UserPoint) {
+            val userService = getRetrofit().create(UserInterface::class.java)
+
+            userService.changePoint(token, userId, userPoint).enqueue(object : Callback<UserResponse<UserPointResult>>
+            {
+                override fun onResponse(
+                    call: Call<UserResponse<UserPointResult>>,
+                    response: Response<UserResponse<UserPointResult>>
+                ) {
+                    Log.d("ppoint Success", response.toString())
+                    val resp = response.body()
+                    if(resp!=null) {
+                        when(resp.code) {
+                            "USER_1000"-> {
+                                Log.d("ppoint Result1", resp.message)
+                                Log.d("ppoint Result", resp.result.point.toString())
+                                AppData.qpPoint = resp.result.point
+                            }
+                            else-> Log.d("ppoint Result2", resp.message)
+                        }
+                    }
+                }
+
+                override fun onFailure(call: Call<UserResponse<UserPointResult>>, t: Throwable) {
+                    Log.d("ppoint Fail", t.message.toString())
+                }
+            })
+        }
     }
 }
