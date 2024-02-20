@@ -3,7 +3,10 @@ package com.example.qp
 import android.content.Context
 import android.graphics.Rect
 import android.content.Intent
+import android.graphics.Paint
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.text.Editable
 import android.util.Log
 import android.view.LayoutInflater
@@ -75,13 +78,42 @@ class DetailedActivity : AppCompatActivity(),DetailedQView{
 
 
             //프로필로 화면 전환
-            binding.detailedLoginSuccessBt.setOnClickListener {
+            binding.mainLoginSuccessBt.setOnClickListener {
                 startActivity(Intent(this@DetailedActivity, ProfileActivity::class.java))
             }
 
             //검색으로 화면전환
             binding.detailedSearchBt.setOnClickListener {
                 startActivity(Intent(this@DetailedActivity, SearchActivity::class.java))
+            }
+
+            binding.mainBarLogoutTv.paintFlags = Paint.UNDERLINE_TEXT_FLAG
+            // 로그아웃 버튼
+            binding.mainBarLogoutTv.setOnClickListener {
+                UserApiClient.instance.logout { error ->
+                    if (error != null) {
+                        Log.d("TTAG", "로그아웃 실패 $error")
+                    }else {
+                        Toast.makeText(this@DetailedActivity, "로그아웃 되었습니다.", Toast.LENGTH_SHORT).show()
+                        // 전역변수 초기화
+                        AppData.qpAccessToken = ""
+                        AppData.qpUserID = 0
+                        AppData.qpNickname = ""
+                        AppData.qpProfileImage = ""
+                        AppData.qpEmail = ""
+                        AppData.qpGender = ""
+                        AppData.qpRole = ""
+                        AppData.qpPoint = 0
+                        AppData.qpCreatedAt = ""
+                        AppData.searchRecord.clear()
+
+                        binding.mainLoginBt.visibility = View.VISIBLE
+                        binding.mainLoginSuccessBt.visibility = View.GONE
+                        binding.mainLoginSuccessUserImg.visibility = View.GONE
+
+                        AppData.qpIsLogin = false
+                    }
+                }
             }
         }
 
@@ -120,17 +152,24 @@ class DetailedActivity : AppCompatActivity(),DetailedQView{
     private fun setInit(){
 
         // 로그인 여부 확인
-        UserApiClient.instance.accessTokenInfo { token, error ->
-            if (error != null) {
-                Log.e("TAG", "로그인 실패", error)
-                binding.detailedLoginBtn.visibility = View.VISIBLE
-                binding.detailedLoginSuccessBt.visibility = View.GONE
-            } else if (token != null) {
-                isLogin=true
-                Log.i("TAG", "로그인 성공 $token")
-                binding.detailedLoginBtn.visibility = View.GONE
-                binding.detailedLoginSuccessBt.visibility = View.VISIBLE
-            }
+        if(AppData.qpIsLogin) {
+            AppData.searchUserInfo(AppData.qpAccessToken, AppData.qpUserID)
+
+            binding.mainLoginBt.visibility = View.GONE
+            binding.mainLoginSuccessBt.visibility = View.VISIBLE
+            binding.mainLoginSuccessUserImg.visibility = View.VISIBLE
+
+            // 통신 대기 시간 0.3초
+            Handler(Looper.getMainLooper()).postDelayed(Runnable {
+                // 하단 바에 사용자 닉네임과 포인트 데이터 반영
+                binding.mainBarNicknameTv.text = AppData.qpNickname
+                binding.mainBarCoinTv.text = AppData.qpPoint.toString()
+            }, 300)
+        }
+        else {
+            binding.mainLoginBt.visibility = View.VISIBLE
+            binding.mainLoginSuccessBt.visibility = View.GONE
+            binding.mainLoginSuccessUserImg.visibility = View.GONE
         }
 
         isNotified=isNotified()
@@ -200,11 +239,11 @@ class DetailedActivity : AppCompatActivity(),DetailedQView{
 
         }
         //로그인 버튼
-        binding.detailedLoginBtn.setOnClickListener {
+        binding.mainLoginBt.setOnClickListener {
             startActivity(Intent(this@DetailedActivity, LoginActivity::class.java))
         }
         //프로필 화면으로
-        binding.detailedLoginSuccessBt.setOnClickListener {
+        binding.mainLoginSuccessBt.setOnClickListener {
             startActivity(Intent(this, ProfileActivity::class.java))
         }
 
@@ -242,8 +281,8 @@ class DetailedActivity : AppCompatActivity(),DetailedQView{
             }
         }
         // 하단 바에 사용자 닉네임과 포인트 데이터 반영
-        binding.detailedBarNicknameTv.text = AppData.qpNickname
-        binding.detailedBarCoinTv.text = AppData.qpPoint.toString()
+        binding.mainBarNicknameTv.text = AppData.qpNickname
+        binding.mainBarCoinTv.text = AppData.qpPoint.toString()
 
     }
 
