@@ -3,6 +3,7 @@ package com.example.qp
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
+import android.graphics.Paint
 import android.os.Build
 import android.os.Bundle
 import android.text.Editable
@@ -22,6 +23,7 @@ import androidx.appcompat.widget.AppCompatButton
 import com.example.qp.databinding.ActivityProfileBinding
 //import com.example.qp.databinding.DialogChargeBinding
 import com.google.android.material.tabs.TabLayoutMediator
+import com.kakao.sdk.user.UserApiClient
 import org.w3c.dom.Text
 import retrofit2.Call
 import retrofit2.Callback
@@ -69,6 +71,35 @@ class ProfileActivity : AppCompatActivity() {
             finish()
         }
 
+        binding.profileMainLogoutTv.paintFlags = Paint.UNDERLINE_TEXT_FLAG
+        // 로그아웃 버튼
+        binding.profileMainLogoutTv.setOnClickListener {
+            UserApiClient.instance.logout { error ->
+                if (error != null) {
+                    Log.d("TTAG", "로그아웃 실패 $error")
+                }else {
+                    Toast.makeText(this, "로그아웃 되었습니다.", Toast.LENGTH_SHORT).show()
+                    // 전역변수 초기화
+                    AppData.qpAccessToken = ""
+                    AppData.qpUserID = 0
+                    AppData.qpNickname = ""
+                    AppData.qpProfileImage = ""
+                    AppData.qpEmail = ""
+                    AppData.qpGender = ""
+                    AppData.qpRole = ""
+                    AppData.qpPoint = 0
+                    AppData.qpCreatedAt = ""
+                    AppData.searchRecord.clear()
+
+                    AppData.qpIsLogin = false
+
+                    AppData.isGoHome = true
+                    finish()
+                }
+            }
+        }
+
+        binding.profileCheckExpert2Tv.paintFlags = Paint.UNDERLINE_TEXT_FLAG
         // 전문가 인증 전환
         binding.profileCheckExpert2Tv.setOnClickListener {
             binding.profileAuthEt.setText("")
