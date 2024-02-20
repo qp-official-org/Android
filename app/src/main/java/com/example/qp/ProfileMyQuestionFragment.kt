@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.qp.databinding.FragmentProfileMyQuestionBinding
@@ -58,6 +59,10 @@ class ProfileMyQuestionFragment : Fragment() {
                                 Log.d("SUCCESS/DATA_LOAD", "내가 한 리사이클러뷰의 데이터로 구성됩니다")
                                 qDatas.addAll(questionResponse.result.questions)
                                 last = questionResponse.result.last!!
+                                if(questionResponse.result.totalElements?.toInt() != 0){
+                                    binding.noWriteTv.isVisible = false
+                                    binding.questionRv.isVisible = true
+                                }
                                 setQuestionRVAdapter()
                                 Log.d("getQsResp",qDatas.toString())
                             }
