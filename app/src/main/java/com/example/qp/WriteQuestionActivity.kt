@@ -59,6 +59,17 @@ class WriteQuestionActivity: AppCompatActivity() {
             startActivity(intent)
         }
 
+        // 로고 클릭 시 홈으로 이동
+        binding.writeAppLogoIv.setOnClickListener {
+            AppData.isGoHome = true
+            finish()
+        }
+    }
+
+    override fun onRestart() {
+        if(AppData.isGoHome)    finish()
+
+        super.onRestart()
     }
 
     private fun setChild(){

@@ -16,10 +16,10 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.qp.databinding.ActivityMainBinding
 import com.google.gson.Gson
+import com.kakao.sdk.auth.AuthApiClient
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import com.kakao.sdk.common.util.Utility
 import com.kakao.sdk.user.UserApiClient
 
 class MainActivity : AppCompatActivity() {
@@ -44,11 +44,11 @@ class MainActivity : AppCompatActivity() {
 
             Handler(Looper.getMainLooper()).postDelayed(Runnable {
                 isExit = true
-            }, 500)
+            }, 300)
 
             Handler(Looper.getMainLooper()).postDelayed(Runnable {
                 isExit = false
-            }, 4000)
+            }, 3000)
         }
     }
 
@@ -58,34 +58,40 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // sharedPreference에 저장된 로컬 데이터 불러오기
-        AppData.qpAccessToken = GlobalApplication.preferences.getString("accessToken", "")
-        AppData.qpUserID = GlobalApplication.preferences.getInt("userID", 0)
-        AppData.searchUserInfo(AppData.qpAccessToken, AppData.qpUserID)
-        Log.d("sharedpp1", AppData.qpAccessToken)
-        Log.d("sharedpp2", AppData.qpUserID.toString())
-
         // 로그인 여부 확인
         UserApiClient.instance.accessTokenInfo { token, error ->
+            Log.d("KakaoToken", AuthApiClient.instance.hasToken().toString())
             if (error != null) {
-                Log.e("TAG", "로그인 실패", error)
+                Log.e("TTAG", "카카오 로그인 실패", error)
                 binding.mainLoginBt.visibility = View.VISIBLE
                 binding.mainLoginSuccessBt.visibility = View.GONE
                 binding.mainLoginSuccessUserImg.visibility = View.GONE
             } else if (token != null) {
-                Log.i("TAG", "로그인 성공 $token")
+                Log.i("TTAG", "카카오 로그인 성공 $token")
 
-                var refreshToken: String = GlobalApplication.preferences.getString("refreshToken", "")
-                autoSignIn(AppData.qpAccessToken, refreshToken, AppData.qpUserID)
+                // sharedPreference에 저장된 로컬 데이터 불러오기
+                AppData.qpAccessToken = GlobalApplication.preferences.getString("accessToken", "")
+                AppData.qpUserID = GlobalApplication.preferences.getInt("userID", 0)
 
-                Toast.makeText(this, "로그인 성공", Toast.LENGTH_SHORT).show()
-                binding.mainLoginBt.visibility = View.GONE
-                binding.mainLoginSuccessBt.visibility = View.VISIBLE
-                binding.mainLoginSuccessUserImg.visibility = View.VISIBLE
+                // 큐피 로그인 시도
+                signIn(GlobalApplication.preferences.getString("kakaoToken", ""))
 
-                // 하단 바에 사용자 닉네임과 포인트 데이터 반영
-                binding.mainBarNicknameTv.text = AppData.qpNickname
-                binding.mainBarCoinTv.text = AppData.qpPoint.toString()
+                Handler(Looper.getMainLooper()).postDelayed(Runnable {
+                    if(AppData.qpIsLogin) {     //
+                        autoSignIn(AppData.qpAccessToken, GlobalApplication.preferences.getString("refreshToken", ""), AppData.qpUserID)
+                        AppData.searchUserInfo(AppData.qpAccessToken, AppData.qpUserID)
+
+                        binding.mainLoginBt.visibility = View.GONE
+                        binding.mainLoginSuccessBt.visibility = View.VISIBLE
+                        binding.mainLoginSuccessUserImg.visibility = View.VISIBLE
+
+                        Handler(Looper.getMainLooper()).postDelayed(Runnable {
+                            // 하단 바에 사용자 닉네임과 포인트 데이터 반영
+                            binding.mainBarNicknameTv.text = AppData.qpNickname
+                            binding.mainBarCoinTv.text = AppData.qpPoint.toString()
+                        }, 300)
+                    }
+                }, 300)
             }
         }
 
@@ -94,25 +100,30 @@ class MainActivity : AppCompatActivity() {
         //백엔드로부터 질문 정보를 가져와 리사이클러뷰를 구성하는 함수
         getQuestions(page)
 
-        //Toast.makeText(applicationContext, "로그인한 유저 아이디: "+AppData.qpUserID.toString(),Toast.LENGTH_SHORT).show()
-
-        // 키 해시 확인용
-        val keyHash = Utility.getKeyHash(this)
-        Log.d("Hash", keyHash)
-
         // 임시 로그아웃 (로고 클릭시)
         binding.mainLogoIv.setOnClickListener {
             UserApiClient.instance.logout { error ->
                 if (error != null) {
-                    Toast.makeText(this, "로그아웃 실패 $error", Toast.LENGTH_SHORT).show()
+                    Log.d("TTAG", "로그아웃 실패 $error")
                 }else {
-                    Toast.makeText(this, "로그아웃 성공", Toast.LENGTH_SHORT).show()
-                    AppData.qpUserID = 0
+                    Toast.makeText(this, "로그아웃 되었습니다.", Toast.LENGTH_SHORT).show()
+                    // 전역변수 초기화
                     AppData.qpAccessToken = ""
+                    AppData.qpUserID = 0
+                    AppData.qpNickname = ""
+                    AppData.qpProfileImage = ""
+                    AppData.qpEmail = ""
+                    AppData.qpGender = ""
+                    AppData.qpRole = ""
+                    AppData.qpPoint = 0
+                    AppData.qpCreatedAt = ""
                     AppData.searchRecord.clear()
+
                     binding.mainLoginBt.visibility = View.VISIBLE
                     binding.mainLoginSuccessBt.visibility = View.GONE
                     binding.mainLoginSuccessUserImg.visibility = View.GONE
+
+                    AppData.qpIsLogin = false
                 }
             }
         }
@@ -135,29 +146,31 @@ class MainActivity : AppCompatActivity() {
     }
 
     // 다른 페이지로 갔다가 돌아올 때 동작
-    override fun onStart() {
-        super.onStart()
+    override fun onRestart() {
+        super.onRestart()
+        Log.d("onRestart", "onRestart")
 
-        AppData.searchUserInfo(AppData.qpAccessToken, AppData.qpUserID)
+        AppData.isGoHome = false
 
-        // 로그인 여부 확인
-        UserApiClient.instance.accessTokenInfo { token, error ->
-            if (error != null) {
-                Log.e("TAG", "로그인 실패", error)
-                binding.mainLoginBt.visibility = View.VISIBLE
-                binding.mainLoginSuccessBt.visibility = View.GONE
-            } else if (token != null) {
-                Log.i("TAG", "로그인 성공 $token")
-                binding.mainLoginBt.visibility = View.GONE
-                binding.mainLoginSuccessBt.visibility = View.VISIBLE
+        if(AppData.qpIsLogin) {
+            AppData.searchUserInfo(AppData.qpAccessToken, AppData.qpUserID)
 
-                Log.d("DData", token.toString())
-            }
+            binding.mainLoginBt.visibility = View.GONE
+            binding.mainLoginSuccessBt.visibility = View.VISIBLE
+            binding.mainLoginSuccessUserImg.visibility = View.VISIBLE
+
+            // 통신 대기 시간 0.3초
+            Handler(Looper.getMainLooper()).postDelayed(Runnable {
+                // 하단 바에 사용자 닉네임과 포인트 데이터 반영
+                binding.mainBarNicknameTv.text = AppData.qpNickname
+                binding.mainBarCoinTv.text = AppData.qpPoint.toString()
+            }, 300)
         }
-
-        // 하단 바에 사용자 닉네임과 포인트 데이터 반영
-        binding.mainBarNicknameTv.text = AppData.qpNickname
-        binding.mainBarCoinTv.text = AppData.qpPoint.toString()
+        else {
+            binding.mainLoginBt.visibility = View.VISIBLE
+            binding.mainLoginSuccessBt.visibility = View.GONE
+            binding.mainLoginSuccessUserImg.visibility = View.GONE
+        }
     }
 
     private fun getQuestions(p: Int) {
@@ -240,18 +253,23 @@ class MainActivity : AppCompatActivity() {
         val userService = getRetrofit().create(UserInterface::class.java)
 
         var userAuto = UserAuto(userID)
-
         userService.autoSignIn(accessToken, refreshToken, userAuto).enqueue(object: Callback<UserResponse<AutoSignIn>>{
             override fun onResponse(
                 call: Call<UserResponse<AutoSignIn>>,
                 response: Response<UserResponse<AutoSignIn>>
             ) {
-                Log.d("autosingUp Success", response.toString())
+                Log.d("autoSingUp Success", response.toString())
                 val resp = response.body()
                 if(resp!=null){
                     when(resp.code){
                         "USER_1000"-> {
                             Log.d("autoSingUp Result1", resp.message)
+                            // accessToken, refreshToken, userID 데이터를 로컬에 저장
+                            GlobalApplication.preferences.setString("accessToken", resp.result.accessToken)
+                            GlobalApplication.preferences.setString("refreshToken", resp.result.refreshToken)
+                            GlobalApplication.preferences.setInt("userID", resp.result.userId)
+                            AppData.qpAccessToken = resp.result.accessToken
+                            AppData.qpUserID = resp.result.userId
                         }
                         "TOKEN_8001"-> {
                             Toast.makeText(this@MainActivity, "토큰이 만료되었습니다. 다시 로그인하기 바랍니다.", Toast.LENGTH_SHORT).show()
@@ -262,8 +280,38 @@ class MainActivity : AppCompatActivity() {
             }
 
             override fun onFailure(call: Call<UserResponse<AutoSignIn>>, t: Throwable) {
-                Log.d("autosingUp Fail", t.message.toString())
+                Log.d("autoSingUp Fail", t.message.toString())
             }
+        })
+    }
+
+    private fun signIn (token: String) {
+        val userService = getRetrofit().create(UserInterface::class.java)
+
+        userService.signUp(token).enqueue(object: Callback<UserResponse<UserToken>> {
+            override fun onResponse(
+                call: Call<UserResponse<UserToken>>,
+                response: Response<UserResponse<UserToken>>
+            ) {
+                Log.d("singIn Success", response.toString())
+                val resp = response.body()
+                if(resp!=null) {
+                    when(resp.code) {
+                        "USER_1000" -> {
+                            Log.d("singIn Result", resp.message)
+
+                            Toast.makeText(this@MainActivity, "로그인에 성공했습니다.", Toast.LENGTH_SHORT).show()
+                            AppData.qpIsLogin = true
+                        }
+                        else->Log.d("singIn Result", resp.message)
+                    }
+                }
+            }
+
+            override fun onFailure(call: Call<UserResponse<UserToken>>, t: Throwable) {
+                Log.d("singIn Fail", t.message.toString())
+            }
+
         })
     }
 }

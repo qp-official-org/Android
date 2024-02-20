@@ -35,6 +35,7 @@ class SetProfileActivity : AppCompatActivity() {
                 binding.profileWelcomeTv.visibility = View.GONE
                 binding.profileExitBtnTv.visibility = View.GONE
                 binding.profileExitBtnIv.visibility = View.GONE
+                binding.profileWelcomeIv.visibility = View.GONE
             }
             else {
                 finish()
@@ -51,14 +52,17 @@ class SetProfileActivity : AppCompatActivity() {
             binding.profileWelcomeTv.visibility = View.VISIBLE
             binding.profileExitBtnTv.visibility = View.VISIBLE
             binding.profileExitBtnIv.visibility = View.VISIBLE
+            binding.profileWelcomeIv.visibility = View.VISIBLE
         }
 
         // 회원가입절차 종료, 메인 페이지로 복귀
         binding.profileExitBtnIv.setOnClickListener {
             Toast.makeText(this, "회원가입에 성공했습니다.", Toast.LENGTH_SHORT).show()
 
-            startActivity(Intent(this, MainActivity::class.java))
-            finishAffinity()    // 쌓인 모든 Activity 종료
+            AppData.qpIsLogin = true
+            AppData.isGoHome = true
+
+            finish()
         }
     }
 }

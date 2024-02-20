@@ -5,6 +5,8 @@ import android.content.Intent
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -21,10 +23,12 @@ import com.example.qp.databinding.ActivityProfileBinding
 //import com.example.qp.databinding.DialogChargeBinding
 import com.google.android.material.tabs.TabLayoutMediator
 import org.w3c.dom.Text
+import java.util.regex.Pattern
 
 class ProfileActivity : AppCompatActivity() {
     lateinit var binding: ActivityProfileBinding
 //    lateinit var binding2: DialogChargeBinding
+    var isNick = false
 
     private val information = arrayListOf("내가 한 질문", "내가 구매한 답변", "알림신청한 질문")
 
@@ -53,6 +57,12 @@ class ProfileActivity : AppCompatActivity() {
 
         binding.mainSearchBt.setOnClickListener{
             startActivity(Intent(this, SearchActivity::class.java))
+        }
+
+        // 로고 클릭 시 홈으로 이동
+        binding.profileQpLogo.setOnClickListener {
+            AppData.isGoHome = true
+            finish()
         }
 
         // 유저 데이터 반영
@@ -143,10 +153,35 @@ class ProfileActivity : AppCompatActivity() {
             binding.profileEditYesBtn.visibility = View.VISIBLE
             binding.profileEditNoBtn.visibility = View.VISIBLE
             binding.profileMainImageIv.setAlpha(0.7f)
+            binding.profileMainbackBoxIv.setAlpha(0.7f)
         }
+
+        // editText 입력마다 체크
+        binding.profileEditNicknameEt.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+
+            override fun afterTextChanged(s: Editable?) {
+                // 닉네임 유효성 검사
+                val nickPattern = "^[가-힣a-zA-Z0-9]{1,6}$"   // 영문, 한글, 숫자 1~6자
+                val pattern = Pattern.compile(nickPattern)
+                val matcher = pattern.matcher(binding.profileEditNicknameEt.text)
+
+                isNick = matcher.find()
+                if(isNick) {
+                    binding.profileNicknameValidTv.visibility = View.VISIBLE
+                    binding.profileNicknameInvalidTv.visibility = View.INVISIBLE
+                }
+                else {
+                    binding.profileNicknameValidTv.visibility = View.INVISIBLE
+                    binding.profileNicknameInvalidTv.visibility = View.VISIBLE
+                }
+            }
+        })
+
         binding.profileEditYesBtn.setOnClickListener {
             val editname : String = binding.profileEditNicknameEt.text.toString()
-            if(1 <= editname.length && editname.length <= 6) {
+            if(isNick) {
                 AppData.qpNickname = editname
                 binding.profileMainTv.text = AppData.qpNickname
                 binding.profileEditNicknameEt.hint = AppData.qpNickname
@@ -158,9 +193,15 @@ class ProfileActivity : AppCompatActivity() {
                 binding.profileEditYesBtn.visibility = View.GONE
                 binding.profileEditNoBtn.visibility = View.GONE
                 binding.profileMainImageIv.setAlpha(1f)
+                binding.profileMainbackBoxIv.setAlpha(1f)
+                binding.profileNicknameInvalidTv.visibility = View.INVISIBLE
+                binding.profileNicknameValidTv.visibility = View.INVISIBLE
+
+                var userModify = UserModify(editname, "")
+                AppData.modifyUserInfo(AppData.qpAccessToken, AppData.qpUserID, userModify)
             }
             else {
-                Toast.makeText(this, "닉네임은 1 ~ 6자로 제한됩니다.",Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "닉네임은 1 ~ 6자, 특수문자 제외로 제한됩니다.",Toast.LENGTH_SHORT).show()
             }
         }
         binding.profileEditNoBtn.setOnClickListener {
@@ -171,7 +212,16 @@ class ProfileActivity : AppCompatActivity() {
             binding.profileEditYesBtn.visibility = View.GONE
             binding.profileEditNoBtn.visibility = View.GONE
             binding.profileMainImageIv.setAlpha(1f)
+            binding.profileMainbackBoxIv.setAlpha(1f)
+            binding.profileNicknameInvalidTv.visibility = View.INVISIBLE
+            binding.profileNicknameValidTv.visibility = View.INVISIBLE
         }
+    }
+
+    override fun onRestart() {
+        if(AppData.isGoHome)    finish()
+
+        super.onRestart()
     }
 
 //    // Dialog 호출 함수 (개발중)

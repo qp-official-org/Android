@@ -59,22 +59,10 @@ class DetailedActivity : AppCompatActivity(),DetailedQView{
         }
 
 
-
-        // 임시 로그아웃 (로고 클릭시)
+        // 로고 클릭 시 홈으로 이동
         binding.detailedLogoIv.setOnClickListener {
-            UserApiClient.instance.logout { error ->
-                if (error != null) {
-                    QpToast.createToast(applicationContext,"로그아웃 실패 $error")?.show()
-                }else {
-                    QpToast.createToast(applicationContext,"로그아웃 성공")?.show()
-                    isLogin=false
-                    AppData.qpUserID = 0
-                    AppData.qpAccessToken = ""
-                    AppData.searchRecord.clear()
-                    binding.detailedLoginBtn.visibility = View.VISIBLE
-                    binding.detailedLoginSuccessBt.visibility = View.GONE
-                }
-            }
+            AppData.isGoHome = true
+            finish()
         }
 
 
@@ -105,6 +93,12 @@ class DetailedActivity : AppCompatActivity(),DetailedQView{
                 Log.d("userInfo","id: "+AppData.qpUserID.toString()+"nickname: "+AppData.qpNickname+"email"+AppData.qpEmail+"token"+AppData.qpAccessToken)
             }
         }
+    }
+
+    override fun onRestart() {
+        if(AppData.isGoHome)    finish()
+
+        super.onRestart()
     }
 
 
