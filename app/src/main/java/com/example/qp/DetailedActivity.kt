@@ -99,6 +99,7 @@ class DetailedActivity : AppCompatActivity(),DetailedQView{
 
                         AppData.qpIsLogin = false
                         isLogin=false
+                        binding.answerNoticeBtn.setImageResource(R.drawable.notification_off)
                     }
                 }
             }
@@ -426,9 +427,9 @@ class DetailedActivity : AppCompatActivity(),DetailedQView{
     //더보기 버튼
     private fun setQuestionMorePopup(){
         lateinit var popupWindow: SimplePopup
-        var isMine=questionInfo.user?.userId==AppData.qpUserID  //본인이 작성한 질문인지 여부
 
         binding.questionMoreBtn.setOnClickListener {
+            var isMine=questionInfo.user?.userId==AppData.qpUserID  //본인이 작성한 질문인지 여부
             if(answerAdapter.isItemListEmpty()&&isMine&&isLogin){
                 val list= mutableListOf<String>().apply {
                     add("수정하기")
@@ -446,7 +447,6 @@ class DetailedActivity : AppCompatActivity(),DetailedQView{
                             Log.d("modifyLog",questionInfo.toString())
                         }
                         1-> {   //삭제하기
-                                QpToast.createToast(applicationContext,"질문 삭제")?.show()
                                 val dialog=SimpleDialog("질문을 삭제하시겠습니까?")
                                 dialog.setMyItem(object :
                                     SimpleDialog.itemListener{
