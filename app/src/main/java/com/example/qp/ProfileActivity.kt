@@ -1,34 +1,34 @@
 package com.example.qp
 
-import android.content.Context
+import android.app.Activity
 import android.content.Intent
 import android.graphics.Color
-import android.os.Build
+import android.net.Uri
 import android.os.Bundle
+import android.provider.MediaStore
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
-import android.view.LayoutInflater
 import android.view.View
-import android.view.inputmethod.InputMethodManager
-import android.widget.Button
-import android.widget.EditText
-import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.AppCompatButton
 import com.example.qp.databinding.ActivityProfileBinding
-//import com.example.qp.databinding.DialogChargeBinding
 import com.google.android.material.tabs.TabLayoutMediator
-import org.w3c.dom.Text
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody.Companion.asRequestBody
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import java.io.File
 import java.util.regex.Pattern
 
 class ProfileActivity : AppCompatActivity() {
     lateinit var binding: ActivityProfileBinding
 //    lateinit var binding2: DialogChargeBinding
     var isNick = false
+    var selectedImageUri: Uri? = null
 
     private val information = arrayListOf("내가 한 질문", "내가 구매한 답변", "알림신청한 질문")
 
@@ -216,12 +216,81 @@ class ProfileActivity : AppCompatActivity() {
             binding.profileNicknameInvalidTv.visibility = View.INVISIBLE
             binding.profileNicknameValidTv.visibility = View.INVISIBLE
         }
+        imageEdit()
     }
 
     override fun onRestart() {
         if(AppData.isGoHome)    finish()
 
         super.onRestart()
+    }
+
+    companion object {
+        const val REQUEST_CODE_IMAGE = 101
+    }
+
+    //이미지 설정 클릭 시 갤러리 이동
+    fun imageEdit() {
+        binding.profileEditSettingIv.setOnClickListener {
+            Intent(Intent.ACTION_PICK).also {
+                it.type = "image/*"
+                val mineTypes = arrayOf("image/jpeg", "image/png")
+                it.putExtra(Intent.EXTRA_MIME_TYPES, mineTypes)
+                startActivityForResult(it, REQUEST_CODE_IMAGE)
+            }
+        }
+    }
+
+    // 파일 URI를 실제 파일 경로로 변환
+    private fun getPathFromUri(uri: Uri): String? {
+        val cursor = contentResolver.query(uri, null, null, null, null)
+        return cursor?.use {
+            it.moveToFirst()
+            val filePathColumnIndex = it.getColumnIndex(MediaStore.Images.Media.DATA)
+            return@use it.getString(filePathColumnIndex)
+        }
+    }
+
+    //파일 경로로 multipart 변환
+    fun fileToMultipartBodyPart(filePath: String, partName: String): MultipartBody.Part {
+        val file = File(filePath)
+        val requestBody = file.asRequestBody("image/*".toMediaTypeOrNull())
+        return MultipartBody.Part.createFormData(partName, file.name, requestBody)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if (requestCode == REQUEST_CODE_IMAGE && resultCode == Activity.RESULT_OK) {
+            selectedImageUri = data?.data
+            binding.profileMainImageIv.setImageURI(selectedImageUri)
+            Log.d("imageResponse_d", selectedImageUri.toString())
+            // 읽어온 파일의 URI를 파일 경로로 변환
+            val filePath = selectedImageUri?.let { getPathFromUri(it) }
+            Log.d("imageResponse_p", filePath.toString())
+
+            if (!filePath.isNullOrEmpty()) {
+                // 파일 경로를 사용하여 MultipartBody.Part 생성
+                val imagePart = fileToMultipartBodyPart(filePath, "image")
+                Log.d("imageResponse_m", imagePart.toString())
+
+                val imageService = getRetrofit().create(ImageInterface::class.java)
+                imageService.uploadImage(imagePart).enqueue(object : Callback<ImageResponse> {
+                    override fun onResponse(call: Call<ImageResponse>, response: Response<ImageResponse>) {
+                        Log.d("imageResponse_s", response.isSuccessful.toString())
+                        Log.d("imageResponse_s", response.code().toString())
+                        Log.d("imageResponse_s", response.body()?.message.toString())
+                        Log.d("imageResponse_s", response.body()?.result.toString())
+                    }
+
+                    override fun onFailure(call: Call<ImageResponse>, t: Throwable) {
+                        Log.d("imageResponse_Fail", t.message.toString())
+                    }
+                })
+            } else {
+                Toast.makeText(this, "파일을 읽을 수 없습니다.", Toast.LENGTH_SHORT).show()
+            }
+        }
     }
 
 //    // Dialog 호출 함수 (개발중)
