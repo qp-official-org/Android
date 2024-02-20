@@ -68,4 +68,7 @@ dependencies {
 
     // Kakao
     implementation("com.kakao.sdk:v2-user:2.19.0") // 카카오 로그인
+
+    // 원형 이미지
+    implementation("de.hdodenhof:circleimageview:3.1.0")
 }

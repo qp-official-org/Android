@@ -15,6 +15,7 @@ import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.example.qp.databinding.ActivityMainBinding
 import com.google.gson.Gson
 import com.kakao.sdk.auth.AuthApiClient
@@ -87,9 +88,10 @@ class MainActivity : AppCompatActivity() {
                         binding.mainLoginSuccessUserImg.visibility = View.VISIBLE
 
                         Handler(Looper.getMainLooper()).postDelayed(Runnable {
-                            // 하단 바에 사용자 닉네임과 포인트 데이터 반영
+                            // 하단 바에 사용자 닉네임과 포인트 데이터, 프로필 사진 반영
                             binding.mainBarNicknameTv.text = AppData.qpNickname
                             binding.mainBarCoinTv.text = AppData.qpPoint.toString()
+                            Glide.with(this).load(AppData.qpProfileImage).into(binding.mainLoginSuccessUserImg)
                         }, 300)
                     }
                 }, 300)
@@ -171,6 +173,7 @@ class MainActivity : AppCompatActivity() {
                 // 하단 바에 사용자 닉네임과 포인트 데이터 반영
                 binding.mainBarNicknameTv.text = AppData.qpNickname
                 binding.mainBarCoinTv.text = AppData.qpPoint.toString()
+                Glide.with(this).load(AppData.qpProfileImage).into(binding.mainLoginSuccessUserImg)
             }, 300)
         }
         else {

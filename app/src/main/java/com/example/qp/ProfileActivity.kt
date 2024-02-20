@@ -1,11 +1,14 @@
 package com.example.qp
 
+import android.app.Activity
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.Paint
+import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.provider.MediaStore
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
@@ -18,18 +21,27 @@ import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatButton
+import com.bumptech.glide.Glide
 import com.example.qp.databinding.ActivityProfileBinding
 import com.google.android.material.tabs.TabLayoutMediator
 import com.kakao.sdk.user.UserApiClient
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody.Companion.asRequestBody
+import java.io.File
 import java.util.regex.Pattern
 
 class ProfileActivity : AppCompatActivity() {
     lateinit var binding: ActivityProfileBinding
     var isNick = false
     var isAuthbtn = false
+    var isEdit = false
+
+    var selectedImageUri: Uri? = null
+    lateinit var tempImage : String
 
     private val information = arrayListOf("내가 한 질문", "내가 구매한 답변", "알림신청한 질문")
 
@@ -94,10 +106,11 @@ class ProfileActivity : AppCompatActivity() {
         }
 
         // 유저 데이터 반영
+        Glide.with(this).load(AppData.qpProfileImage).into(binding.profileMainImageIv)
         binding.profileMainTv.text = AppData.qpNickname
         binding.profileEditNicknameEt.hint = AppData.qpNickname
         binding.profileMainCoinNumTv.text = AppData.qpPoint.toString()
-        binding.profileMainCoinTextTv.text = (AppData.qpPoint / 10).toString()
+        binding.profileMainCoinTextTv.text = (AppData.qpPoint / 100).toString()
         var year = AppData.qpCreatedAt.substring(0 until 4)
         var month = AppData.qpCreatedAt.substring(5 until 7)
         var day = AppData.qpCreatedAt.substring(8 until 10)
@@ -180,21 +193,26 @@ class ProfileActivity : AppCompatActivity() {
             }
         }
         binding.profileMainImageIv.setOnClickListener {
-            if(AppData.qpRole != "USER") {
-                changeRole(AppData.qpUserID, "USER")
-                binding.profileExpertMarkIv.visibility = View.GONE
+            if(isEdit) {
+                imageEdit()
+            }
+            else {
+                if(AppData.qpRole != "USER") {
+                    changeRole(AppData.qpUserID, "USER")
+                    binding.profileExpertMarkIv.visibility = View.GONE
 
-                binding.profileCheckExpertLn.visibility = View.VISIBLE
+                    binding.profileCheckExpertLn.visibility = View.VISIBLE
 
-                Toast.makeText(this, "인증이 해제되었습니다.", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, "인증이 해제되었습니다.", Toast.LENGTH_SHORT).show()
 
-                invalidAllbtn()
-                binding.profileChargekKakaoBtn.visibility = View.GONE
-                binding.profileChargekNaverBtn.visibility = View.GONE
-                binding.profileCharge10kKakaoBtn.visibility = View.GONE
-                binding.profileCharge10kNaverBtn.visibility = View.GONE
+                    invalidAllbtn()
+                    binding.profileChargekKakaoBtn.visibility = View.GONE
+                    binding.profileChargekNaverBtn.visibility = View.GONE
+                    binding.profileCharge10kKakaoBtn.visibility = View.GONE
+                    binding.profileCharge10kNaverBtn.visibility = View.GONE
 
-                binding.profileMainEditBtn.visibility = View.VISIBLE
+                    binding.profileMainEditBtn.visibility = View.VISIBLE
+                }
             }
         }
 
@@ -255,6 +273,7 @@ class ProfileActivity : AppCompatActivity() {
 
         // 프로필 수정버튼
         binding.profileMainEditBtn.setOnClickListener {
+            isEdit = true
             invalidAllbtn()
             binding.profileChargekKakaoBtn.visibility = View.GONE
             binding.profileChargekNaverBtn.visibility = View.GONE
@@ -297,6 +316,7 @@ class ProfileActivity : AppCompatActivity() {
         binding.profileEditYesBtn.setOnClickListener {
             val editname : String = binding.profileEditNicknameEt.text.toString()
             if(isNick) {
+                isEdit = false
                 AppData.qpNickname = editname
                 binding.profileMainTv.text = AppData.qpNickname
                 binding.profileEditNicknameEt.hint = AppData.qpNickname
@@ -312,14 +332,20 @@ class ProfileActivity : AppCompatActivity() {
                 binding.profileNicknameInvalidTv.visibility = View.INVISIBLE
                 binding.profileNicknameValidTv.visibility = View.INVISIBLE
 
-                var userModify = UserModify(editname, "")
+                // 기존 사진 삭제
+                var url = Url(AppData.qpProfileImage)
+                deleteImage(url)
+                AppData.qpProfileImage = tempImage
+                var userModify = UserModify(AppData.qpNickname, AppData.qpProfileImage)
                 AppData.modifyUserInfo(AppData.qpAccessToken, AppData.qpUserID, userModify)
+                tempImage = ""
             }
             else {
                 Toast.makeText(this, "닉네임은 1 ~ 6자, 특수문자 제외로 제한됩니다.",Toast.LENGTH_SHORT).show()
             }
         }
         binding.profileEditNoBtn.setOnClickListener {
+            isEdit = false
             binding.profileEditSettingIv.visibility = View.GONE
             binding.profileMainTv.visibility = View.VISIBLE
             binding.profileEditNicknameEt.visibility = View.GONE
@@ -330,6 +356,11 @@ class ProfileActivity : AppCompatActivity() {
             binding.profileMainbackBoxIv.setAlpha(1f)
             binding.profileNicknameInvalidTv.visibility = View.INVISIBLE
             binding.profileNicknameValidTv.visibility = View.INVISIBLE
+
+            var url = Url(tempImage)
+            deleteImage(url)
+            tempImage = ""
+            Glide.with(this).load(AppData.qpProfileImage).into(binding.profileMainImageIv)
         }
     }
 
@@ -438,7 +469,7 @@ class ProfileActivity : AppCompatActivity() {
                 mDialogView.findViewById<TextView>(R.id.charge_text6_tv)
                     .text = "${AppData.qpPoint} point입니다."
                 mDialogView.findViewById<TextView>(R.id.charge_text7_tv)
-                    .text = "${AppData.qpPoint / 10}개의 답변을 확인할 수 있어요!"
+                    .text = "${AppData.qpPoint / 100}개의 답변을 확인할 수 있어요!"
             }, 300)
         }
 
@@ -452,7 +483,7 @@ class ProfileActivity : AppCompatActivity() {
             binding.profileCharge10kKakaoBtn.visibility = View.GONE
 
             binding.profileMainCoinNumTv.text = AppData.qpPoint.toString()
-            binding.profileMainCoinTextTv.text = (AppData.qpPoint / 10).toString()
+            binding.profileMainCoinTextTv.text = (AppData.qpPoint / 100).toString()
         }
 
         val noButton = mDialogView.findViewById<AppCompatButton>(R.id.charge_no_btn)
@@ -463,5 +494,103 @@ class ProfileActivity : AppCompatActivity() {
             btnInactive2(binding.profileChargekKakaoBtn, binding.profileChargekKakaoTv)
             btnInactive2(binding.profileCharge10kKakaoBtn, binding.profileCharge10kKakaoTv)
         }
+    }
+
+    companion object {
+        const val REQUEST_CODE_IMAGE = 101
+    }
+
+    //이미지 설정 클릭 시 갤러리 이동
+    fun imageEdit() {
+        Intent(Intent.ACTION_PICK).also {
+            it.type = "image/*"
+            val mineTypes = arrayOf("image/jpeg", "image/png")
+            it.putExtra(Intent.EXTRA_MIME_TYPES, mineTypes)
+            startActivityForResult(it, REQUEST_CODE_IMAGE)
+        }
+    }
+
+    // 파일 URI를 실제 파일 경로로 변환
+    private fun getPathFromUri(uri: Uri): String? {
+        val cursor = contentResolver.query(uri, null, null, null, null)
+        return cursor?.use {
+            it.moveToFirst()
+            val filePathColumnIndex = it.getColumnIndex(MediaStore.Images.Media.DATA)
+            return@use it.getString(filePathColumnIndex)
+        }
+    }
+
+    //파일 경로로 multipart 변환
+    fun fileToMultipartBodyPart(filePath: String, partName: String): MultipartBody.Part {
+        val file = File(filePath)
+        val requestBody = file.asRequestBody("image/*".toMediaTypeOrNull())
+        return MultipartBody.Part.createFormData(partName, file.name, requestBody)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if (requestCode == REQUEST_CODE_IMAGE && resultCode == Activity.RESULT_OK) {
+            selectedImageUri = data?.data
+            binding.profileMainImageIv.setImageURI(selectedImageUri)
+            Log.d("imageResponse_d", selectedImageUri.toString())
+            // 읽어온 파일의 URI를 파일 경로로 변환
+            val filePath = selectedImageUri?.let { getPathFromUri(it) }
+            Log.d("imageResponse_p", filePath.toString())
+
+            if (!filePath.isNullOrEmpty()) {
+                // 파일 경로를 사용하여 MultipartBody.Part 생성
+                val imagePart = fileToMultipartBodyPart(filePath, "image")
+                Log.d("imageResponse_m", imagePart.toString())
+
+                val imageService = getRetrofit().create(ImageInterface::class.java)
+                imageService.uploadImage(imagePart).enqueue(object : Callback<ImageResponse> {
+                    override fun onResponse(call: Call<ImageResponse>, response: Response<ImageResponse>) {
+                        Log.d("imageResponse_s", response.isSuccessful.toString())
+                        Log.d("imageResponse_s", response.code().toString())
+                        Log.d("imageResponse_s", response.body()?.message.toString())
+                        Log.d("imageResponse_s", response.body()?.result.toString())
+                        tempImage = response.body()?.result?.url ?: ""
+                        binding.profileEditNicknameEt.setText(AppData.qpNickname)
+                    }
+
+                    override fun onFailure(call: Call<ImageResponse>, t: Throwable) {
+                        Log.d("imageResponse_Fail", t.message.toString())
+                        Toast.makeText(this@ProfileActivity, "프로필사진 등록에 실패했습니다. ${t.message.toString()}", Toast.LENGTH_SHORT).show()
+                    }
+                })
+            } else {
+                Toast.makeText(this, "파일을 읽을 수 없습니다.", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    private fun deleteImage(url: Url) {
+        val imageService = getRetrofit().create(ImageInterface::class.java)
+
+        imageService.deleteImage(url).enqueue(object: Callback<DeleteResponse>{
+            override fun onResponse(
+                call: Call<DeleteResponse>,
+                response: Response<DeleteResponse>
+            ) {
+                Log.d("ddelete Success", response.toString())
+                val resp = response.body()
+                if(resp!=null){
+                    when(resp.code){
+                        "IMAGE_5000"-> {
+                            Log.d("ddelete Result", resp.message)
+                        }
+                        "IMAGE_5001" -> {
+                            Log.d("ddelete Result", resp.message)
+                        }
+                        else->Log.d("ddelete Result", resp.message)
+                    }
+                }
+            }
+
+            override fun onFailure(call: Call<DeleteResponse>, t: Throwable) {
+                Log.d("ddelete Fail", t.message.toString())
+            }
+        })
     }
 }
