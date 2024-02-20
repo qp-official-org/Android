@@ -105,7 +105,27 @@ class DetailedActivity : AppCompatActivity(),DetailedQView{
             }
         }
 
+        if(AppData.qpIsLogin) {
+            isLogin=true
+            binding.mainLoginBt.visibility = View.GONE
+            binding.mainLoginSuccessBt.visibility = View.VISIBLE
+            binding.mainLoginSuccessUserImg.visibility = View.VISIBLE
 
+            // 통신 대기 시간 0.3초
+            Handler(Looper.getMainLooper()).postDelayed(Runnable {
+                // 하단 바에 사용자 닉네임과 포인트 데이터 반영
+                binding.mainBarNicknameTv.text = AppData.qpNickname
+                binding.mainBarCoinTv.text = AppData.qpPoint.toString()
+                Glide.with(this).load(AppData.qpProfileImage).into(binding.mainLoginSuccessUserImg)
+            }, 300)
+            // getNotifyQ()
+        }
+        else {
+            isLogin=false
+            binding.mainLoginBt.visibility = View.VISIBLE
+            binding.mainLoginSuccessBt.visibility = View.GONE
+            binding.mainLoginSuccessUserImg.visibility = View.GONE
+        }
     }
 
     override fun onRestart() {
@@ -185,6 +205,7 @@ class DetailedActivity : AppCompatActivity(),DetailedQView{
                 // 하단 바에 사용자 닉네임과 포인트 데이터 반영
                 binding.mainBarNicknameTv.text = AppData.qpNickname
                 binding.mainBarCoinTv.text = AppData.qpPoint.toString()
+                Glide.with(this).load(AppData.qpProfileImage).into(binding.mainLoginSuccessUserImg)
             }, 300)
             getNotifyQ()
             
