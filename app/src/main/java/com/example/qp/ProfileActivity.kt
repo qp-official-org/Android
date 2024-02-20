@@ -18,6 +18,7 @@ import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatButton
+import com.bumptech.glide.Glide
 import com.example.qp.databinding.ActivityProfileBinding
 import com.google.android.material.tabs.TabLayoutMediator
 import com.kakao.sdk.user.UserApiClient
@@ -94,6 +95,7 @@ class ProfileActivity : AppCompatActivity() {
         }
 
         // 유저 데이터 반영
+        Glide.with(this).load(AppData.qpProfileImage).into(binding.profileMainImageIv)
         binding.profileMainTv.text = AppData.qpNickname
         binding.profileEditNicknameEt.hint = AppData.qpNickname
         binding.profileMainCoinNumTv.text = AppData.qpPoint.toString()

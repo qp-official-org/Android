@@ -181,7 +181,7 @@
         android:id="@+id/main_login_success_user_img"
         android:layout_width="100dp"
         android:layout_height="100dp"
-        android:src="@drawable/puang"
+        android:src="@drawable/profile_def"
         android:visibility="gone"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
