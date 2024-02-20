@@ -36,8 +36,8 @@ class ProfileMyQuestionFragment : Fragment() {
     private fun getWriteQuestions(p: Int){
         val questionService = getRetrofit().create(QuestionInterface::class.java)
 
-        Log.d("responseCode", AppData.qpAccessToken)
-        Log.d("responseCode", AppData.qpUserID.toString())
+        Log.d("myResponseCode", AppData.qpAccessToken)
+        Log.d("myResponseCode", AppData.qpUserID.toString())
 
         questionService.getWriteQuestions(AppData.qpAccessToken, AppData.qpUserID, p, 10)
             .enqueue(object: Callback<QuestionResponse> {
@@ -45,9 +45,9 @@ class ProfileMyQuestionFragment : Fragment() {
                     call: Call<QuestionResponse>,
                     response: Response<QuestionResponse>
                 ) {
-                    Log.d("responseCode", response.code().toString())
-                    Log.d("responseCode", response.isSuccessful.toString())
-                    Log.d("responseCode", response.body().toString())
+                    Log.d("myResponseCode", response.code().toString())
+                    Log.d("myResponseCode", response.isSuccessful.toString())
+                    Log.d("myResponseCode", response.body().toString())
                     if(response.isSuccessful){
                         val questionResponse: QuestionResponse = response.body()!!
 
