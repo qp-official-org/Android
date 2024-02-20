@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import androidx.annotation.RequiresApi
 
 import androidx.appcompat.app.AppCompatActivity
@@ -16,6 +17,7 @@ import com.google.android.flexbox.FlexDirection
 import com.google.android.flexbox.FlexWrap
 import com.google.android.flexbox.FlexboxLayoutManager
 import com.google.gson.Gson
+import com.kakao.sdk.user.UserApiClient
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -27,6 +29,8 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var adapter: WriteQuestionTagRVAdapter
     private var page = 0
     private var last = false
+    private var needMore = false
+    private var isLogin=false
 
     val textListner = object : SearchView.OnQueryTextListener {
         override fun onQueryTextSubmit(query: String?): Boolean {
@@ -51,6 +55,15 @@ class SearchActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivitySearchBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        /*UserApiClient.instance.accessTokenInfo { token, error ->
+            if (error != null) {
+                isLogin=false
+
+            } else if (token != null) {
+                isLogin=true
+            }
+        }*/
 
         //최근 검색어 리사이클러뷰 설정
         val layoutManager = FlexboxLayoutManager(this)
@@ -173,7 +186,9 @@ class SearchActivity : AppCompatActivity() {
 
     private fun register(){
         binding.searchRegisterBt.setOnClickListener {
-            if(AppData.qpUserID != 0){
+
+            Log.d("searchIsLogin",isLogin.toString())
+            if(AppData.qpUserID != 0 && AppData.qpIsLogin){
                 val intent = Intent(this@SearchActivity, WriteQuestionActivity::class.java)
                 startActivity(intent)
             }

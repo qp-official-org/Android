@@ -32,11 +32,12 @@ class QuestionService {
                     Log.d("getDetailedResp",resp.toString())
                     when(resp?.code){
                         "QUESTION_2000"-> {
+                            Log.d("detailedQ/SUCCESS",resp.toString())
                             detailedQView.onGetQSuccess(resp.result)
                         }
                         else-> {
                             detailedQView.onGetQFailure(response.errorBody()?.string().toString())
-                            //Log.d("getDetailedQFail",response.errorBody()?.string().toString().plus(questionId))
+                            Log.d("detailedQ/FAIL",response.errorBody()?.string().toString().plus(questionId))
                         }
                     }
                 }

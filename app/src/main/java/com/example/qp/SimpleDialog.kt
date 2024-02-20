@@ -14,6 +14,15 @@ import com.example.qp.databinding.PopupDialogBinding
 class SimpleDialog(): DialogFragment() {
     private lateinit var binding:PopupDialogBinding
     private var text="로그인이 필요한 기능입니다."
+
+    interface itemListener{
+        fun onOk()
+    }
+    lateinit var myItemListener:itemListener
+
+    fun setMyItem(item:itemListener){
+        myItemListener=item
+    }
     constructor(text:String):this(){
         this.text=text
     }
@@ -24,14 +33,14 @@ class SimpleDialog(): DialogFragment() {
         savedInstanceState: Bundle?
     ): View? {
         binding= PopupDialogBinding.inflate(inflater,container,false)
-        isCancelable=false
+        isCancelable=true
 
         if(text!=null){
             binding.popupText.text=text
         }
 
         binding.popupButtonOk.setOnClickListener {
-            dismiss()
+            myItemListener.onOk()
         }
 
 
@@ -40,7 +49,7 @@ class SimpleDialog(): DialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val dialog = super.onCreateDialog(savedInstanceState)
         dialog?.window?.setBackgroundDrawableResource(R.color.transparent)
-        dialog.window?.setDimAmount(0.99f)
+        dialog.window?.setDimAmount(0.5f)
 
         return dialog
 

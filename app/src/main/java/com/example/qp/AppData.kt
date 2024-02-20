@@ -22,6 +22,7 @@ class AppData : Application() {
 
         var qpIsLogin = false
 
+
         var isGoHome = false
 
         var searchRecord = ArrayList<String>()

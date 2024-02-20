@@ -35,7 +35,8 @@ class ModifyQuestionActivity:AppCompatActivity() {
 
 
         if(intent.hasExtra("modifyQuestion")){
-            questionInfo=intent.getSerializableExtra("modifyQuestion",QuestionInfo::class.java)
+            val qJson=intent.getStringExtra("modifyQuestion")
+            questionInfo=gson.fromJson(qJson,QuestionInfo::class.java)
             Log.d("intentQ",questionInfo.toString())
         }
 
@@ -154,9 +155,7 @@ class ModifyQuestionActivity:AppCompatActivity() {
                         questionInfo?.content=content
 
                         intent= Intent(this@ModifyQuestionActivity,DetailedActivity::class.java)
-                        val gson = Gson()
-                        val qJson = gson.toJson(questionInfo)
-                        intent.putExtra("question", qJson)
+                        intent.putExtra("question", resp.result.questionId)
                         startActivity(intent)
                         finish()
                     }
