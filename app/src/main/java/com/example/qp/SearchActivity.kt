@@ -31,13 +31,15 @@ class SearchActivity : AppCompatActivity() {
     private var last = false
     private var needMore = false
     private var isLogin=false
+
     val textListner = object : SearchView.OnQueryTextListener {
         override fun onQueryTextSubmit(query: String?): Boolean {
-            needMore = false
             page = 0
+            filtered.clear()
             getfilteredQuestions(page, query)
             moreFiltered(query)
             record(query)
+            binding.searchInputSv.setQuery(query, false)
             binding.searchRecentWord.isVisible = false
             binding.searchInputSv.clearFocus() // 키보드 숨기기
             return true
@@ -115,9 +117,9 @@ class SearchActivity : AppCompatActivity() {
                         when(questionResponse.code){
                             "QUESTION_2000" -> {
                                 Log.d("SUCCESS/DATA_LOAD", "리사이클러뷰의 데이터로 구성됩니다")
-                                if(!needMore) { filtered.clear() }
                                 filtered.addAll(questionResponse.result.questions)
                                 last = questionResponse.result.last!!
+                                binding.searhNoResultTv.text = "총 "+questionResponse.result.totalElements+"개의 질문이 있습니다."
                                 setQuestionRVAdapter(filtered)
                                 Log.d("getFdResp",filtered.toString())
                             }
@@ -140,7 +142,6 @@ class SearchActivity : AppCompatActivity() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
 
-                needMore = true
                 val rvPosition = (recyclerView.layoutManager as GridLayoutManager)?.findLastCompletelyVisibleItemPosition()
                 val totalCount = binding.searchMatchQuestionRv.adapter!!.itemCount - 1
                 if (rvPosition==totalCount && !last) {
@@ -152,40 +153,29 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun setQuestionRVAdapter(filtered: ArrayList<QuestionInfo>){
-        if(filtered.size == 0){
-            //이전 결과
-            binding.searchMatchQuestionRv.isVisible = false
-            //검색 결과 X
-            binding.searchRegisterInfo.isVisible = true
-            binding.searhNoResultTv.isVisible = true
+        binding.searchMatchQuestionRv.isVisible = true
+        binding.searchRegisterInfo.isVisible = true
+        binding.searhNoResultTv.isVisible = true
+
+        val questionRVAdapter = QuestionRVAdapter(filtered)
+        if(page == 0){
+            binding.searchMatchQuestionRv.adapter = questionRVAdapter
+            binding.searchMatchQuestionRv.layoutManager = GridLayoutManager(applicationContext, 2)
         }
         else{
-            //이전 결과
-            binding.searchRegisterInfo.isVisible = false
-            binding.searhNoResultTv.isVisible = false
-            //검색 결과 O
-            binding.searchMatchQuestionRv.isVisible = true
-
-            val questionRVAdapter = QuestionRVAdapter(filtered)
-            if(page == 0){
-                binding.searchMatchQuestionRv.adapter = questionRVAdapter
-                binding.searchMatchQuestionRv.layoutManager = GridLayoutManager(applicationContext, 2)
-            }
-            else{
-                binding.searchMatchQuestionRv.adapter!!.notifyDataSetChanged()
-            }
-
-            questionRVAdapter.setMyItemClickListner(object : QuestionRVAdapter.MyItemClickListner{
-                @RequiresApi(Build.VERSION_CODES.TIRAMISU)
-                override fun onItemClick(questionInfo: QuestionInfo) {
-                    val intent = Intent(this@SearchActivity, DetailedActivity::class.java)
-                    val gson = Gson()
-                    val qJson = gson.toJson(questionInfo)
-                    intent.putExtra("question", qJson)
-                    startActivity(intent)
-                }
-            })
+            binding.searchMatchQuestionRv.adapter!!.notifyDataSetChanged()
         }
+
+        questionRVAdapter.setMyItemClickListner(object : QuestionRVAdapter.MyItemClickListner{
+            @RequiresApi(Build.VERSION_CODES.TIRAMISU)
+            override fun onItemClick(questionInfo: QuestionInfo) {
+                val intent = Intent(this@SearchActivity, DetailedActivity::class.java)
+                val gson = Gson()
+                val qJson = gson.toJson(questionInfo)
+                intent.putExtra("question", qJson)
+                startActivity(intent)
+            }
+        })
     }
 
     private fun register(){

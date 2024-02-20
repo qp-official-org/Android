@@ -4,6 +4,7 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.ImageView
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CircleCrop
@@ -43,9 +44,12 @@ class QuestionRVAdapter(private val qList: ArrayList<QuestionInfo>)
         fun bind(questionInfo: QuestionInfo){
             binding.itemTimeTv.text = getTime(questionInfo.createdAt.toString())
             binding.itemQuestionTv.text = questionInfo.title
+            binding.answerCommentTv.text = questionInfo.answerCount.toString()
+            binding.answerExpertTv.text = questionInfo.expertCount.toString()
             if(questionInfo.user!!.profileImage!=""){
                 setStringImage(questionInfo.user!!.profileImage, binding.itemUserIv, con)
             }
+            binding.itemChildTv.isVisible = questionInfo.childStatus.equals("ACTIVE")
             val tagList=questionInfo.hashtags
             if(tagList?.size==1){
                 binding.itemCategory1Tv.text = "#"+tagList[0].hashtag
@@ -70,12 +74,12 @@ class QuestionRVAdapter(private val qList: ArrayList<QuestionInfo>)
         }
     }
 
-/*    // 이미지뷰에 문자열 형태의 이미지를 설정
+    // 이미지뷰에 문자열 형태의 이미지를 설정
     fun setStringImage(imageUrl: String, imageView: ImageView, con: Context) {
         Glide.with(con)
             .load(imageUrl)
             .apply(RequestOptions().transform(CircleCrop()))
             .into(imageView)
-    }*/
+    }
 
 }
