@@ -2,6 +2,7 @@ package com.example.qp
 
 import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
+import java.io.Serial
 import java.io.Serializable
 import java.sql.Timestamp
 
@@ -22,13 +23,13 @@ data class QuestionChart(
 ):Serializable
 
 data class QuestionInfo(
-    @SerializedName(value="user")val user: UserInfo?=null,
+    @SerializedName(value="user")var user: UserInfo?=null,
     @SerializedName(value="questionId")val questionId: Long=0,
     @SerializedName(value="title")var title: String,
     @SerializedName(value="content")var content: String?,
     @SerializedName(value="hit")val hit: Int?=0,
     @SerializedName(value="answerCount")val answerCount: Int?=0,
-    @SerializedName(value="expertCount")val expertCount: Int?=0,
+    @SerializedName(value="expertCount")var expertCount: Int?=0,
     @SerializedName(value="childStatus")val childStatus: String?="INACTIVE",
     @SerializedName(value="createdAt")val createdAt: String?="",
     @SerializedName(value="updatedAt")var updatedAt: String?="",
@@ -135,7 +136,7 @@ data class ReportQResponse(
     @SerializedName(value="isSuccess")val isSuccess: Boolean?,
     @SerializedName(value="code")val code: String,
     @SerializedName(value="message")val message: String,
-    @SerializedName(value="result")val result:LikeAnswerResult
+    @SerializedName(value="result")val result:ReportQResult
 ):Serializable
 
 data class ReportQResult(
@@ -144,4 +145,46 @@ data class ReportQResult(
     @SerializedName(value="questionReportId")var questionReportId:Int,
     @SerializedName(value="content")var content:String,
     @SerializedName(value="createdAt")var createdAt:String
+):Serializable
+
+data class NotifyQResponse(
+    @SerializedName(value="isSuccess")val isSuccess: Boolean?,
+    @SerializedName(value="code")val code: String,
+    @SerializedName(value="message")val message: String,
+    @SerializedName(value="result")val result:NotifyQResult
+):Serializable
+data class NotifyQResult(
+    @SerializedName(value="userId")var userId:Long,
+    @SerializedName(value="createdAt")var createdAt:String
+):Serializable
+
+data class GetNotifyResponse(
+    @SerializedName(value="isSuccess")val isSuccess: Boolean?,
+    @SerializedName(value="code")val code: String,
+    @SerializedName(value="message")val message: String,
+    @SerializedName(value="result")val result:GetNotifyResult
+):Serializable
+data class GetNotifyResult(
+    @SerializedName(value="questionId")var questionId:Long,
+    @SerializedName(value="questionAlarms")var questionAlarms:ArrayList<NotifyQResult>,
+    @SerializedName(value="totalElements")var total:Int
+):Serializable
+
+data class GetOtherQResponse(
+    @SerializedName(value="isSuccess")val isSuccess: Boolean?,
+    @SerializedName(value="code")val code: String,
+    @SerializedName(value="message")val message: String,
+    @SerializedName(value="result")val result:GetOtherQResult
+):Serializable
+
+data class GetOtherQResult(
+    @SerializedName(value="hasLater")val hasPrev:Boolean,
+    @SerializedName(value ="hasOlder")val hasNext:Boolean,
+    @SerializedName(value = "laterQuestion")var prevQuestion:OtherQ,
+    @SerializedName(value = "olderQuestion")var nextQuestion:OtherQ
+):Serializable
+
+data class OtherQ(
+    @SerializedName(value = "questionId")val questionId:Long,
+    @SerializedName(value = "title")val title:String
 ):Serializable
