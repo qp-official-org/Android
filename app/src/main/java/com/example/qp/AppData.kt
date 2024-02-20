@@ -43,9 +43,10 @@ class AppData : Application() {
                             "USER_1000"-> {
                                 Log.d("modify Result1", resp.message)
                                 Log.d("modify data1", resp.result.userId.toString())
-                                Log.d("modify data2", resp.result.nickname)
-                                Log.d("modify data3", resp.result.profileImage)
-                                Log.d("modify data4", resp.result.updatedAt)
+                                Log.d("modify data2", resp.result.role)
+                                Log.d("modify data3", resp.result.nickname)
+                                Log.d("modify data4", resp.result.profileImage)
+                                Log.d("modify data5", resp.result.updatedAt)
 
                                 AppData.qpNickname = resp.result.nickname
                                 AppData.qpProfileImage = resp.result.profileImage

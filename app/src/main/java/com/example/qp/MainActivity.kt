@@ -300,6 +300,13 @@ class MainActivity : AppCompatActivity() {
                             Log.d("singIn Result", resp.message)
 
                             Toast.makeText(this@MainActivity, "로그인에 성공했습니다.", Toast.LENGTH_SHORT).show()
+
+                            GlobalApplication.preferences.setString("accessToken", resp.result.accessToken)
+                            GlobalApplication.preferences.setString("refreshToken", resp.result.refreshToken)
+                            GlobalApplication.preferences.setInt("userID", resp.result.userId)
+                            AppData.qpAccessToken = resp.result.accessToken
+                            AppData.qpUserID = resp.result.userId
+
                             AppData.qpIsLogin = true
                         }
                         else->Log.d("singIn Result", resp.message)

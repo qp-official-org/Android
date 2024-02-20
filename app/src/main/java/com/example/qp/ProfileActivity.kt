@@ -23,12 +23,16 @@ import com.example.qp.databinding.ActivityProfileBinding
 //import com.example.qp.databinding.DialogChargeBinding
 import com.google.android.material.tabs.TabLayoutMediator
 import org.w3c.dom.Text
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import java.util.regex.Pattern
 
 class ProfileActivity : AppCompatActivity() {
     lateinit var binding: ActivityProfileBinding
 //    lateinit var binding2: DialogChargeBinding
     var isNick = false
+    var isAuthbtn = false
 
     private val information = arrayListOf("내가 한 질문", "내가 구매한 답변", "알림신청한 질문")
 
@@ -63,6 +67,85 @@ class ProfileActivity : AppCompatActivity() {
         binding.profileQpLogo.setOnClickListener {
             AppData.isGoHome = true
             finish()
+        }
+
+        // 전문가 인증 전환
+        binding.profileCheckExpert2Tv.setOnClickListener {
+            if(isAuthbtn) {
+                isAuthbtn = false
+                binding.profileChargekBtn.visibility = View.VISIBLE
+                binding.profileCharge10kBtn.visibility = View.VISIBLE
+
+                binding.profileAuthEt.visibility = View.GONE
+                binding.profileAuthNextInvalidBtn.visibility = View.GONE
+            }
+            else {
+                isAuthbtn = true
+                binding.profileChargekBtn.visibility = View.GONE
+                binding.profileCharge10kBtn.visibility = View.GONE
+
+                binding.profileAuthEt.visibility = View.VISIBLE
+                binding.profileAuthNextInvalidBtn.visibility = View.VISIBLE
+            }
+        }
+
+        // 전문가 인증 (임시)
+        binding.profileAuthEt.addTextChangedListener(object: TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+
+            override fun afterTextChanged(s: Editable?) {
+                binding.profileAuthFailTv.visibility = View.GONE
+                if(binding.profileAuthEt.length() == 8) {
+                    binding.profileAuthNextBtn.visibility = View.VISIBLE
+                    binding.profileAuthNextInvalidBtn.visibility = View.GONE
+                }
+                else{
+                    binding.profileAuthNextBtn.visibility = View.GONE
+                    binding.profileAuthNextInvalidBtn.visibility = View.VISIBLE
+                }
+            }
+        })
+        binding.profileAuthNextBtn.setOnClickListener {
+            if(binding.profileAuthEt.text.toString() == "qpExpert") {
+                changeRole(AppData.qpUserID, "EXPERT")
+                binding.profileExpertMarkIv.visibility = View.VISIBLE
+
+                isAuthbtn = false
+                binding.profileChargekBtn.visibility = View.VISIBLE
+                binding.profileCharge10kBtn.visibility = View.VISIBLE
+
+                binding.profileAuthEt.visibility = View.GONE
+                binding.profileAuthNextInvalidBtn.visibility = View.GONE
+                binding.profileCheckExpertLn.visibility = View.GONE
+                binding.profileAuthNextBtn.visibility = View.GONE
+
+                Toast.makeText(this, "전문가 인증이 완료되었습니다.", Toast.LENGTH_SHORT).show()
+
+                // 키보드 내리기
+                val inputMethodManager = this.getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+                inputMethodManager.hideSoftInputFromWindow(binding.profileAuthEt.windowToken, 0)
+            }
+            else {
+                binding.profileAuthFailTv.visibility = View.VISIBLE
+            }
+        }
+        binding.profileMainImageIv.setOnClickListener {
+            if(AppData.qpRole != "USER") {
+                changeRole(AppData.qpUserID, "USER")
+                binding.profileExpertMarkIv.visibility = View.GONE
+
+                binding.profileCheckExpertLn.visibility = View.VISIBLE
+
+                Toast.makeText(this, "인증이 해제되었습니다.", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        // 전문가면 인증버튼 안보이게, 인증마크 달리게
+        if(AppData.qpRole == "EXPERT") {
+            binding.profileCheckExpertLn.visibility = View.GONE
+            binding.profileExpertMarkIv.visibility = View.VISIBLE
         }
 
         // 유저 데이터 반영
@@ -222,6 +305,37 @@ class ProfileActivity : AppCompatActivity() {
         if(AppData.isGoHome)    finish()
 
         super.onRestart()
+    }
+
+
+    // 계정 Role 변경 (개발용)
+    private fun changeRole(userId: Int, role: String) {
+        val userService = getRetrofit().create(UserInterface::class.java)
+
+        userService.changeRole(userId, role).enqueue(object : Callback<UserResponse<UserModifyResult>> {
+            override fun onResponse(
+                call: Call<UserResponse<UserModifyResult>>,
+                response: Response<UserResponse<UserModifyResult>>
+            ) {
+                Log.d("cchange Success", response.toString())
+                val resp = response.body()
+                if(resp!=null) {
+                    when(resp.code) {
+                        "USER_1000" -> {
+                            Log.d("cchange Result1", resp.message)
+                            AppData.qpRole = role
+                            Log.d("cchange Result2", AppData.qpRole)
+                        }
+                        else -> Log.d("cchange Result", resp.message)
+                    }
+                }
+            }
+
+            override fun onFailure(call: Call<UserResponse<UserModifyResult>>, t: Throwable) {
+                Log.d("cchange Fail", t.message.toString())
+            }
+
+        })
     }
 
 //    // Dialog 호출 함수 (개발중)

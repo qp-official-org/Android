@@ -42,4 +42,10 @@ interface UserInterface {
 
     @POST("/users/test")        // 테스트 유저 생성
     fun signTest(): Call<UserResponse<UserTestResult>>
+
+    @POST("/users/{userId}")    // 계정 Role 변경 (개발용)
+    fun changeRole(
+        @Path("userId") userId: Int,
+        @Query("role") role: String
+    ): Call<UserResponse<UserModifyResult>>
 }

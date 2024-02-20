@@ -30,6 +30,7 @@ data class UserDeleteResult(
 
 data class UserModifyResult(
     val userId: Int,
+    val role: String,
     val nickname: String,
     val profileImage: String,
     val updatedAt: String
@@ -40,8 +41,8 @@ data class User(
     var nickname: String,
     var profileImage: String,
     var email: String,
-    var role: String,
     var gender: String,
+    var role: String,
     var point: Long,
     var createdAt: String
 )
