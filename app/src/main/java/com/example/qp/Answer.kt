@@ -4,15 +4,21 @@ import com.google.gson.annotations.SerializedName
 import java.io.Serializable
 
 data class AnswerInfo (
+    @SerializedName(value = "user")var user:AnswerUser,
     @SerializedName(value="answerId")var answerId:Long?,
-    @SerializedName(value="userId")var userId:Long,
-    @SerializedName(value="nickname")var nickname:String?="",
-    @SerializedName(value="title")var title:String,
     @SerializedName(value="content")var content:String="",
     @SerializedName(value="category")var category:String,
     @SerializedName(value="answerGroup")var answerGroup:Long,
-    @SerializedName(value="likeCount")var likes:Long?=0
+    @SerializedName(value="likeCount")var likes:Long?=0,
+    @SerializedName(value = "childAnswerCount")var childCount:Int=0
 ):Serializable
+
+data class AnswerUser(
+    @SerializedName(value="userId")var userId: Long?=0,
+    @SerializedName(value = "nickname")var nickname:String?="",
+    @SerializedName(value = "profileImage")var profileImage:String?="",
+    @SerializedName(value="role")var role:String?="USER"
+    ):Serializable
 
 data class ParentAnswerResponse(
     @SerializedName("isSuccess")var isSuccess:Boolean,
@@ -43,6 +49,12 @@ data class ChildAnswerResult(
     @SerializedName("isFirst")var isFirst:Boolean,
     @SerializedName("isLast")var isLast:Boolean
 ):Serializable
+data class AnswerPost(
+    @SerializedName("userId")var userId: Long,
+    @SerializedName("content")var content: String,
+    @SerializedName("category")var category: String,
+    @SerializedName("answerGroup")var answerGroup: Long,
+    ):Serializable
 data class WriteAnswerResponse(
     @SerializedName("isSuccess")var isSuccess:Boolean,
     @SerializedName("code")var code:String,
@@ -52,4 +64,19 @@ data class WriteAnswerResponse(
 data class WriteAnswerResult(
     @SerializedName("answerId")var answerId:Long,
     @SerializedName("createdAt")var createdAt:String
+):Serializable
+
+data class ReportAnswerResponse(
+    @SerializedName(value="isSuccess")val isSuccess: Boolean?,
+    @SerializedName(value="code")val code: String,
+    @SerializedName(value="message")val message: String,
+    @SerializedName(value="result")val result:ReportAnswerResult
+):Serializable
+
+data class ReportAnswerResult(
+    @SerializedName(value="answerId")var answerId:Long,
+    @SerializedName(value="userId")var userId:Long,
+    @SerializedName(value="answerReportId")var answerReportId:Int,
+    @SerializedName(value="content")var content:String,
+    @SerializedName(value="createdAt")var createdAt:String
 ):Serializable

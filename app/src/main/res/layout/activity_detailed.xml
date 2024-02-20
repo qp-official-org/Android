@@ -10,6 +10,7 @@
     tools:context=".DetailedActivity">
 
     <androidx.core.widget.NestedScrollView
+        android:id="@+id/detailed_scroll_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="1"
@@ -210,8 +211,10 @@
                         app:layout_constraintEnd_toEndOf="parent"
                         android:layout_margin="10dp"
                         android:src="@drawable/baseline_more_vert_24"
-                        android:background="@color/white"/>
+                        android:background="@color/white"
+                        android:padding="2dp"/>
                     <TextView
+                        android:id="@+id/detailed_child_status_tv"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         app:layout_constraintEnd_toStartOf="@id/question_more_btn"
@@ -229,8 +232,9 @@
                         app:layout_constraintEnd_toEndOf="@id/question_more_btn"
                         app:layout_constraintTop_toBottomOf="@id/detailed_question_content_tv"
                         android:layout_marginVertical="15dp"
-                        android:src="@drawable/notification_off"
-                        android:background="@color/white"/>
+                        android:src="@drawable/notify_alarm_off"
+                        android:background="@color/white"
+                        android:padding="0dp"/>
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -318,105 +322,124 @@
 
     </androidx.core.widget.NestedScrollView>
 
-    <Button
-        android:id="@+id/detailed_login_btn"
-        android:layout_width="match_parent"
-        android:layout_height="70dp"
-        android:text="로그인 하기"
-        android:textStyle="bold"
-        android:textSize="20dp"
-        android:textColor="@color/qp"
-        android:background="@drawable/login_button_design"
-        app:backgroundTint="@null"
-        app:layout_constraintBottom_toBottomOf="parent" />
-
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/detailed_login_success_bt"
+        android:id="@+id/login_bottom"
         android:layout_width="match_parent"
         android:layout_height="85dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:visibility="gone">
+        app:layout_constraintBottom_toBottomOf="parent">
 
-        <ImageView
+        <Button
+            android:id="@+id/main_login_bt"
             android:layout_width="match_parent"
             android:layout_height="70dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            android:src="@drawable/login_orange_button_design"/>
-        <ImageView
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:src="@drawable/profile"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            android:layout_marginBottom="-15dp"/>
-        <TextView
-            android:id="@+id/detailed_bar_nickname_tv"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="큐피"
-            android:textColor="@color/white"
+            android:text="로그인 하기"
             android:textStyle="bold"
-            android:textSize="18sp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            android:layout_marginStart="40dp"
-            android:layout_marginTop="25dp"/>
-        <TextView
-            android:id="@+id/detailed_bar_nickname2_tv"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="님"
-            android:textColor="@color/white"
-            android:textStyle="bold"
-            android:textSize="18sp"
-            app:layout_constraintStart_toEndOf="@id/detailed_bar_nickname_tv"
-            app:layout_constraintTop_toTopOf="parent"
-            android:layout_marginStart="5dp"
-            android:layout_marginTop="25dp"/>
-        <ImageView
-            android:id="@+id/detailed_bar_coin_iv"
-            android:layout_width="18dp"
-            android:layout_height="18dp"
-            android:src="@drawable/coin"
+            android:textSize="20dp"
+            android:textColor="@color/qp"
+            android:background="@drawable/login_button_design"
+            app:backgroundTint="@null"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            android:layout_marginStart="20dp"
-            android:layout_marginBottom="11dp"/>
-        <TextView
-            android:id="@+id/detailed_bar_coin_tv"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="800"
-            android:textColor="@color/white"
-            android:textSize="15sp"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@id/detailed_bar_coin_iv"
-            android:layout_marginStart="7dp"
-            android:layout_marginBottom="10dp"/>
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="point"
-            android:textColor="@color/white"
-            android:textSize="15sp"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@id/detailed_bar_coin_tv"
-            android:layout_marginStart="5dp"
-            android:layout_marginBottom="10dp"/>
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="충전하러 가기 >"
-            android:textColor="@color/white"
-            android:textSize="10sp"
-            android:textStyle="bold"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            android:layout_marginEnd="20dp"
-            android:layout_marginBottom="10dp"/>
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            android:visibility="visible"/>
 
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/main_login_success_bt"
+            android:layout_width="match_parent"
+            android:layout_height="85dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:visibility="gone">
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="70dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:src="@drawable/login_orange_button_design"/>
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/main_login_success_user_img"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:src="@drawable/profile_image"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:layout_marginBottom="-15dp"/>
+            <TextView
+                android:id="@+id/main_bar_nickname_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="큐피"
+                android:textColor="@color/white"
+                android:textStyle="bold"
+                android:textSize="18sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                android:layout_marginStart="40dp"
+                android:layout_marginTop="25dp"/>
+            <TextView
+                android:id="@+id/main_bar_nickname2_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="님"
+                android:textColor="@color/white"
+                android:textStyle="bold"
+                android:textSize="18sp"
+                app:layout_constraintStart_toEndOf="@id/main_bar_nickname_tv"
+                app:layout_constraintTop_toTopOf="parent"
+                android:layout_marginStart="5dp"
+                android:layout_marginTop="25dp"/>
+            <ImageView
+                android:id="@+id/main_bar_coin_iv"
+                android:layout_width="18dp"
+                android:layout_height="18dp"
+                android:src="@drawable/coin"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                android:layout_marginStart="20dp"
+                android:layout_marginBottom="11dp"/>
+            <TextView
+                android:id="@+id/main_bar_coin_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="800"
+                android:textColor="@color/white"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@id/main_bar_coin_iv"
+                android:layout_marginStart="7dp"
+                android:layout_marginBottom="10dp"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="point"
+                android:textColor="@color/white"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@id/main_bar_coin_tv"
+                android:layout_marginStart="5dp"
+                android:layout_marginBottom="10dp"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="충전하러 가기 >"
+                android:textColor="@color/white"
+                android:textSize="10sp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:layout_marginEnd="20dp"
+                android:layout_marginBottom="10dp"/>
+            <TextView
+                android:id="@+id/main_bar_logout_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="로그아웃"
+                android:textColor="@color/white"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                android:layout_marginEnd="25dp"
+                android:layout_marginTop="30dp"/>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </LinearLayout>

@@ -11,24 +11,25 @@
         android:layout_height="wrap_content"
         android:text="선택하신 금액 '1000원'을"
         android:textColor="@color/black"
-        android:textSize="25sp"
+        android:textSize="20sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/charge_text2_tv"/>
+        app:layout_constraintBottom_toTopOf="@id/charge_text2_tv"
+        android:layout_marginBottom="10dp"/>
     <TextView
         android:id="@+id/charge_text2_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="'네이버 페이'로"
         android:textColor="@color/black"
-        android:textSize="25sp"
+        android:textSize="20sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        android:layout_marginTop="100dp"
+        android:layout_marginTop="120dp"
         android:layout_marginBottom="300dp"/>
     <TextView
         android:id="@+id/charge_text3_tv"
@@ -36,11 +37,12 @@
         android:layout_height="wrap_content"
         android:text="충전하시겠습니까?"
         android:textColor="@color/black"
-        android:textSize="25sp"
+        android:textSize="20sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/charge_text2_tv"/>
+        app:layout_constraintTop_toBottomOf="@id/charge_text2_tv"
+        android:layout_marginTop="10dp"/>
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/charge_yes_btn"
@@ -54,7 +56,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginBottom="50dp"
+        android:layout_marginBottom="60dp"
         android:layout_marginStart="30dp"
         android:layout_marginEnd="170dp"/>
     <androidx.appcompat.widget.AppCompatButton
@@ -69,7 +71,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginBottom="50dp"
+        android:layout_marginBottom="60dp"
         android:layout_marginEnd="30dp"
         android:layout_marginStart="170dp"/>
 
@@ -81,11 +83,12 @@
         android:layout_height="wrap_content"
         android:text="충전이 완료됐습니다!"
         android:textColor="@color/black"
-        android:textSize="25sp"
+        android:textSize="20sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toTopOf="@id/charge_text5_tv"
+        android:layout_marginBottom="10dp"
         android:visibility="gone"/>
     <TextView
         android:id="@+id/charge_text5_tv"
@@ -93,13 +96,12 @@
         android:layout_height="wrap_content"
         android:text="현재 '닉네임'님의 잔여 포인트는"
         android:textColor="@color/black"
-        android:textSize="25sp"
+        android:textSize="20sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:layout_marginBottom="100dp"
+        android:layout_marginTop="120dp"
         android:visibility="gone"/>
     <TextView
         android:id="@+id/charge_text6_tv"
@@ -107,11 +109,12 @@
         android:layout_height="wrap_content"
         android:text="nnnn point입니다."
         android:textColor="@color/black"
-        android:textSize="25sp"
+        android:textSize="20sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/charge_text5_tv"
+        android:layout_marginTop="10dp"
         android:visibility="gone"/>
     <TextView
         android:id="@+id/charge_text7_tv"
@@ -119,11 +122,13 @@
         android:layout_height="wrap_content"
         android:text="n개의 답변을 확인할 수 있어요!"
         android:textColor="@color/black"
-        android:textSize="25sp"
+        android:textSize="20sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/charge_text6_tv"
+        app:layout_constraintBottom_toBottomOf="@id/charge_next_btn"
+        android:layout_marginBottom="120dp"
         android:layout_marginTop="50dp"
         android:visibility="gone"/>
 
@@ -139,7 +144,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginBottom="150dp"
+        android:layout_marginBottom="70dp"
         android:visibility="gone"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

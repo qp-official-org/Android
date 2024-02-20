@@ -108,14 +108,16 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/search_match_question_rv"
         android:layout_width="wrap_content"
-        android:layout_height="600dp"
+        android:layout_height="0dp"
         android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
         android:paddingStart="10dp"
         tools:listitem="@layout/item_question"
         app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
         app:spanCount="2"
         android:visibility="gone"
-        app:layout_constraintTop_toBottomOf="@id/search_bar"
+        app:layout_constraintTop_toBottomOf="@id/searh_no_result_tv"
+        app:layout_constraintBottom_toTopOf="@id/search_register_info"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
@@ -136,7 +138,7 @@
         android:id="@+id/search_register_info"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="30dp"
+        android:layout_marginBottom="20dp"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -149,7 +151,7 @@
             android:textColor="@color/qp"
             android:textStyle="bold"
             android:textSize="15dp"
-            android:layout_marginBottom="15dp"
+            android:layout_marginBottom="5dp"
             app:layout_constraintBottom_toTopOf="@id/search_register_bt"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />

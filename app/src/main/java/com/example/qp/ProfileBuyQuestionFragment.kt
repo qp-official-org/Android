@@ -21,6 +21,7 @@ class ProfileBuyQuestionFragment : Fragment() {
     ): View? {
         binding = FragmentProfileBuyQuestionBinding.inflate(inflater, container, false)
 
+
         val questionRVAdapter = QuestionRVAdapter(qDatas)
         binding.questionRv.adapter = questionRVAdapter
         binding.questionRv.layoutManager = GridLayoutManager(requireContext(), 2)
@@ -28,10 +29,7 @@ class ProfileBuyQuestionFragment : Fragment() {
         questionRVAdapter.setMyItemClickListner(object : QuestionRVAdapter.MyItemClickListner {
             override fun onItemClick(questionInfo: QuestionInfo) {
                 val intent = Intent(requireContext(), DetailedActivity::class.java)
-                val gson = Gson()
-                val qJson = gson.toJson(questionInfo)
-                intent.putExtra("question", qJson)
-                intent.putExtra("qDatas", qDatas)
+                intent.putExtra("question", questionInfo.questionId)
                 startActivity(intent)
             }
         })
