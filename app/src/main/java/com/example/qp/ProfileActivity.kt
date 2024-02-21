@@ -39,6 +39,7 @@ class ProfileActivity : AppCompatActivity() {
     var isNick = false
     var isAuthbtn = false
     var isEdit = false
+    var isUpload = false
 
     var selectedImageUri: Uri? = null
     lateinit var tempImage : String
@@ -332,13 +333,16 @@ class ProfileActivity : AppCompatActivity() {
                 binding.profileNicknameInvalidTv.visibility = View.INVISIBLE
                 binding.profileNicknameValidTv.visibility = View.INVISIBLE
 
-                // 기존 사진 삭제
-                var url = Url(AppData.qpProfileImage)
-                deleteImage(url)
-                AppData.qpProfileImage = tempImage
-                var userModify = UserModify(AppData.qpNickname, AppData.qpProfileImage)
-                AppData.modifyUserInfo(AppData.qpAccessToken, AppData.qpUserID, userModify)
-                tempImage = ""
+                if(isUpload) {
+                    // 기존 사진 삭제
+                    var url = Url(AppData.qpProfileImage)
+                    deleteImage(url)
+                    AppData.qpProfileImage = tempImage
+                    var userModify = UserModify(AppData.qpNickname, AppData.qpProfileImage)
+                    AppData.modifyUserInfo(AppData.qpAccessToken, AppData.qpUserID, userModify)
+                    tempImage = ""
+                    isUpload = false
+                }
             }
             else {
                 Toast.makeText(this, "닉네임은 1 ~ 6자, 특수문자 제외로 제한됩니다.",Toast.LENGTH_SHORT).show()
@@ -357,10 +361,13 @@ class ProfileActivity : AppCompatActivity() {
             binding.profileNicknameInvalidTv.visibility = View.INVISIBLE
             binding.profileNicknameValidTv.visibility = View.INVISIBLE
 
-            var url = Url(tempImage)
-            deleteImage(url)
-            tempImage = ""
-            Glide.with(this).load(AppData.qpProfileImage).into(binding.profileMainImageIv)
+            if(isUpload) {
+                var url = Url(tempImage)
+                deleteImage(url)
+                tempImage = ""
+                Glide.with(this).load(AppData.qpProfileImage).into(binding.profileMainImageIv)
+                isUpload = true
+            }
         }
     }
 
@@ -552,6 +559,7 @@ class ProfileActivity : AppCompatActivity() {
                         Log.d("imageResponse_s", response.body()?.result.toString())
                         tempImage = response.body()?.result?.url ?: ""
                         binding.profileEditNicknameEt.setText(AppData.qpNickname)
+                        isUpload = true
                     }
 
                     override fun onFailure(call: Call<ImageResponse>, t: Throwable) {
